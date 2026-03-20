@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.1
+Stable tag: 2.2
 Tested up to: 6.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,6 +53,9 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 
 == Upgrade Notice ==
 
+= 2.2 =
+Calculator Color now supports shortcodes and text values. GitHub releases fallback for auto-updates. Email templates use .bg and .color CSS classes.
+
 = 2.1 =
 New styled email templates, built-in reCAPTCHA keys, EDD auto-updater fix, and settings cleanup.
 
@@ -63,6 +66,16 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.2 20260320 =
+
+* New: Calculator Color field now accepts text values and shortcodes (e.g. [brand_color]) in addition to hex colors
+* New: Color picker syncs to text field but no longer restricts input
+* New: Centralized mcwp_get_color() helper resolves shortcodes, validates values, and provides fallback
+* New: GitHub releases as fallback download source — auto-updates work even without EDD license
+* New: Added .bg class to all background-color elements in email templates
+* New: Added .color class to all branded color elements in email templates
+* Improvement: All color values in emails escaped with esc_attr() for security
 
 = 2.1 20260320 =
 
