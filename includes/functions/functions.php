@@ -79,9 +79,7 @@ function mcwp_sendmail()
 
     do_action('mcwp_sendmail', $to, $subject, $body);
 
-    $mail1_sent = wp_mail($to, $subject, $body, email_headers());
-
-    // $cc_body .= $body;
+    // Resolve the site owner email address
     if (use_network_setting_email() === 'yes') {
         $to_form = get_site_option('wpmc_one_email');
     } else {
@@ -91,7 +89,11 @@ function mcwp_sendmail()
         $to_form = do_shortcode($to_form);
     }
 
-    $mail2_sent = wp_mail($to_form, $cc_subject, $cc_body, email_headers());
+    // Email to lead — Reply-To is the site owner so they can reply back
+    $mail1_sent = wp_mail($to, $subject, $body, email_headers($to_form));
+
+    // Email to site owner — Reply-To is the lead so owner can reply directly
+    $mail2_sent = wp_mail($to_form, $cc_subject, $cc_body, email_headers($to));
     if ($mail1_sent && $mail2_sent) {
         wp_send_json(array(
             'message' => 'Your calculations are on the way to your inbox!',
@@ -195,7 +197,7 @@ function calc_fields($network, $field, $re)
     $option = $option == '' ? __($re, 'wpmc') : $option;
     return $option;
 }
-function email_headers()
+function email_headers($reply_to_override = '')
 {
     $from = checksettings('wpmc_mail_from');
     $from = (preg_match('/[\[\]\'^£$%&*()@#~?><>,|=_+¬-]/', $from)) ? do_shortcode($from) : $from;
@@ -212,10 +214,17 @@ function email_headers()
     $reply = str_replace(array("\r", "\n"), '', $reply);
     $reply_name = str_replace(array("\r", "\n"), '', $reply_name);
 
+    // Allow overriding Reply-To (used for CC emails so owner can reply directly to the lead)
+    if (!empty($reply_to_override)) {
+        $reply_to_override = str_replace(array("\r", "\n"), '', $reply_to_override);
+        $reply = sanitize_email($reply_to_override);
+        $reply_name = ''; // Use just the email address
+    }
+
     $headers = array(
         'Content-Type: text/html; charset=UTF-8',
         'From: ' . $from_name . ' <' . sanitize_email($from) . '>',
-        'Reply-To: ' . $reply_name . ' <' . sanitize_email($reply) . '>',
+        'Reply-To: ' . ($reply_name ? $reply_name . ' <' . sanitize_email($reply) . '>' : sanitize_email($reply)),
     );
     return $headers;
 }
@@ -251,4 +260,161 @@ function delete_wpmc_option($option_name)
 function get_ip_address()
 {
     return $_SERVER['REMOTE_ADDR'];
+}
+
+/**
+ * Build a styled email using the "Clean Card" template.
+ * Uses the Calculator Color from admin settings as the accent color.
+ *
+ * @param array $args {
+ *     @type string $calc_type    Display name, e.g. "Conventional Loan"
+ *     @type string $subtitle     Subtitle line, e.g. "30 Year Fixed"
+ *     @type string $total        Formatted total payment, e.g. "$1,687"
+ *     @type string $message      Custom message from admin settings
+ *     @type array  $rows         Array of ['label' => ..., 'value' => ...] for the breakdown table
+ *     @type string $curr_symbol  Currency symbol
+ *     @type string $disclaimer   Optional disclaimer text
+ * }
+ * @return string Full HTML email body
+ */
+function mcwp_email_template($args)
+{
+    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
+    $color = sanitize_hex_color($option_func('mcwp_color'));
+    if (!$color) {
+        $color = '#1a56db'; // Fallback blue
+    }
+
+    $calc_type  = esc_html($args['calc_type']);
+    $subtitle   = esc_html($args['subtitle']);
+    $total      = esc_html($args['total']);
+    $message    = $args['message'];
+    $rows       = $args['rows'];
+    $disclaimer = isset($args['disclaimer']) ? $args['disclaimer'] : '';
+
+    // Build the breakdown rows
+    $rows_html = '';
+    foreach ($rows as $row) {
+        $rows_html .= '
+                <tr>
+                  <td style="padding:12px 0; border-bottom:1px solid #f3f4f6; color:#6b7280;">' . esc_html($row['label']) . '</td>
+                  <td style="padding:12px 0; border-bottom:1px solid #f3f4f6; text-align:right; font-weight:600; color:#111827;">' . esc_html($row['value']) . '</td>
+                </tr>';
+    }
+
+    // Total row
+    $rows_html .= '
+                <tr>
+                  <td style="padding:14px 0 0; font-weight:700; color:#111827; font-size:15px;">' . __('Total Monthly Payment', 'wpmc') . '</td>
+                  <td style="padding:14px 0 0; text-align:right; font-weight:700; color:' . $color . '; font-size:15px;">' . $total . '</td>
+                </tr>';
+
+    // Disclaimer section
+    $disclaimer_html = '';
+    if (!empty($disclaimer)) {
+        $disclaimer_html = '
+          <tr>
+            <td style="padding:0 40px 32px;">
+              <p style="margin:0; font-size:12px; line-height:18px; color:#9ca3af;">' . $disclaimer . '</p>
+            </td>
+          </tr>';
+    }
+
+    // Custom message section
+    $message_html = '';
+    if (!empty($message)) {
+        $message_html = '
+          <tr>
+            <td style="padding:24px 40px 8px;">
+              <p style="margin:0; font-size:15px; line-height:24px; color:#4b5563;">' . $message . '</p>
+            </td>
+          </tr>';
+    }
+
+    $html = '
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
+
+        <tr>
+          <td style="background-color:' . $color . '; padding:32px 40px; text-align:center;">
+            <h1 style="margin:0; font-size:24px; font-weight:600; color:#ffffff; letter-spacing:-0.3px;">' . __('Your Calculations', 'wpmc') . '</h1>
+            <p style="margin:8px 0 0; font-size:14px; color:rgba(255,255,255,0.75);">' . $calc_type . ' &bull; ' . $subtitle . '</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:36px 40px 20px; text-align:center; border-bottom:1px solid #e5e7eb;">
+            <p style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">' . __('Estimated Monthly Payment', 'wpmc') . '</p>
+            <p style="margin:0; font-size:48px; font-weight:700; color:' . $color . '; letter-spacing:-1px;">' . $total . '</p>
+          </td>
+        </tr>
+
+        ' . $message_html . '
+
+        <tr>
+          <td style="padding:16px 40px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;">
+              ' . $rows_html . '
+            </table>
+          </td>
+        </tr>
+
+        ' . $disclaimer_html . '
+
+      </table>
+    </td>
+  </tr>
+</table>';
+
+    return $html;
+}
+
+/**
+ * Build a styled admin notification (CC) email.
+ *
+ * @param string $to         The lead's email address
+ * @param string $calc_type  Display name of calculator type
+ * @param string $body_content The lead's email body content to include as reference
+ * @return string Full HTML email body for admin
+ */
+function mcwp_cc_email_template($to, $calc_type, $body_content)
+{
+    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
+    $color = sanitize_hex_color($option_func('mcwp_color'));
+    if (!$color) {
+        $color = '#1a56db';
+    }
+
+    $html = '
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
+
+        <tr>
+          <td style="background-color:' . $color . '; padding:24px 40px; text-align:center;">
+            <h1 style="margin:0; font-size:20px; font-weight:600; color:#ffffff;">' . sprintf(__('New %s Lead', 'wpmc'), esc_html($calc_type)) . '</h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:28px 40px;">
+            <p style="margin:0 0 16px; font-size:15px; line-height:24px; color:#4b5563;">
+              <a href="mailto:' . esc_attr($to) . '" style="color:' . $color . '; font-weight:600; text-decoration:none;">' . esc_html($to) . '</a>
+              ' . __('requested a calculation. A copy of the email they received is below for reference.', 'wpmc') . '
+            </p>
+            <div style="background-color:#f9fafb; border-radius:8px; padding:20px; border:1px solid #e5e7eb;">
+              ' . $body_content . '
+            </div>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>';
+
+    return $html;
 }

@@ -6,7 +6,7 @@ $term = sanitize_text_field($_POST['mortgage_term']);
 $interest_rate = sanitize_text_field($_POST['interest_rate']);
 $monthly_pmi = sanitize_text_field($_POST['monthly_pmi']);
 $down_payment = sanitize_text_field($_POST['down_payment']);
-$monthly_taxes = sanitize_text_field($_POST['monthly_taxes']); //round(sanitize_text_field($_POST['monthly_taxes']),2);
+$monthly_taxes = sanitize_text_field($_POST['monthly_taxes']);
 $monthly_insurance = round(sanitize_text_field($_POST['monthly_insurance']), 2);
 $monthly_mortgage_insurance = sanitize_text_field($_POST['monthly_mortgage_insurance']);
 $monthly_hoa = sanitize_text_field($_POST['monthly_hoa']);
@@ -14,17 +14,29 @@ $option_func = (use_network_settings('wpmc_one_use_network_settings') === 'yes')
 $wpmc_admin = $option_func('wpmc_one_email');
 $site_admin = checksettings('admin_email');
 
-// Dynamically Create the Body
-$msg_body = $option_func('wpmc_one_msg_bdy');
-$body_part_dynamic = body_dynamic($msg_body, $_REQUEST);
 $subject = __('Your Conventional Mortgage Calculation', 'wpmc');
 
-$body_part_static = __('Based on a purchase price of', 'wpmc') . " <strong>$curr_symbol$price</strong>, " . __('and a down payment of', 'wpmc') . " <strong>$curr_symbol$down_payment</strong>, " . __('your new', 'wpmc') . " <strong>$term " . __('year', 'wpmc') . "</strong> " . __('loan with an interest rate of', 'wpmc') . " <strong>$interest_rate%</strong> " . __('will have a payment of', 'wpmc') . " <strong>$curr_symbol$calculation_result</strong>. " . __('This includes monthly taxes of', 'wpmc') . " <strong>$curr_symbol$monthly_taxes</strong>, " . __('monthly insurance of', 'wpmc') . " <strong>$curr_symbol$monthly_insurance</strong>, " . __('monthly PMI of', 'wpmc') . " <strong>$curr_symbol$monthly_pmi</strong> " . __('and monthly hoa of', 'wpmc') . " <strong>$curr_symbol$monthly_hoa</strong>.";
+// Build the breakdown rows for the email template
+$rows = array(
+    array('label' => __('Purchase Price', 'wpmc'), 'value' => $curr_symbol . $price),
+    array('label' => __('Down Payment', 'wpmc'), 'value' => $curr_symbol . $down_payment),
+    array('label' => __('Interest Rate', 'wpmc'), 'value' => $interest_rate . '%'),
+    array('label' => __('Principal & Interest', 'wpmc'), 'value' => $curr_symbol . $principal_and_interest),
+    array('label' => __('Monthly Taxes', 'wpmc'), 'value' => $curr_symbol . $monthly_taxes),
+    array('label' => __('Monthly Insurance', 'wpmc'), 'value' => $curr_symbol . $monthly_insurance),
+    array('label' => __('Monthly PMI', 'wpmc'), 'value' => $curr_symbol . $monthly_pmi),
+    array('label' => __('Monthly HOA', 'wpmc'), 'value' => $curr_symbol . $monthly_hoa),
+);
 
-$body .= "<div style='font-family:Arial;font-size: 13px;padding:0 10px;'>
-    <p style='line-height: 20px; max-width: 500px'>$wpmc_mail_message</p>
-    " . (!empty($body_part_dynamic) ? $body_part_dynamic : $body_part_static) . "
-  </div>";
+$body = mcwp_email_template(array(
+    'calc_type'   => __('Conventional Loan', 'wpmc'),
+    'subtitle'    => $term . ' ' . __('Year Fixed', 'wpmc'),
+    'total'       => $curr_symbol . $calculation_result,
+    'message'     => $wpmc_mail_message,
+    'rows'        => $rows,
+    'curr_symbol' => $curr_symbol,
+    'disclaimer'  => $option_func('wpmc_one_disclaimer'),
+));
 
 $cc_subject = __('New Conventional Calculation by ', 'wpmc') . $to;
-$cc_body = "<div style='font-family:Arial;font-size: 13px;padding:0 10px;'><p><a href='mailto:$to'>" . __('Click Here', 'wpmc') . "</a> " . __('to follow up with', 'wpmc') . " $to. " . __('They requested a calculation and a copy of the email they received is below for reference', 'wpmc') . ":</p><em>" . (!empty($body_part_dynamic) ? $body_part_dynamic : $body_part_static) . "</em></div>";
+$cc_body = mcwp_cc_email_template($to, __('Conventional', 'wpmc'), $body);
