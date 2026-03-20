@@ -288,12 +288,13 @@ function mcwp_email_template($args)
         $color = '#1a56db'; // Fallback blue
     }
 
-    $calc_type  = esc_html($args['calc_type']);
-    $subtitle   = esc_html($args['subtitle']);
-    $total      = esc_html($args['total']);
-    $message    = $args['message'];
-    $rows       = $args['rows'];
-    $disclaimer = isset($args['disclaimer']) ? $args['disclaimer'] : '';
+    $calc_type   = esc_html($args['calc_type']);
+    $subtitle    = esc_html($args['subtitle']);
+    $total       = esc_html($args['total']);
+    $total_label = isset($args['total_label']) ? esc_html($args['total_label']) : __('Estimated Monthly Payment', 'wpmc');
+    $message     = $args['message'];
+    $rows        = $args['rows'];
+    $disclaimer  = isset($args['disclaimer']) ? $args['disclaimer'] : '';
 
     // Build the breakdown rows
     $rows_html = '';
@@ -349,7 +350,7 @@ function mcwp_email_template($args)
 
         <tr>
           <td style="padding:36px 40px 20px; text-align:center; border-bottom:1px solid #e5e7eb;">
-            <p style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">' . __('Estimated Monthly Payment', 'wpmc') . '</p>
+            <p style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">' . $total_label . '</p>
             <p style="margin:0; font-size:48px; font-weight:700; color:' . $color . '; letter-spacing:-1px;">' . $total . '</p>
           </td>
         </tr>

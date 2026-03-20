@@ -15,7 +15,7 @@ $site_admin = checksettings('admin_email');
 $subject = __('Your Affordability Calculation', 'wpmc');
 
 $rows = array(
-    array('label' => __('You Can Afford Up To', 'wpmc'), 'value' => $curr_symbol . $cal_result_home_afford),
+    array('label' => __('Estimated Monthly Payment', 'wpmc'), 'value' => $curr_symbol . $mha_monthly_payment),
     array('label' => __('Annual Income', 'wpmc'), 'value' => $curr_symbol . $mha_income),
     array('label' => __('Monthly Debts', 'wpmc'), 'value' => $curr_symbol . $mha_debts),
     array('label' => __('Interest Rate', 'wpmc'), 'value' => $mha_rate . '%'),
@@ -27,7 +27,8 @@ $rows = array(
 $body = mcwp_email_template(array(
     'calc_type'   => __('Affordability', 'wpmc'),
     'subtitle'    => $mha_term . ' ' . __('Year Fixed', 'wpmc'),
-    'total'       => $curr_symbol . $mha_monthly_payment,
+    'total'       => $curr_symbol . $cal_result_home_afford,
+    'total_label' => __('You Can Afford Up To', 'wpmc'),
     'message'     => $wpmc_mail_message,
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,

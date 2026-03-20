@@ -14,7 +14,7 @@ $site_admin = checksettings('admin_email');
 $subject = __('Your Refinance Calculation', 'wpmc');
 
 $rows = array(
-    array('label' => __('Monthly Savings', 'wpmc'), 'value' => $curr_symbol . $cal_result_home_afford),
+    array('label' => __('Estimated Monthly Payment', 'wpmc'), 'value' => $curr_symbol . $rc_monthly_payment),
     array('label' => __('New Loan Amount', 'wpmc'), 'value' => $curr_symbol . $rc_new_loan_amount),
     array('label' => __('New Interest Rate', 'wpmc'), 'value' => $rc_new_interest_rate . '%'),
     array('label' => __('New Loan Term', 'wpmc'), 'value' => $rc_new_loan_term . ' ' . __('months', 'wpmc')),
@@ -25,7 +25,8 @@ $rows = array(
 $body = mcwp_email_template(array(
     'calc_type'   => __('Refinance', 'wpmc'),
     'subtitle'    => __('New Rate', 'wpmc') . ': ' . $rc_new_interest_rate . '%',
-    'total'       => $curr_symbol . $rc_monthly_payment,
+    'total'       => $curr_symbol . $cal_result_home_afford,
+    'total_label' => __('Monthly Savings', 'wpmc'),
     'message'     => $wpmc_mail_message,
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,
