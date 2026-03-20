@@ -1,0 +1,833 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Mortgage Calculators WP\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-31 08:10+0000\n"
+"PO-Revision-Date: 2021-01-14 22:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish (Mexico)\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.0; wp-5.6\n"
+"X-Domain: wpmc"
+
+#: includes/options/options.php:467 includes/functions/emails/va.php:25
+msgid " with an interest rate of"
+msgstr "con una tasa de interés de"
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid ". This is based on your annual income of"
+msgstr ". Esto se basa en su ingreso anual de"
+
+#. Description of the plugin
+msgid "A contemporary set of mortgage calculators from Lenderd.com"
+msgstr "Un conjunto contemporáneo de calculadoras hipotecarias de Lenderd.com"
+
+#: includes/templates/templates.php:70
+msgid "Affordability Calc"
+msgstr "Cálculo de asequibilidad"
+
+#: includes/templates/templates.php:35
+msgid "Affordability Calculator"
+msgstr "Calculadora de asequibilidad"
+
+#: includes/shortcodes/views/va.php:118
+msgid "Amount Financed"
+msgstr "Monto financiado"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/functions/emails/cv.php:23
+msgid "and a down payment of"
+msgstr "y un anticipo de"
+
+#: includes/functions/emails/fha.php:23
+msgid "and a down payment of "
+msgstr "y un anticipo de"
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid "and monthly debts of"
+msgstr "y deudas mensuales de"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "and monthly hoa of"
+msgstr "y una hoa mensual de"
+
+#: includes/options/options.php:259 includes/options/options.php:268
+#: includes/shortcodes/views/mha.php:9
+msgid "Annual Income"
+msgstr "Ingresos Anuales"
+
+#: includes/options/options.php:72 includes/options/options.php:82
+#: includes/options/options.php:136 includes/options/options.php:145
+#: includes/options/options.php:202 includes/options/options.php:211
+#: includes/shortcodes/views/fha.php:72
+#: includes/shortcodes/views/conventional.php:67
+#: includes/shortcodes/views/va.php:82
+msgid "Annual Insurance"
+msgstr "Seguro Anual"
+
+#: includes/options/options.php:69 includes/options/options.php:133
+#: includes/options/options.php:199 includes/shortcodes/views/fha.php:52
+#: includes/shortcodes/views/conventional.php:47
+#: includes/shortcodes/views/va.php:63
+msgid "Annual Taxes"
+msgstr "Impuestos Anuales"
+
+#: includes/options/options.php:80 includes/options/options.php:144
+#: includes/options/options.php:210
+msgid "Annual Taxes %"
+msgstr "Impuestos Anuales %"
+
+#: includes/options/options.php:471 includes/options/options.php:477
+#: includes/functions/emails/mha.php:21 includes/functions/emails/rc.php:22
+msgid "at"
+msgstr "a"
+
+#: includes/options/options.php:438
+msgid "Australia Dollar"
+msgstr "Dólar Australiano"
+
+#: includes/options/options.php:49 includes/options/options.php:110
+#: includes/options/options.php:173 includes/options/options.php:241
+#: includes/options/options.php:302
+msgid "Available Tags"
+msgstr "Etiquetas disponibles"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "Based on a purchase price of"
+msgstr "Basado en un precio de compra de"
+
+#: mortgage-calculators-wp.php:93 mortgage-calculators-wp.php:111
+msgid "Calculator"
+msgstr "Calculadora"
+
+#: includes/options/options.php:20
+msgid "Calculator Color"
+msgstr "Color De Calculadora"
+
+#: includes/options/options.php:20
+msgid "Choose Color"
+msgstr "Elegir color"
+
+#: includes/options/options.php:19
+msgid "Choose Currency"
+msgstr "Elegir circulación"
+
+#: includes/functions/emails/cv.php:30 includes/functions/emails/fha.php:30
+#: includes/functions/emails/va.php:32 includes/functions/emails/mha.php:28
+#: includes/functions/emails/rc.php:29
+msgid "Click Here"
+msgstr "Haga clic aquí"
+
+#: includes/templates/templates.php:53
+msgid "Conventional Calc"
+msgstr "Calc Convencional"
+
+#: includes/templates/templates.php:29
+msgid "Conventional Mortgage Calculator"
+msgstr "Calculadora de Hipotecas Convencional"
+
+#: includes/options/options.php:355
+#| msgid ""
+#| "Copy this <strong>shortcode</strong> and paste it into your <strong>post, "
+#| "page, or text widget</strong> content: <strong>"
+msgid ""
+"Copy this <strong>shortcode</strong> and paste it into your <strong>post, "
+"page, or text widget</strong> content: "
+msgstr ""
+"Copiar este código y péguelo en su post, página o widget en el contenido:\n"
+
+#: includes/options/options.php:19
+msgid "Currency"
+msgstr "Typo De Dolar"
+
+#: includes/shortcodes/views/rc.php:11
+msgid "Current Loan Amount"
+msgstr "Monto actual del Préstamo"
+
+#: includes/shortcodes/views/rc.php:21
+msgid "Current Term"
+msgstr "Término Actual"
+
+#: includes/options/options.php:323 includes/options/options.php:332
+msgid "Current term"
+msgstr "Término Actual"
+
+#: includes/options/options.php:208
+msgid "Default: 0"
+msgstr "Defecto: 0"
+
+#: includes/options/options.php:80 includes/options/options.php:144
+#: includes/options/options.php:210
+msgid "Default: 1"
+msgstr "Defecto: 1"
+
+#: includes/options/options.php:271 includes/options/options.php:337
+msgid "Default: 1,000"
+msgstr "Defecto: 1,000"
+
+#: includes/options/options.php:270
+msgid "Default: 1,500"
+msgstr "Defecto: 1,500"
+
+#: includes/options/options.php:272
+msgid "Default: 10,000"
+msgstr "Defecto: 10,000"
+
+#: includes/options/options.php:268
+msgid "Default: 100,000"
+msgstr "Defecto: 100,000"
+
+#: includes/options/options.php:269
+msgid "Default: 2,000"
+msgstr "Defecto: 2,000"
+
+#: includes/options/options.php:333
+msgid "Default: 2020"
+msgstr "Defecto: 2020"
+
+#: includes/options/options.php:77 includes/options/options.php:141
+#: includes/options/options.php:207 includes/options/options.php:334
+msgid "Default: 250,000"
+msgstr "Defecto: 250,000"
+
+#: includes/options/options.php:330
+msgid "Default: 300,000"
+msgstr "Defecto: 300,000"
+
+#: includes/options/options.php:332 includes/options/options.php:336
+msgid "Default: 360"
+msgstr "Defecto: 360"
+
+#: includes/options/options.php:273 includes/options/options.php:335
+msgid "Default: 4"
+msgstr "Defecto: 4"
+
+#: includes/options/options.php:78 includes/options/options.php:79
+#: includes/options/options.php:142 includes/options/options.php:143
+#: includes/options/options.php:209 includes/options/options.php:331
+msgid "Default: 5"
+msgstr "Defecto: 5"
+
+#: includes/options/options.php:83 includes/options/options.php:146
+#: includes/options/options.php:212
+msgid "Default: 50"
+msgstr "Defecto: 50"
+
+#: includes/options/options.php:82 includes/options/options.php:145
+#: includes/options/options.php:211
+msgid "Default: 600"
+msgstr "Defecto: 600"
+
+#: includes/options/options.php:62 includes/options/options.php:126
+#: includes/options/options.php:191 includes/options/options.php:257
+#: includes/options/options.php:316
+msgid "Disclaimer"
+msgstr "Descargo de responsabilidad"
+
+#: includes/options/options.php:66 includes/options/options.php:130
+#: includes/options/options.php:195 includes/shortcodes/views/fha.php:43
+#: includes/shortcodes/views/conventional.php:38
+#: includes/shortcodes/views/va.php:56 includes/shortcodes/views/mha.php:33
+msgid "Down Payment"
+msgstr "Depósito Inicial"
+
+#: includes/options/options.php:263 includes/options/options.php:272
+msgid "Down payment"
+msgstr "Depósito inicial"
+
+#: includes/options/options.php:78 includes/options/options.php:142
+#: includes/options/options.php:208
+msgid "Down Payment %"
+msgstr "Depósito Inicial %"
+
+#: includes/options/options.php:41 includes/options/options.php:101
+#: includes/options/options.php:164 includes/options/options.php:231
+#: includes/options/options.php:292
+msgid "Email Address"
+msgstr " Correo Electrónico"
+
+#: includes/options/options.php:42 includes/options/options.php:102
+#: includes/options/options.php:165 includes/options/options.php:232
+#: includes/options/options.php:293
+msgid "Email address your leads will be sent to..."
+msgstr ""
+"Dirección de correo electrónico a la que se enviarán tus clientes "
+"potenciales ..."
+
+#: includes/options/options.php:21
+msgid "Email address your leads will receive email from..."
+msgstr ""
+"Dirección de correo electrónico que sus clientes potenciales recibirán "
+"correos electrónicos de ..."
+
+#: includes/options/options.php:23
+msgid "Email address your leads will reply to if different from above..."
+msgstr ""
+"Dirección de correo electrónico a la que responderán sus clientes "
+"potenciales si es diferente a la anterior ..."
+
+#: includes/shortcodes/views/fha.php:90
+#: includes/shortcodes/views/conventional.php:89
+#: includes/shortcodes/views/va.php:103 includes/shortcodes/views/mha.php:54
+#: includes/shortcodes/views/rc.php:51
+msgid "Enter your email address"
+msgstr "Ingrese tu dirección de correo electrónico"
+
+#: includes/shortcodes/views/mha.php:27
+msgid "Estimated Annual Home Insurance"
+msgstr "Seguro de Vivienda Anual Estimado"
+
+#: includes/options/options.php:262 includes/options/options.php:271
+msgid "Estimated annual home insurance"
+msgstr "Seguro de hogar anual estimado"
+
+#: includes/options/options.php:261 includes/options/options.php:270
+#: includes/shortcodes/views/mha.php:21
+msgid "Estimated annual property taxes"
+msgstr "Impuestos Prediales Anuales Estimados"
+
+#: includes/options/options.php:437
+msgid "Euro"
+msgstr "Euro"
+
+#: includes/templates/templates.php:58
+msgid "FHA Calc"
+msgstr "FHA Calc"
+
+#: includes/options/options.php:462 includes/functions/emails/fha.php:23
+msgid "FHA loan with an interest rate of"
+msgstr "Préstamo FHA con una tasa de interés de"
+
+#: includes/templates/templates.php:31
+msgid "FHA Mortgage Calculator"
+msgstr ""
+"Calculadora de Hipotecas para FHA\n"
+
+#: includes/options/options.php:319
+msgid "First Heading"
+msgstr "Primer Título"
+
+#: includes/options/options.php:193 includes/shortcodes/views/va.php:23
+msgid "First Time VA Loan?"
+msgstr ""
+"Préstamo de VA por primera vez?\n"
+
+#: includes/options/options.php:477 includes/functions/emails/rc.php:22
+msgid "for"
+msgstr "para"
+
+#: includes/options/options.php:21
+msgid "From Email"
+msgstr "De Correo Electrónico"
+
+#: includes/options/options.php:22
+msgid "From Name"
+msgstr "De Nombre"
+
+#: includes/templates/templates.php:41 includes/templates/templates.php:49
+msgid "General Settings"
+msgstr ""
+"Configuración General\n"
+
+#: includes/options/options.php:74 includes/options/options.php:138
+#: includes/options/options.php:204
+msgid "Hide HOA"
+msgstr "Esconde HOA"
+
+#: includes/options/options.php:71 includes/options/options.php:135
+#: includes/options/options.php:201
+msgid "Hide Insurance"
+msgstr "Esconde Aseguranza"
+
+#. Author URI of the plugin
+msgid "https://lenderd.com"
+msgstr "https://lenderd.com"
+
+#. URI of the plugin
+msgid "https://mortgagecalculatorsplugin.com"
+msgstr "https://mortgagecalculatorsplugin.com"
+
+#: includes/options/options.php:63 includes/options/options.php:127
+#: includes/options/options.php:191 includes/options/options.php:257
+#: includes/options/options.php:316
+msgid ""
+"If you would like to display a disclaimer under the calculator's values, "
+"place that here..."
+msgstr ""
+"Si desea mostrar un descargo de responsabilidad debajo de los valores de la "
+"calculadora, colóquelo aquí ..."
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid "in the amount of"
+msgstr "en la cantidad de"
+
+#: includes/shortcodes/views/mha.php:66
+msgid "Insurance"
+msgstr "Aseguranza"
+
+#: includes/options/options.php:67 includes/options/options.php:131
+#: includes/options/options.php:197 includes/shortcodes/views/fha.php:61
+#: includes/shortcodes/views/va.php:70 includes/shortcodes/views/mha.php:39
+#: includes/shortcodes/views/rc.php:16
+msgid "Interest Rate"
+msgstr "Tasa de Interés"
+
+#: includes/options/options.php:264 includes/options/options.php:273
+#: includes/options/options.php:322 includes/options/options.php:331
+msgid "Interest rate"
+msgstr "Tasa de Interés"
+
+#: includes/options/options.php:79 includes/options/options.php:143
+#: includes/options/options.php:209
+msgid "Interest Rate %"
+msgstr "Tasa de Interés %"
+
+#. Author of the plugin
+msgid "Lenderd"
+msgstr "Lenderd"
+
+#: includes/templates/templates.php:39
+msgid "License Options"
+msgstr "Opciones de licencia"
+
+#: includes/shortcodes/views/rc.php:61
+msgid "Lifetime Savings "
+msgstr "Ahorros de Por Vida"
+
+#: includes/shortcodes/views/mha.php:45
+msgid "Loan Term"
+msgstr ""
+"Plazo del Préstamo\n"
+
+#: includes/options/options.php:265
+msgid "Loan term"
+msgstr ""
+"Plazo del préstamo\n"
+
+#: includes/options/options.php:458 includes/functions/emails/cv.php:23
+msgid "loan with an interest rate of"
+msgstr "préstamo con una tasa de interés de"
+
+#: includes/options/options.php:24
+msgid "Message"
+msgstr "Mensaje"
+
+#: includes/options/options.php:48 includes/options/options.php:109
+#: includes/options/options.php:172 includes/options/options.php:240
+#: includes/options/options.php:301
+msgid "Message Body"
+msgstr "Cuerpo del Mensaje"
+
+#: includes/shortcodes/views/rc.php:58
+msgid "month"
+msgstr "mes"
+
+#: includes/shortcodes/views/mha.php:15
+msgid "Monthly Debts"
+msgstr "Deudas Mensuales"
+
+#: includes/options/options.php:260 includes/options/options.php:269
+msgid "Monthly debts"
+msgstr "Deudas mensuales"
+
+#: includes/shortcodes/views/fha.php:97
+msgid "Monthly FHA Payment"
+msgstr "Pago mensual de FHA"
+
+#: includes/options/options.php:75 includes/options/options.php:83
+#: includes/options/options.php:139 includes/options/options.php:146
+#: includes/options/options.php:205 includes/options/options.php:212
+#: includes/shortcodes/views/fha.php:15 includes/shortcodes/views/fha.php:82
+#: includes/shortcodes/views/conventional.php:10
+#: includes/shortcodes/views/conventional.php:79
+#: includes/shortcodes/views/va.php:14 includes/shortcodes/views/va.php:95
+msgid "Monthly HOA"
+msgstr "HOA Mensual"
+
+#: includes/shortcodes/views/fha.php:17
+#: includes/shortcodes/views/conventional.php:12
+#: includes/shortcodes/views/va.php:16
+msgid "Monthly Insurance"
+msgstr "Seguro Mensual"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "monthly insurance of"
+msgstr "seguro mensual de"
+
+#: includes/shortcodes/views/fha.php:18
+msgid "Monthly Mortgage Insurance"
+msgstr "Seguro Hipotecario Mensual"
+
+#: includes/shortcodes/views/conventional.php:97
+#: includes/shortcodes/views/mha.php:63
+msgid "Monthly Payment"
+msgstr "Pago Mensual"
+
+#: includes/shortcodes/views/fha.php:99
+#: includes/shortcodes/views/conventional.php:99
+#: includes/shortcodes/views/va.php:113
+msgid "Monthly Taxes"
+msgstr "Impuestos Mensuales"
+
+#: includes/shortcodes/views/va.php:111
+msgid "Monthly VA Payment"
+msgstr "Pago mensual de VA"
+
+#: includes/functions/emails/rc.php:22 includes/shortcodes/views/rc.php:23
+#: includes/shortcodes/views/rc.php:42
+msgid "months"
+msgstr "meses"
+
+#: includes/options/options.php:477
+msgid "months."
+msgstr "meses."
+
+#: mortgage-calculators-wp.php:92 mortgage-calculators-wp.php:110
+msgid "Mortage Calculator"
+msgstr "Calculadora de Hipotecas"
+
+#: includes/shortcodes/views/conventional.php:27
+msgid "Mortage Term"
+msgstr "Plazo de la Hipoteca"
+
+#. Name of the plugin
+msgid "Mortgage Calculators WP"
+msgstr "Calculadoras de Hipotecas WP"
+
+#: includes/shortcodes/views/fha.php:31 includes/shortcodes/views/va.php:44
+msgid "Mortgage Term"
+msgstr "Plazo de la Hipoteca"
+
+#: includes/options/options.php:68 includes/options/options.php:132
+#: includes/options/options.php:198
+msgid "Mortgage Term (Year)"
+msgstr "Plazo de Hipoteca (Anualmente)"
+
+#: includes/options/options.php:22
+msgid "Name that your leads will receive email from..."
+msgstr ""
+"Nombre del que sus clientes potenciales recibirán correo electrónico de ..."
+
+#: includes/functions/emails/cv.php:29
+#| msgid "New Conventional Calculation by"
+msgid "New Conventional Calculation by "
+msgstr "Nuevo Cálculo Convencional Por "
+
+#: includes/functions/emails/fha.php:29
+#| msgid "New FHA Calculation by"
+msgid "New FHA Calculation by "
+msgstr "Nuevo Cálculo de FHA Por "
+
+#: includes/shortcodes/views/rc.php:35
+msgid "New Interest Rate"
+msgstr "Nueva Tasa de Interés"
+
+#: includes/options/options.php:326 includes/options/options.php:335
+msgid "New interest rate"
+msgstr "Nueva Tasa de Interés"
+
+#: includes/shortcodes/views/rc.php:30
+msgid "New Loan Amount"
+msgstr "Nuevo Monto del Préstamo"
+
+#: includes/options/options.php:325 includes/options/options.php:334
+msgid "New loan amount"
+msgstr "Nuevo Monto del Préstamo"
+
+#: includes/shortcodes/views/rc.php:40
+msgid "New Loan Term"
+msgstr "Nuevo plazo del préstamo"
+
+#: includes/options/options.php:327 includes/options/options.php:336
+msgid "New loan term"
+msgstr "Nuevo plazo del préstamo"
+
+#: includes/shortcodes/views/rc.php:59
+msgid "New monthly payment"
+msgstr "Nuevo Pago Mensual"
+
+#: includes/functions/emails/rc.php:28
+msgid "New Refinance Calculation by "
+msgstr "Nuevo Cálculo de Refinanciamiento por"
+
+#: includes/options/options.php:328 includes/options/options.php:337
+msgid "New refinance fees"
+msgstr "Nuevas Tarifas de Refinanciamiento"
+
+#: includes/functions/emails/va.php:31
+#| msgid "New VA Calculation by"
+msgid "New VA Calculation by "
+msgstr "Nuevo Cálculo de VA Por "
+
+#: includes/options/options.php:416 includes/shortcodes/views/va.php:26
+msgid "No"
+msgstr "No"
+
+#: includes/options/options.php:321 includes/options/options.php:330
+msgid "Original loan amount"
+msgstr "Monto original del préstamo"
+
+#: includes/shortcodes/views/rc.php:26
+msgid "Origination Year"
+msgstr "Año de Origen"
+
+#: includes/options/options.php:324 includes/options/options.php:333
+msgid "Origination year"
+msgstr "Año de Origen"
+
+#: includes/options/options.php:477 includes/functions/emails/rc.php:22
+msgid "over the life of the loan. This is based on a new loan amount of"
+msgstr ""
+"durante la vigencia del préstamo. Esto se basa en un nuevo monto de préstamo "
+"de"
+
+#: includes/options/options.php:477 includes/functions/emails/rc.php:22
+msgid "per month and"
+msgstr "por mes y"
+
+#: includes/templates/templates.php:83 includes/templates/templates.php:91
+#: includes/templates/templates.php:97
+msgid "Premium License"
+msgstr "Licencia Premium"
+
+#: includes/functions/emails/rc.php:20 includes/shortcodes/views/fha.php:98
+#: includes/shortcodes/views/conventional.php:98
+#: includes/shortcodes/views/va.php:112 includes/shortcodes/views/mha.php:64
+msgid "Principal & Interest"
+msgstr "Principal y Interés"
+
+#: includes/options/options.php:65 includes/options/options.php:77
+#: includes/options/options.php:129 includes/options/options.php:141
+#: includes/options/options.php:196 includes/options/options.php:207
+#: includes/shortcodes/views/fha.php:24
+#: includes/shortcodes/views/conventional.php:22
+#: includes/shortcodes/views/va.php:38 includes/shortcodes/views/va.php:116
+msgid "Purchase Price"
+msgstr "Precio de Compra"
+
+#: includes/templates/templates.php:74
+msgid "Refinance Calc"
+msgstr "Calc de Refinanciamiento"
+
+#: includes/templates/templates.php:37
+msgid "Refinance Calculator"
+msgstr "Calculadora de Refinanciamiento"
+
+#: includes/shortcodes/views/rc.php:45
+msgid "Refinance Fees"
+msgstr "Tarifas de Refinanciamiento"
+
+#: includes/shortcodes/views/rc.php:60
+msgid "Refinance fees"
+msgstr "Tarifas de Refinanciamiento"
+
+#: includes/options/options.php:477 includes/functions/emails/rc.php:22
+#: includes/shortcodes/views/rc.php:57
+msgid "Refinancing could save you"
+msgstr "La Refinanciación Podría Ahorrar"
+
+#: includes/shortcodes/views/va.php:32
+msgid "Regular Military"
+msgstr "Militar Regular"
+
+#: includes/options/options.php:23
+msgid "Reply-To Email"
+msgstr "Correo Electrónico Para Responder"
+
+#: includes/shortcodes/views/va.php:33
+msgid "Reserves/National Guard"
+msgstr "Reservas / Guardia Nacional"
+
+#: includes/options/options.php:320
+msgid "Second Heading"
+msgstr "Segundo Título"
+
+#: includes/shortcodes/views/fha.php:91
+#: includes/shortcodes/views/conventional.php:90
+#: includes/shortcodes/views/va.php:104 includes/shortcodes/views/mha.php:55
+#: includes/shortcodes/views/rc.php:52
+msgid "Send Results!"
+msgstr "Enviar Resultados!"
+
+#: mortgage-calculators-wp.php:137
+msgid "Settings saved."
+msgstr "Ajustes Guardados. "
+
+#: includes/shortcodes/views/mha.php:65
+msgid "Tax"
+msgstr "Impuesto"
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid "that has a total monthly payment of"
+msgstr "que tiene un pago mensual total de"
+
+#: includes/functions/emails/cv.php:30 includes/functions/emails/fha.php:30
+#: includes/functions/emails/va.php:32 includes/functions/emails/mha.php:28
+#: includes/functions/emails/rc.php:29
+msgid ""
+"They requested a calculation and a copy of the email they received is below "
+"for reference"
+msgstr ""
+"Solicitaron un cálculo y una copia del correo electrónico que recibieron se "
+"encuentra a continuación como referencia."
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "This includes monthly taxes of"
+msgstr "Esto incluye impuestos mensuales de"
+
+#: includes/options/options.php:24
+msgid "This message will appear at the top of the emails sent to your leads..."
+msgstr ""
+"Este mensaje aparecerá en la parte superior de los correos electrónicos "
+"enviados a sus clientes potenciales ..."
+
+#: includes/functions/emails/cv.php:30 includes/functions/emails/fha.php:30
+#: includes/functions/emails/va.php:32 includes/functions/emails/mha.php:28
+#: includes/functions/emails/rc.php:29
+msgid "to follow up with"
+msgstr "para seguir con"
+
+#: includes/templates/templates.php:107
+msgid "To upgrade or get plugin support please visit"
+msgstr "Para actualizar o obtener mantenimiento visite"
+
+#: includes/options/options.php:194 includes/shortcodes/views/va.php:30
+msgid "Type of Service"
+msgstr "Tipo de Servicio"
+
+#: includes/options/options.php:436
+msgid "United Kingdom Pounds"
+msgstr "Libras del Reino Unido"
+
+#: includes/options/options.php:435
+msgid "United States Dollar"
+msgstr "Dólar de los Estados Unidos"
+
+#: includes/options/options.php:11 includes/options/options.php:37
+#: includes/options/options.php:96 includes/options/options.php:159
+#: includes/options/options.php:226 includes/options/options.php:287
+msgid "Use Network Settings"
+msgstr "Usar configuración del Network"
+
+#: includes/templates/templates.php:64
+msgid "VA Calc"
+msgstr "VA Calc"
+
+#: includes/shortcodes/views/va.php:117
+msgid "VA Funding Fee"
+msgstr "VA Comisión de financiación"
+
+#: includes/options/options.php:467 includes/functions/emails/va.php:25
+msgid "VA loan in the amount of"
+msgstr "El préstamo de la Asociación de Veteranos por un monto de"
+
+#: includes/templates/templates.php:33
+msgid "VA Mortgage Calculator"
+msgstr "VA Calculadora de Hipoteca"
+
+#: includes/shortcodes/views/fha.php:89
+#: includes/shortcodes/views/conventional.php:88
+#: includes/shortcodes/views/va.php:102 includes/shortcodes/views/mha.php:53
+#: includes/shortcodes/views/rc.php:50
+msgid "Want a Copy of the Results?"
+msgstr "¿Quiere una copia de los resultados?"
+
+#: includes/shortcodes/views/fha.php:121 includes/shortcodes/views/va.php:140
+#: includes/shortcodes/views/mha.php:84
+msgid "Warning: You are NOT subscribed to view this calculator"
+msgstr ""
+"Advertencia: NO estás suscrito para ver esta calculadora\n"
+
+#: includes/options/options.php:467 includes/functions/emails/va.php:25
+msgid "which includes a funding fee of"
+msgstr "que incluye una tasa de financiación de"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "will have a payment of"
+msgstr "tendrá un pago de"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "year"
+msgstr "año"
+
+#: includes/shortcodes/views/mha.php:47 includes/shortcodes/views/mha.php:48
+msgid "year fixed"
+msgstr "Años Fijo"
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid "year term"
+msgstr "término del año"
+
+#: includes/shortcodes/views/fha.php:33 includes/shortcodes/views/fha.php:34
+#: includes/shortcodes/views/fha.php:35 includes/shortcodes/views/fha.php:36
+#: includes/shortcodes/views/fha.php:37 includes/shortcodes/views/fha.php:38
+#: includes/shortcodes/views/conventional.php:29
+#: includes/shortcodes/views/conventional.php:30
+#: includes/shortcodes/views/conventional.php:31
+#: includes/shortcodes/views/conventional.php:32
+#: includes/shortcodes/views/conventional.php:33
+#: includes/shortcodes/views/conventional.php:34
+#: includes/shortcodes/views/va.php:46 includes/shortcodes/views/va.php:47
+#: includes/shortcodes/views/va.php:48 includes/shortcodes/views/va.php:49
+#: includes/shortcodes/views/va.php:50 includes/shortcodes/views/va.php:51
+msgid "Years"
+msgstr "Años"
+
+#: includes/options/options.php:417 includes/shortcodes/views/va.php:25
+msgid "Yes"
+msgstr "Si"
+
+#: includes/shortcodes/views/mha.php:61
+msgid "You can afford up to"
+msgstr "Puedes Permitirte Hasta"
+
+#: includes/options/options.php:471 includes/functions/emails/mha.php:21
+msgid "You may be able to afford a loan with a"
+msgstr "Es posible que pueda pagar un préstamo con un"
+
+#: includes/functions/emails/mha.php:14
+msgid "Your Affordability Calculation"
+msgstr "Su Cálculo de Asequibilidad"
+
+#: mortgage-calculators-wp.php:59
+msgid "Your calculations are on the way to your inbox!"
+msgstr "¡Tus cálculos están en camino a tu bandeja de entrada!"
+
+#: includes/functions/emails/cv.php:21
+msgid "Your Conventional Mortgage Calculation"
+msgstr "Su Cálculo de Hipoteca Convencional"
+
+#: includes/functions/emails/fha.php:15
+msgid "Your FHA Mortgage Calculation"
+msgstr "Su Cálculo de la Hipoteca de FHA"
+
+#: includes/options/options.php:458 includes/options/options.php:462
+#: includes/options/options.php:467 includes/functions/emails/cv.php:23
+#: includes/functions/emails/fha.php:23 includes/functions/emails/va.php:25
+msgid "your new"
+msgstr "tu nueva"
+
+#: includes/functions/emails/rc.php:13
+msgid "Your Refinance Calculation"
+msgstr "Su Cálculo de Refinanciación"
+
+#: includes/functions/emails/va.php:17
+msgid "Your VA Mortgage Calculation"
+msgstr "Su Cálculo de la Hipoteca de VA"
