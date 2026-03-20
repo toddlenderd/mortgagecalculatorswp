@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.0
+Stable tag: 2.1
 Tested up to: 6.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,6 +53,9 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 
 == Upgrade Notice ==
 
+= 2.1 =
+New styled email templates, built-in reCAPTCHA keys, EDD auto-updater fix, and settings cleanup.
+
 = 2.0 =
 Major security and code quality update. reCAPTCHA keys are no longer hardcoded and must be configured via the admin settings after upgrading.
 
@@ -60,6 +63,23 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.1 20260320 =
+
+* New: Modern styled email templates with card-based layout using Calculator Color from settings
+* New: Email templates pull Message from General Settings and Disclaimer from each calculator's settings
+* New: Admin CC email shows lead info with embedded copy of the lead's email
+* New: Reply-To headers set dynamically — lead emails reply to site owner, CC emails reply to lead
+* New: Built-in reCAPTCHA v3 keys as defaults — plugin works out of the box without configuration
+* New: Affordability email highlights "You Can Afford Up To" as the primary value
+* New: Refinance email highlights "Monthly Savings" as the primary value
+* Fix: EDD auto-updater — hooked missing http_request_args filter for SSL during downloads
+* Fix: EDD auto-updater — added download_link to package mapping for WordPress update mechanism
+* Fix: EDD auto-updater — corrected broken strpos comparison for package download URL detection
+* Fix: Backslash accumulation on apostrophes when saving settings (stripslashes on POST data)
+* Fix: Escaped apostrophe in network options error message
+* Improvement: Replaced deprecated $new_whitelist_options in network options handler
+* Removed: Message Body fields from individual calculator settings (replaced by new email template system)
 
 = 2.0 20260319 =
 
