@@ -4,7 +4,7 @@
  * Plugin Name:  Mortgage Calculators WP
  * Plugin URI:   https://mortgagecalculatorsplugin.com
  * Description:  A contemporary set of mortgage calculators from Lenderd.com
- * Version:      1.69
+ * Version:      2.0
  * Author:       Lenderd
  * Author URI:   https://lenderd.com
  * License:      GPL2
@@ -19,7 +19,7 @@ define('MC_PATH', plugin_dir_path(__FILE__));
 define('MC_DIR', __DIR__);
 define('MC_FILE', __FILE__);
 define('MC_URL', plugin_dir_url(__FILE__));
-define('MC_VERSION', '1.68');
+define('MC_VERSION', '2.0');
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
 require_once(dirname(__FILE__) . '/includes/licenses/licenses.php');
@@ -68,11 +68,10 @@ function mcwp_enqueue()
 add_action('admin_enqueue_scripts', 'softlights_admin_scripts');
 function softlights_admin_scripts($hook)
 {
-    /*
-         if('appearance_page_sl-theme-options' != $hook) {
-            return;
-         }
-         */
+    // Only load admin assets on our plugin's settings page
+    if ('toplevel_page_wpmc' !== $hook) {
+        return;
+    }
     wp_enqueue_style('mcwp-css', plugin_dir_url(__FILE__) . 'admin/admin.css');
     wp_enqueue_script('jquery');
     wp_enqueue_style('wp-color-picker');
@@ -83,7 +82,11 @@ add_action('wp_head', function () {
     $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
     //mcwp_color
     $mcwp_color = $option_func('mcwp_color');
-    echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . $mcwp_color . ' !important;}</style>';
+    // Sanitize color value to prevent XSS via style injection
+    $mcwp_color = sanitize_hex_color($mcwp_color);
+    if ($mcwp_color) {
+        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . $mcwp_color . ' !important;}</style>';
+    }
 });
 
 
@@ -94,7 +97,7 @@ if (is_network_admin()) {
     function wpmc_network_admin_menu()
     {
         add_menu_page(
-            __('Mortage Calculator', 'wpmc'),
+            __('Mortgage Calculator', 'wpmc'),
             __('Calculator', 'wpmc'),
             'manage_options',
             'wpmc',
@@ -112,7 +115,7 @@ if (is_admin()) {
     function mortgage_calculator_admin_menu()
     {
         add_menu_page(
-            __('Mortage Calculator', 'wpmc'),
+            __('Mortgage Calculator', 'wpmc'),
             __('Calculator', 'wpmc'),
             'manage_options',
             'wpmc',
@@ -128,14 +131,16 @@ function mortgage_calculator_html_page()
     wpmc_main_template(); // Load the Main template html
 }
 add_action('admin_init', 'wpmc_admin_init');
-// Remove error:: JQMIGRATE: Migrate is installed, version 1.4.1
+// Note: Removing jquery-migrate can break other plugins/themes that depend on it.
+// Only remove on the frontend to minimize impact on admin.
 add_action('wp_default_scripts', function ($scripts) {
-    if (!empty($scripts->registered['jquery'])) {
+    if (!is_admin() && !empty($scripts->registered['jquery'])) {
         $scripts->registered['jquery']->deps = array_diff($scripts->registered['jquery']->deps, array('jquery-migrate'));
     }
 });
 
-if (isset($_GET['settings-updated'])) {
+// Only check settings-updated on admin pages to avoid running on the frontend
+if (is_admin() && isset($_GET['settings-updated'])) {
     function wpmc_admin_notice__success()
     {
         //$text = _e('<strong>Settings saved.</strong>', 'wpmc');
@@ -170,15 +175,16 @@ function academy_wpmc_update_local_options()
 {
     // Check if current user is a site administrator
     if (!current_user_can('administrator')) {
-        wp_die('You don\t have the privileges to do this operation (should be: administrator).');
+        wp_die('You don\'t have the privileges to do this operation (should be: administrator).');
     }
-    // $_POST[ 'option_page' ] below comes from a hidden input that Wordpress automatically generates for admin forms. The value equals to the admin page slug.
+    // $_POST[ 'option_page' ] below comes from a hidden input that WordPress automatically generates for admin forms. The value equals to the admin page slug.
     $page_slug = sanitize_text_field($_POST['option_page']);
     // Check that the request is coming from the administration area
     check_admin_referer($page_slug . '-options');
     // Cycle through the settings we're submitting. If there are any changes, update them.
-    global $new_whitelist_options;
-    $options = $new_whitelist_options[$page_slug];
+    // Use $new_allowed_options (renamed from $new_whitelist_options in WP 5.5)
+    global $new_allowed_options;
+    $options = $new_allowed_options[$page_slug];
 
     foreach ($options as $option) {
         if (isset($_POST[$option])) {
