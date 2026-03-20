@@ -86,7 +86,7 @@ function softlights_admin_scripts($hook)
 add_action('wp_head', function () {
     $mcwp_color = mcwp_get_color();
     if ($mcwp_color) {
-        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . esc_attr($mcwp_color) . ' !important;}</style>';
+        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . esc_attr($mcwp_color) . ';}</style>';
     }
 });
 
