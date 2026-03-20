@@ -18,8 +18,8 @@ function wpmc_admin_init()
     $allfields = array(
         array('mcwp_currency', 'type' => 'mcwp_currency', 'section_name' => 'wpmc-settings-mail', 'label' => __('Currency', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Choose Currency', 'wpmc'),),
         array('mcwp_color', 'type' => 'color_input', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Color', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Choose Color', 'wpmc'),),
-        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Enter your reCAPTCHA v3 site key...', 'wpmc'),),
-        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Enter your reCAPTCHA v3 secret key...', 'wpmc'),),
+        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
+        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
         array('wpmc_mail_from', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_from_name', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Name', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Name that your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_reply_to', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Reply-To Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will reply to if different from above...', 'wpmc'),),
@@ -44,27 +44,6 @@ function wpmc_admin_init()
             'wpmc_one_email', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_one',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
-        array(
-            'wpmc_one_msg_bdy',
-            'type' => 'msg_body',
-            'section_name' => 'wpmc-settings-one',
-            'label' => '
-              ' . __('Message Body', 'wpmc') . ' <br /><br />
-              <span style="font-weight: 400">' . __('Available Tags', 'wpmc') . ': <br />
-			  [calculation_result]<br />
-              [principal-and-interest]<br />
-              [monthly-taxes]<br />
-              [monthly-hoa]<br />
-              [purchase-price]<br />
-              [mortgage-term]<br />
-              [down-payment]<br />
-              [annual-taxes]<br />
-              [annual-insurance]<br />
-              [monthly-pmi]<br />
-              </span>',
-            'group' => 'wpmc_one',
-        ),
-
         array(
             'wpmc_one_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-one', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_one',
             'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),
@@ -119,30 +98,6 @@ function wpmc_admin_init()
         ),
 
         array(
-            'wpmc_two_msg_bdy',
-            'type' => 'msg_body',
-            'section_name' => 'wpmc-settings-two',
-            'label' => '
-              ' . __('Message Body', 'wpmc') . ' <br /><br />
-              <span style="font-weight: 400">' . __('Available Tags', 'wpmc') . ': <br />
-			  [calculation_result]<br />
-              [principal-and-interest]<br />
-              [monthly-taxes]<br />
-              [monthly-insurance]<br />
-              [monthly-hoa]<br />
-              [purchase-price]<br />
-              [mortgage-term]<br />
-              [down-payment]<br />
-              [annual-taxes]<br />
-              [annual-insurance]<br />
-              [interest-rate]<br />
-              [monthly-mortgage-insurance]<br />
-              [purchase-price]',
-            'group' => 'wpmc_two',
-        ),
-
-
-        array(
             'wpmc_two_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-two', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_two',
             'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),
         ),
@@ -186,31 +141,6 @@ function wpmc_admin_init()
             'wpmc_three_email', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_three',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
-        array(
-            'wpmc_three_msg_bdy',
-            'type' => 'msg_body',
-            'section_name' => 'wpmc-settings-three',
-            'label' => '
-              ' . __('Message Body', 'wpmc') . ' <br /><br />
-              <span style="font-weight: 400">' . __('Available Tags', 'wpmc') . ': <br />
-			  [calculation-result]<br />
-              [amount-financed]<br />
-              [annual-insurance]<br />
-              [annual-taxes]<br />
-              [down-payment]<br />
-              [interest-rate]<br />
-              [monthly-hoa]<br />
-              [monthly-taxes]<br />
-              [mortgage-term]<br />
-              [principal-and-interest]<br />
-              [purchase-price]<br />
-              [service-type]<br />
-              [first-time]<br />
-              [funding-fee]',
-            'group' => 'wpmc_three',
-        ),
-
-
         array('wpmc_three_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-three', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
 
         array('wpmc_three_ftvl', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('First Time VA Loan?', 'wpmc'), 'group' => 'wpmc_three',),
@@ -256,29 +186,6 @@ function wpmc_admin_init()
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
 
-        array(
-            'wpmc_five_msg_bdy',
-            'type' => 'msg_body',
-            'section_name' => 'wpmc-settings-five',
-            'label' => '
-              ' . __('Message Body', 'wpmc') . ' <br /><br />
-              <span style="font-weight: 400">' . __('Available Tags', 'wpmc') . ': <br />
-              [annual-income]<br />
-              [cal-result-home-afford]<br />
-              [down-payment]<br />
-              [estimated-annual-home-insurance]<br />
-              [estimated-annual-property-taxes]<br />
-              [interest-rate]<br />
-              [insurance-value]<br />
-              [monthly-payment]<br />
-              [principal-interest]<br />
-              [tax-value]<br />
-              [monthly-debts]<br />
-              [mortgage-term]',
-            'group' => 'wpmc_five',
-        ),
-
-
         array('wpmc_five_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-five', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
 
         array('wpmc_five_ai', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Annual Income', 'wpmc'), 'group' => 'wpmc_five',),
@@ -317,27 +224,6 @@ function wpmc_admin_init()
         array(
             'wpmc_six_email', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_six',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
-        ),
-
-        array(
-            'wpmc_six_msg_bdy',
-            'type' => 'msg_body',
-            'section_name' => 'wpmc-settings-six',
-            'label' => '
-                          ' . __('Message Body', 'wpmc') . ' <br /><br />
-                          <span style="font-weight: 400">' . __('Available Tags', 'wpmc') . ': <br />
-						  [cal-result-home-afford]<br />
-                          [current-term]<br />
-                          [interest-rate]<br />
-                          [new-interest-rate]<br />
-                          [new-loan-amount]<br />
-                          [new-loan-term]<br />
-                          [new-monthly-payment]<br />
-                          [original-loan-amount]<br />
-                          [origination-year]<br />
-                          [lifetime-value]<br />
-                          [rc-refinance-fees]',
-            'group' => 'wpmc_six',
         ),
 
         array('wpmc_six_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-six', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
@@ -471,45 +357,6 @@ function mcwp_currency($args)
             }
         } ?>
     </select>
-<?php
-}
-function msg_body($args)
-{
-    $options = get_wpmc_option($args[0]);
-    write_log($args);
-    write_log($options);
-
-    switch ($args['group']) {
-        case
-        "wpmc_one": // Conventional
-            $msg_body = __('Based on a purchase price of', 'wpmc') . ' <strong>$[purchase-price]</strong>, ' . __('and a down payment of', 'wpmc') . ' <strong>$[down-payment]</strong>, ' . __('your new', 'wpmc') . ' <strong>[mortgage-term] ' . __('year', 'wpmc') . '</strong> ' . __('loan with an interest rate of', 'wpmc') . ' <strong>[interest-rate]%</strong> ' . __('will have a payment of', 'wpmc') . ' <strong>$[calculation-result]</strong>. ' . __('This includes monthly taxes of', 'wpmc') . ' <strong>$[monthly-taxes]</strong>, ' . __('monthly insurance of', 'wpmc') . ' <strong>$[monthly-insurance]</strong>, ' . __('monthly PMI of', 'wpmc') . ' <strong>$[monthly-pmi]</strong> ' . __('and monthly hoa of', 'wpmc') . ' <strong>$[monthly-hoa]</strong>.';
-            break;
-        case
-        "wpmc_two": // FHA
-            $msg_body = __('Based on a purchase price of', 'wpmc') . ' <strong>$[purchase-price]</strong>, ' . __('and a down payment of', 'wpmc') . ' <strong>$[down-payment]</strong>, ' . __('your new', 'wpmc') . ' <strong>[mortgage-term] ' . __('year', 'wpmc') . '</strong> ' . __('FHA loan with an interest rate of', 'wpmc') . ' <strong>[interest-rate]%</strong> ' . __('will have a payment of', 'wpmc') . ' <strong>$[calculation-result]</strong>. ' . __('This includes monthly taxes of', 'wpmc') . ' <strong>$[monthly-taxes]</strong>, ' . __('monthly insurance of', 'wpmc') . ' <strong>$[monthly-insurance]</strong>, ' . __('and monthly hoa of', 'wpmc') . ' <strong>$[monthly-hoa]</strong>.';
-            break;
-        case
-        "wpmc_three": // VA
-
-            $msg_body = __('Based on a purchase price of', 'wpmc') . ' <strong>$[purchase-price]</strong>, ' . __('your new', 'wpmc') . ' <strong>[mortgage-term] ' . __('year', 'wpmc') . '</strong> ' . __('VA loan in the amount of', 'wpmc') . ' <strong>$[amount-financed]</strong>, ' . __('which includes a funding fee of', 'wpmc') . ' <strong>$[funding-fee]</strong>, ' . __(' with an interest rate of', 'wpmc') . ' <strong>[interest-rate]%</strong> ' . __('will have a payment of', 'wpmc') . ' <strong>$[calculation-result]</strong>. ' . __('This includes monthly taxes of', 'wpmc') . ' <strong>$[monthly-taxes]</strong>, ' . __('monthly insurance of', 'wpmc') . ' <strong>$[monthly-insurance]</strong>, ' . __('and monthly hoa of', 'wpmc') . ' <strong>$[monthly-hoa]</strong>.';
-            break;
-        case
-        "wpmc_five": // Affordability
-            $msg_body = __('You may be able to afford a loan with a', 'wpmc') . ' <strong>[mortgage-term] ' . __('year term', 'wpmc') . '</strong> ' . __('in the amount of', 'wpmc') . ' <strong>$[cal-result-home-afford]</strong> ' . __('at', 'wpmc') . ' <strong>[interest-rate]%</strong> ' . __('that has a total monthly payment of', 'wpmc') . ' <strong>$[monthly-payment]</strong>' . __('. This is based on your annual income of', 'wpmc') . ' <strong>$[annual-income]</strong> ' . __('and monthly debts of', 'wpmc') . ' <strong>$[monthly-debts]</strong>.';
-
-            break;
-
-        case
-        "wpmc_six": // Refinance
-            $msg_body = __('Refinancing could save you', 'wpmc') . ' <strong>$[cal-result-home-afford]</strong> ' . __('per month and', 'wpmc') . ' <strong>$[lifetime-value]</strong> ' . __('over the life of the loan. This is based on a new loan amount of', 'wpmc') . ' <strong>$[new-loan-amount]</strong> ' . __('at', 'wpmc') . ' <strong>[new-interest-rate]%</strong> ' . __('for', 'wpmc') . ' <strong>[new-loan-term]</strong> ' . __('months.', 'wpmc');
-
-            break;
-    } ?>
-    <textarea name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" rows="12" cols="65"><?php echo !empty($options) ? esc_attr($options) : $msg_body; ?></textarea>
-
-
-
-
 <?php
 }
 

@@ -11,16 +11,29 @@ $mha_debts = sanitize_text_field($_POST['monthly_debts']);
 $option_func = (use_network_settings('wpmc_five_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
 $wpmc_admin = $option_func('wpmc_five_email');
 $site_admin = checksettings('admin_email');
+
 $subject = __('Your Affordability Calculation', 'wpmc');
-// Dynamically Create the Body
-$msg_body = $option_func('wpmc_five_msg_bdy');
-$body_part_dynamic = body_dynamic($msg_body, $_REQUEST);
 
-$body_part_static = __('You may be able to afford a loan with a', 'wpmc') . " <strong>$mha_term " . __('year term', 'wpmc') . "</strong> " . __('in the amount of', 'wpmc') . " <strong>$curr_symbol$cal_result_home_afford</strong> " . __('at', 'wpmc') . " <strong>$mha_rate%</strong> " . __('that has a total monthly payment of', 'wpmc') . " <strong>$curr_symbol$mha_monthly_payment</strong>" . __('. This is based on your annual income of', 'wpmc') . " <strong>$curr_symbol$mha_income</strong> " . __('and monthly debts of', 'wpmc') . " <strong>$curr_symbol$mha_debts</strong>.";
+$rows = array(
+    array('label' => __('Estimated Monthly Payment', 'wpmc'), 'value' => $curr_symbol . $mha_monthly_payment),
+    array('label' => __('Annual Income', 'wpmc'), 'value' => $curr_symbol . $mha_income),
+    array('label' => __('Monthly Debts', 'wpmc'), 'value' => $curr_symbol . $mha_debts),
+    array('label' => __('Interest Rate', 'wpmc'), 'value' => $mha_rate . '%'),
+    array('label' => __('Principal & Interest', 'wpmc'), 'value' => $curr_symbol . $mha_principal_interest),
+    array('label' => __('Monthly Taxes', 'wpmc'), 'value' => $curr_symbol . $mha_tax_value),
+    array('label' => __('Monthly Insurance', 'wpmc'), 'value' => $curr_symbol . $mha_insurance_value),
+);
 
-$body .= "<div style='font-family:Arial;font-size: 13px;padding:0 10px;'>
-    <p style='line-height: 20px; max-width: 500px'>$wpmc_mail_message</p>
-    " . (!empty($body_part_dynamic) ? $body_part_dynamic : $body_part_static) . "
-  </div>";
-$cc_subject = 'New Affordability Calculation by ' . $to;
-$cc_body = "<div style='font-family:Arial;font-size: 13px;padding:0 10px;'><p><a href='mailto:$to'>" . __('Click Here', 'wpmc') . "</a> " . __('to follow up with', 'wpmc') . " $to. " . __('They requested a calculation and a copy of the email they received is below for reference', 'wpmc') . ":</p><em>" . (!empty($body_part_dynamic) ? $body_part_dynamic : $body_part_static) . "</em></div>";
+$body = mcwp_email_template(array(
+    'calc_type'   => __('Affordability', 'wpmc'),
+    'subtitle'    => $mha_term . ' ' . __('Year Fixed', 'wpmc'),
+    'total'       => $curr_symbol . $cal_result_home_afford,
+    'total_label' => __('You Can Afford Up To', 'wpmc'),
+    'message'     => $wpmc_mail_message,
+    'rows'        => $rows,
+    'curr_symbol' => $curr_symbol,
+    'disclaimer'  => $option_func('wpmc_five_disclaimer'),
+));
+
+$cc_subject = __('New Affordability Calculation by ', 'wpmc') . $to;
+$cc_body = mcwp_cc_email_template($to, __('Affordability', 'wpmc'), $body);

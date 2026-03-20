@@ -4,7 +4,7 @@
  * Plugin Name:  Mortgage Calculators WP
  * Plugin URI:   https://mortgagecalculatorsplugin.com
  * Description:  A contemporary set of mortgage calculators from Lenderd.com
- * Version:      2.0
+ * Version:      2.1
  * Author:       Lenderd
  * Author URI:   https://lenderd.com
  * License:      GPL2
@@ -19,7 +19,12 @@ define('MC_PATH', plugin_dir_path(__FILE__));
 define('MC_DIR', __DIR__);
 define('MC_FILE', __FILE__);
 define('MC_URL', plugin_dir_url(__FILE__));
-define('MC_VERSION', '2.0');
+define('MC_VERSION', '2.1');
+
+// Default reCAPTCHA v3 keys (obfuscated) — users can override via admin settings
+define('MCWP_RC_SK', base64_decode('NkxkQXBDMGhBQUFBQUZrNk5hRVhsbW9rd2ZNdGNpUEc5alllNmw4Nw=='));
+define('MCWP_RC_SS', base64_decode('NkxkQXBDMGhBQUFBQU92dm1OOG5RQkVMb2lUS3dpMGFuSGIyMEhYSQ=='));
+
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
 require_once(dirname(__FILE__) . '/includes/licenses/licenses.php');
@@ -188,10 +193,10 @@ function academy_wpmc_update_local_options()
 
     foreach ($options as $option) {
         if (isset($_POST[$option])) {
-            if ('wpmc_one_msg_bdy' == $option || 'wpmc_mail_message' == $option || 'wpmc_two_msg_bdy' == $option || 'wpmc_three_msg_bdy' == $option || 'wpmc_five_msg_bdy' == $option || 'wpmc_six_msg_bdy' == $option) {
-                update_option($option, wp_kses_post($_POST[$option]));
+            if ('wpmc_mail_message' == $option) {
+                update_option($option, wp_kses_post(stripslashes($_POST[$option])));
             } else {
-                update_option($option, sanitize_text_field($_POST[$option]));
+                update_option($option, sanitize_text_field(stripslashes($_POST[$option])));
             }
         }
     }

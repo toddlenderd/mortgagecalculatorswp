@@ -267,11 +267,6 @@ function wpmc_main_template()
 
 
 
-					jQuery('textarea[name="wpmc_one_msg_bdy"]').parents('tr').wrap("<div class='msg_bdy_one_heading'></div>");
-
-					jQuery('.msg_bdy_one_heading').prepend('<tr><td colspan="2"><p class="wpmc_one_label" style="border-left: 2px solid #46b450; padding-left: 7px; background: #fff; margin-left: -10px;">Edit your mail body\'s labels or reorganize them by the following label-tags:<br /><strong> [principal-and-interest], [monthly-taxes], [monthly-insurance], [monthly-mortgage-insurance], [monthly-hoa] .</strong></p></td></tr>');
-
-					jQuery('textarea[name="wpmc_one_msg_bdy"]').parents('tr').unwrap();
 
 
 
@@ -371,11 +366,6 @@ function wpmc_main_template()
 
 
 
-					jQuery('textarea[name="wpmc_two_msg_bdy"]').parents('tr').wrap("<div class='msg_bdy_two_heading'></div>");
-
-					jQuery('.msg_bdy_two_heading').prepend('<tr><td colspan="2"><p class="wpmc_two_label" style="border-left: 2px solid #46b450; padding-left: 7px; background: #fff; margin-left: -10px;">Edit your mail body\'s labels or reorganize them by the following label-tags:<br /><strong>[principal-and-interest], [monthly-taxes], [monthly-insurance], [monthly-mortgage-insurance], [monthly-hoa] .</strong></p></td></tr>');
-
-					jQuery('textarea[name="wpmc_two_msg_bdy"]').parents('tr').unwrap();
 
 
 
@@ -471,11 +461,6 @@ function wpmc_main_template()
 
 
 
-					jQuery('textarea[name="wpmc_three_msg_bdy"]').parents('tr').wrap("<div class='msg_bdy_three_heading'></div>");
-
-					jQuery('.msg_bdy_three_heading').prepend('<tr><td colspan="2"><p class="wpmc_three_label" style="border-left: 2px solid #46b450; padding-left: 7px; background: #fff; margin-left: -10px;">Edit your mail body\'s labels or reorganize them by the following label-tags:<br /><strong>[principal-and-interest], [monthly-taxes], [monthly-insurance], [monthly-hoa], [va-funding-fee] .</strong></p></td></tr>');
-
-					jQuery('textarea[name="wpmc_three_msg_bdy"]').parents('tr').unwrap();
 
 
 

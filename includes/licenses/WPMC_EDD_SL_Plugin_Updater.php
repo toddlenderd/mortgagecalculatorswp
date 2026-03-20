@@ -80,6 +80,7 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			remove_action('after_plugin_row_' . $this->name, 'wp_plugin_update_row', 10);
 			add_action('after_plugin_row_' . $this->name, array($this, 'show_update_notification'), 10, 2);
 			add_action('admin_init', array($this, 'show_changelog'));
+			add_filter('http_request_args', array($this, 'http_request_args'), 10, 2);
 		}
 
 		/**
@@ -121,6 +122,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			}
 
 			if (false !== $version_info && is_object($version_info) && isset($version_info->new_version)) {
+
+				// Map download_link to package so WordPress can find the download URL
+				if (isset($version_info->download_link) && !isset($version_info->package)) {
+					$version_info->package = $version_info->download_link;
+				}
 
 				if (version_compare($this->version, $version_info->new_version, '<')) {
 
@@ -202,6 +208,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 
 				if (!is_object($version_info)) {
 					return;
+				}
+
+				// Map download_link to package so WordPress can find the download URL
+				if (isset($version_info->download_link) && !isset($version_info->package)) {
+					$version_info->package = $version_info->download_link;
 				}
 
 				if (version_compare($this->version, $version_info->new_version, '<')) {
@@ -339,6 +350,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 				$_data->plugin = $this->name;
 			}
 
+			// Map download_link to package so WordPress can find the download URL
+			if (isset($_data->download_link) && !isset($_data->package)) {
+				$_data->package = $_data->download_link;
+			}
+
 			return $_data;
 		}
 
@@ -378,7 +394,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 		{
 
 			$verify_ssl = $this->verify_ssl();
-			if (strpos($url, 'https://') !== false && strpos($url, 'edd_action=package_download')) {
+			if (strpos($url, 'https://') !== false && strpos($url, 'edd_action=package_download') !== false) {
+				$args['sslverify'] = $verify_ssl;
+			}
+			// Also handle direct download URLs from the EDD store
+			if (strpos($url, $this->api_url) !== false && strpos($url, 'download') !== false) {
 				$args['sslverify'] = $verify_ssl;
 			}
 			return $args;

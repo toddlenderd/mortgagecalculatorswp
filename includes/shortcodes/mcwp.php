@@ -51,10 +51,14 @@ function wporg_shortcodes_init() {
 }
 add_action('init', 'wporg_shortcodes_init');
 
-// reCAPTCHA site key loaded from WP options instead of hardcoded
+// reCAPTCHA site key: use admin setting if set, otherwise fall back to built-in default
 add_action('wp_footer', function(){
     $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
-    $site_key = esc_attr($option_func('mcwp_recaptcha_site_key'));
+    $site_key = $option_func('mcwp_recaptcha_site_key');
+    if (empty($site_key)) {
+        $site_key = MCWP_RC_SK;
+    }
+    $site_key = esc_attr($site_key);
     if ($site_key) {
         echo '<div class="g-recaptcha" data-sitekey="' . $site_key . '" data-size="invisible"></div>';
     }
