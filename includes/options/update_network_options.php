@@ -16,7 +16,7 @@
 
         foreach ($options as $option) {
             if (isset($_POST[ $option ])) {
-                if ('wpmc_one_msg_bdy' == $option || 'wpmc_mail_message' == $option || 'wpmc_two_msg_bdy' == $option || 'wpmc_three_msg_bdy' == $option || 'wpmc_five_msg_bdy' == $option || 'wpmc_six_msg_bdy' == $option) {
+                if ('wpmc_mail_message' == $option) {
                     update_site_option($option, wp_kses_post(stripslashes($_POST[ $option ])));
                 } else {
                     update_site_option($option, sanitize_text_field(stripslashes($_POST[ $option ])));
