@@ -276,11 +276,14 @@ function mcwp_get_color()
 
     $color = trim($color);
 
-    // Validate: allow hex colors and CSS named colors (letters only)
-    if (preg_match('/^#[0-9a-fA-F]{3,6}$/', $color)) {
+    // Validate: hex colors, CSS named colors, and CSS functions (rgb, rgba, hsl, hsla)
+    if (preg_match('/^#[0-9a-fA-F]{3,8}$/', $color)) {
         return $color;
     }
     if (preg_match('/^[a-zA-Z]+$/', $color)) {
+        return $color;
+    }
+    if (preg_match('/^(rgba?|hsla?)\(\s*[\d\s,.\/%]+\)$/', $color)) {
         return $color;
     }
 
