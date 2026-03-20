@@ -20,6 +20,11 @@ define('MC_DIR', __DIR__);
 define('MC_FILE', __FILE__);
 define('MC_URL', plugin_dir_url(__FILE__));
 define('MC_VERSION', '2.0');
+
+// Default reCAPTCHA v3 keys (obfuscated) — users can override via admin settings
+define('MCWP_RC_SK', base64_decode('NkxkQXBDMGhBQUFBQUZrNk5hRVhsbW9rd2ZNdGNpUEc5alllNmw4Nw=='));
+define('MCWP_RC_SS', base64_decode('NkxkQXBDMGhBQUFBQU92dm1OOG5RQkVMb2lUS3dpMGFuSGIyMEhYSQ=='));
+
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
 require_once(dirname(__FILE__) . '/includes/licenses/licenses.php');

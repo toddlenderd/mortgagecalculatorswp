@@ -18,8 +18,8 @@ function wpmc_admin_init()
     $allfields = array(
         array('mcwp_currency', 'type' => 'mcwp_currency', 'section_name' => 'wpmc-settings-mail', 'label' => __('Currency', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Choose Currency', 'wpmc'),),
         array('mcwp_color', 'type' => 'color_input', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Color', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Choose Color', 'wpmc'),),
-        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Enter your reCAPTCHA v3 site key...', 'wpmc'),),
-        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Enter your reCAPTCHA v3 secret key...', 'wpmc'),),
+        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
+        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
         array('wpmc_mail_from', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_from_name', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Name', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Name that your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_reply_to', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Reply-To Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will reply to if different from above...', 'wpmc'),),

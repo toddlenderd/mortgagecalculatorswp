@@ -36,8 +36,11 @@ function mcwp_sendmail()
         }
     }
 
-    // reCAPTCHA secret key is stored as a WP option (set via admin settings)
+    // reCAPTCHA secret key: use admin setting if set, otherwise fall back to built-in default
     $recaptcha_secret = $option_func('mcwp_recaptcha_secret_key');
+    if (empty($recaptcha_secret)) {
+        $recaptcha_secret = MCWP_RC_SS;
+    }
     $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
         'body' => [
             'secret' => $recaptcha_secret,
