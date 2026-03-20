@@ -256,6 +256,38 @@ function delete_wpmc_option($option_name)
     }
 }
 /**
+ * Resolve the Calculator Color value.
+ * Processes shortcodes, validates hex colors, or returns as-is for CSS color names.
+ * Falls back to default blue if empty.
+ */
+function mcwp_get_color()
+{
+    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
+    $color = $option_func('mcwp_color');
+
+    if (empty($color)) {
+        return '#1a56db';
+    }
+
+    // Process shortcodes if present
+    if (strpos($color, '[') !== false) {
+        $color = do_shortcode($color);
+    }
+
+    $color = trim($color);
+
+    // Validate: allow hex colors and CSS named colors (letters only)
+    if (preg_match('/^#[0-9a-fA-F]{3,6}$/', $color)) {
+        return $color;
+    }
+    if (preg_match('/^[a-zA-Z]+$/', $color)) {
+        return $color;
+    }
+
+    return '#1a56db';
+}
+
+/**
  * Get the client IP address.
  * Only uses REMOTE_ADDR as HTTP_CLIENT_IP and HTTP_X_FORWARDED_FOR
  * are trivially spoofable by the client.
@@ -282,11 +314,7 @@ function get_ip_address()
  */
 function mcwp_email_template($args)
 {
-    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
-    $color = sanitize_hex_color($option_func('mcwp_color'));
-    if (!$color) {
-        $color = '#1a56db'; // Fallback blue
-    }
+    $color = mcwp_get_color();
 
     $calc_type   = esc_html($args['calc_type']);
     $subtitle    = esc_html($args['subtitle']);
@@ -310,7 +338,7 @@ function mcwp_email_template($args)
     $rows_html .= '
                 <tr>
                   <td style="padding:14px 0 0; font-weight:700; color:#111827; font-size:15px;">' . __('Total Monthly Payment', 'wpmc') . '</td>
-                  <td style="padding:14px 0 0; text-align:right; font-weight:700; color:' . $color . '; font-size:15px;">' . $total . '</td>
+                  <td class="color" style="padding:14px 0 0; text-align:right; font-weight:700; color:' . esc_attr($color) . '; font-size:15px;">' . $total . '</td>
                 </tr>';
 
     // Disclaimer section
@@ -336,13 +364,13 @@ function mcwp_email_template($args)
     }
 
     $html = '
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="bg" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
   <tr>
     <td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="bg" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
 
         <tr>
-          <td style="background-color:' . $color . '; padding:32px 40px; text-align:center;">
+          <td class="bg color" style="background-color:' . esc_attr($color) . '; padding:32px 40px; text-align:center;">
             <h1 style="margin:0; font-size:24px; font-weight:600; color:#ffffff; letter-spacing:-0.3px;">' . __('Your Calculations', 'wpmc') . '</h1>
             <p style="margin:8px 0 0; font-size:14px; color:rgba(255,255,255,0.75);">' . $calc_type . ' &bull; ' . $subtitle . '</p>
           </td>
@@ -351,7 +379,7 @@ function mcwp_email_template($args)
         <tr>
           <td style="padding:36px 40px 20px; text-align:center; border-bottom:1px solid #e5e7eb;">
             <p style="margin:0 0 4px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:#6b7280;">' . $total_label . '</p>
-            <p style="margin:0; font-size:48px; font-weight:700; color:' . $color . '; letter-spacing:-1px;">' . $total . '</p>
+            <p class="color" style="margin:0; font-size:48px; font-weight:700; color:' . esc_attr($color) . '; letter-spacing:-1px;">' . $total . '</p>
           </td>
         </tr>
 
@@ -385,20 +413,16 @@ function mcwp_email_template($args)
  */
 function mcwp_cc_email_template($to, $calc_type, $body_content)
 {
-    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
-    $color = sanitize_hex_color($option_func('mcwp_color'));
-    if (!$color) {
-        $color = '#1a56db';
-    }
+    $color = mcwp_get_color();
 
     $html = '
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="bg" style="background-color:#f4f5f7; padding:40px 20px; font-family:\'Helvetica Neue\', Helvetica, Arial, sans-serif; color:#2d3748;">
   <tr>
     <td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" class="bg" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.07);">
 
         <tr>
-          <td style="background-color:' . $color . '; padding:24px 40px; text-align:center;">
+          <td class="bg color" style="background-color:' . esc_attr($color) . '; padding:24px 40px; text-align:center;">
             <h1 style="margin:0; font-size:20px; font-weight:600; color:#ffffff;">' . sprintf(__('New %s Lead', 'wpmc'), esc_html($calc_type)) . '</h1>
           </td>
         </tr>
@@ -406,10 +430,10 @@ function mcwp_cc_email_template($to, $calc_type, $body_content)
         <tr>
           <td style="padding:28px 40px;">
             <p style="margin:0 0 16px; font-size:15px; line-height:24px; color:#4b5563;">
-              <a href="mailto:' . esc_attr($to) . '" style="color:' . $color . '; font-weight:600; text-decoration:none;">' . esc_html($to) . '</a>
+              <a href="mailto:' . esc_attr($to) . '" class="color" style="color:' . esc_attr($color) . '; font-weight:600; text-decoration:none;">' . esc_html($to) . '</a>
               ' . __('requested a calculation. A copy of the email they received is below for reference.', 'wpmc') . '
             </p>
-            <div style="background-color:#f9fafb; border-radius:8px; padding:20px; border:1px solid #e5e7eb;">
+            <div class="bg" style="background-color:#f9fafb; border-radius:8px; padding:20px; border:1px solid #e5e7eb;">
               ' . $body_content . '
             </div>
           </td>

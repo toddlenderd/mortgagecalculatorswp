@@ -84,13 +84,9 @@ function softlights_admin_scripts($hook)
 }
 
 add_action('wp_head', function () {
-    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
-    //mcwp_color
-    $mcwp_color = $option_func('mcwp_color');
-    // Sanitize color value to prevent XSS via style injection
-    $mcwp_color = sanitize_hex_color($mcwp_color);
+    $mcwp_color = mcwp_get_color();
     if ($mcwp_color) {
-        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . $mcwp_color . ' !important;}</style>';
+        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . esc_attr($mcwp_color) . ' !important;}</style>';
     }
 });
 

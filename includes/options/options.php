@@ -360,10 +360,24 @@ function mcwp_currency($args)
 <?php
 }
 
-//color
+//color — accepts hex values, text, or shortcodes; color picker updates the field but doesn't restrict input
 function color_input($args)
 {
-    $options = get_wpmc_option($args[0]); ?>
-    <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?> color-picker" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo isset($options) ? esc_attr($options) : '#bada55'; ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
+    $options = get_wpmc_option($args[0]);
+    $value = isset($options) ? $options : '#bada55';
+    $is_hex = preg_match('/^#[0-9a-fA-F]{3,6}$/', $value);
+    ?>
+    <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo esc_attr($value); ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
+    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#bada55'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
+    <p class="description"><?php _e('Enter a hex color, text value, or shortcode (e.g. [brand_color]). Use the color picker or type directly.', 'wpmc'); ?></p>
+    <script>
+    jQuery(document).ready(function($){
+        $('#<?php echo esc_attr($args[0]); ?>_picker').wpColorPicker({
+            change: function(event, ui) {
+                $('#<?php echo esc_attr($args[0]); ?>').val(ui.color.toString());
+            }
+        });
+    });
+    </script>
 <?php
 }
