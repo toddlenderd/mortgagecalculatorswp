@@ -54,7 +54,7 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 == Upgrade Notice ==
 
 = 2.2 =
-Calculator Color now supports shortcodes and text values. GitHub releases fallback for auto-updates. Email templates use .bg and .color CSS classes.
+Calculator Color now supports shortcodes, text values, and CSS color functions (rgba, rgb, hsl, hsla). GitHub releases fallback for auto-updates. Email templates use .bg and .color CSS classes.
 
 = 2.1 =
 New styled email templates, built-in reCAPTCHA keys, EDD auto-updater fix, and settings cleanup.
@@ -72,6 +72,7 @@ First Version! Enjoy!
 * New: Calculator Color field now accepts text values and shortcodes (e.g. [brand_color]) in addition to hex colors
 * New: Color picker syncs to text field but no longer restricts input
 * New: Centralized mcwp_get_color() helper resolves shortcodes, validates values, and provides fallback
+* New: Color field supports rgba(), rgb(), hsl(), and hsla() CSS functions (e.g. rgba([brand_color],1))
 * New: GitHub releases as fallback download source — auto-updates work even without EDD license
 * New: Added .bg class to all background-color elements in email templates
 * New: Added .color class to all branded color elements in email templates
