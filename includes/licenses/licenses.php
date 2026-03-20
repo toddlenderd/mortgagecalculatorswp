@@ -8,6 +8,9 @@ define('WPMC_EDD_SL_ITEM_ID', 1726);
 // the name of the settings page for the license input to be displayed
 define('WPMC_EDD_LICENSE_PAGE', 'wpmc');
 
+// GitHub releases base URL — used as fallback download source when EDD doesn't provide one
+define('WPMC_GITHUB_RELEASES_URL', 'https://github.com/toddlenderd/mortgagecalculatorswp/releases/download');
+
 if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
     // load our custom updater
     include(dirname(__FILE__) . '/WPMC_EDD_SL_Plugin_Updater.php');

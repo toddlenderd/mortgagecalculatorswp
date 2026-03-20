@@ -128,6 +128,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 					$version_info->package = $version_info->download_link;
 				}
 
+				// Fall back to GitHub releases if EDD didn't provide a download URL
+				if (empty($version_info->package) && defined('WPMC_GITHUB_RELEASES_URL')) {
+					$version_info->package = WPMC_GITHUB_RELEASES_URL . '/v' . $version_info->new_version . '/mortgage-calculators-wp.zip';
+				}
+
 				if (version_compare($this->version, $version_info->new_version, '<')) {
 
 					$_transient_data->response[$this->name] = $version_info;
@@ -213,6 +218,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 				// Map download_link to package so WordPress can find the download URL
 				if (isset($version_info->download_link) && !isset($version_info->package)) {
 					$version_info->package = $version_info->download_link;
+				}
+
+				// Fall back to GitHub releases if EDD didn't provide a download URL
+				if (empty($version_info->package) && defined('WPMC_GITHUB_RELEASES_URL')) {
+					$version_info->package = WPMC_GITHUB_RELEASES_URL . '/v' . $version_info->new_version . '/mortgage-calculators-wp.zip';
 				}
 
 				if (version_compare($this->version, $version_info->new_version, '<')) {
@@ -353,6 +363,11 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			// Map download_link to package so WordPress can find the download URL
 			if (isset($_data->download_link) && !isset($_data->package)) {
 				$_data->package = $_data->download_link;
+			}
+
+			// Fall back to GitHub releases if EDD didn't provide a download URL
+			if (empty($_data->package) && defined('WPMC_GITHUB_RELEASES_URL') && isset($_data->new_version)) {
+				$_data->package = WPMC_GITHUB_RELEASES_URL . '/v' . $_data->new_version . '/mortgage-calculators-wp.zip';
 			}
 
 			return $_data;
