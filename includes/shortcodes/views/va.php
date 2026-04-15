@@ -19,6 +19,16 @@ $show_in = ($mcwp_hide_insurance_three === 'yes') ? '' : '
 $calTemplate3 = '
 <div>
   <div class="mcalc-main">
+    <div class="mcalc-half mcwp-veteran-status">
+      <label for="va_service_type">' . calc_fields('va', 'wpmc_three_vs', __('Veteran Status', 'wpmc')) . '</label>
+      <select name="service_type" id="va_service_type">
+        <option value="regular_military" selected>' . __('Regular Military', 'wpmc') . '</option>
+        <option value="reserves_national">' . __('Reserves/National Guard', 'wpmc') . '</option>
+        <option value="surviving_spouse">' . __('Surviving Spouse', 'wpmc') . '</option>
+        <option value="disabled_veteran">' . __('Disabled Veteran', 'wpmc') . '</option>
+      </select>
+    </div>
+
     <div class="mcalc-half mcwp-first-time">
       <label for="va_frist_time">' . calc_fields('va', 'wpmc_three_ftvl', __('First Time VA Loan?', 'wpmc')) . '</label>
       <select name="first_time" id="va_frist_time">
@@ -39,14 +49,6 @@ $calTemplate3 = '
       </select>
     </div>
 
-    <div class="mcalc-half mcwp-tos" style="display:none;">
-      <label for="va_service_type">' . calc_fields('va', 'wpmc_three_tos', __('Type of Service', 'wpmc')) . '</label>
-      <select name="service_type" id="va_service_type">
-        <option value="regular_military" selected>' . __('Regular Military', 'wpmc') . '</option>
-        <option value="reserves_national">' . __('Reserves/National Guard', 'wpmc') . '</option>
-      </select>
-    </div>
-
     <div class="mcalc-half mcwp-purchase">
       <label for="va_inp_purchase_price">' . calc_fields('va', 'wpmc_three_pp', __('Purchase Price', 'wpmc')) . '</label>
       <i>' . $curr_symbol . '</i>
@@ -56,7 +58,7 @@ $calTemplate3 = '
     <div class="mcalc-half mcwp-down-payment" style="clear:none;">
       <label class="mcalc-half" for="va_down_payment_inp">' . calc_fields('va', 'wpmc_three_dp', __('Down Payment', 'wpmc')) . ' (' . $curr_symbol . ')</label>
       <input type="text" name="down_payment" id="va_down_payment_inp" value="" class="mcalc-half">
-      <input id="ex1 e7" class="ex1 va_down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step="1" data-slider-value="' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '"/>
+      <input id="ex1 e7" class="ex1 va_down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '"/>
       <p class="mcalc-percent">' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '%</p>
     </div>
 
