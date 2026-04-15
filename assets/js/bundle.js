@@ -3048,6 +3048,12 @@ $mcwp(function ($) {
 		va_mortgage_calc(va_purchase_price, va_down_payment, va_interest_rate, va_mortgage_term, va_monthly_tax, va_down_payment_percent, va_monthly_insurance, va_monthly_hoa);
 	});
 	$(document).on("change", "#va_service_type", function () {
+		var va_service = $(this).val();
+		if (va_service === "surviving_spouse" || va_service === "disabled_veteran") {
+			$(".mcwp-first-time").hide();
+		} else {
+			$(".mcwp-first-time").show();
+		}
 		va_monthly_insurance = removeco($("#va_annual_insurance_inp").val()) / 12;
 		va_mortgage_calc(va_purchase_price, va_down_payment, va_interest_rate, va_mortgage_term, va_monthly_tax, va_down_payment_percent, va_monthly_insurance, va_monthly_hoa);
 	});
@@ -3067,7 +3073,10 @@ $mcwp(function ($) {
 		tax = va_annual_tax / 12;
 		insurance = removeco($("#va_annual_insurance_inp").val()) / 12;
 		hoa = removeco($("#va_monthly_hoa_inp").val()) == "" ? 0 : removeco($("#va_monthly_hoa_inp").val());
-		if ($("#va_frist_time").val() == "yes") {
+		var va_service = $("#va_service_type").val();
+		if (va_service === "surviving_spouse" || va_service === "disabled_veteran") {
+			e_rate = 0;
+		} else if ($("#va_frist_time").val() == "yes") {
 			if (down_prcnt < 5) {
 				e_rate = 2.15;
 			}

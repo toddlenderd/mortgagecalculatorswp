@@ -43,7 +43,7 @@ $calculator_layout = '
 
       <input type="text" name="down_payment" id="down_payment_inp" value=""  class="mcalc-half">
 
-      <input id="ex1 e1" class="ex1 down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step="1" data-slider-value="' . $wpmc_one_dp_initial . '" data-slider-arialabel="DP Slider" aria-label="Down Payment" />
+      <input id="ex1 e1" class="ex1 down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . $wpmc_one_dp_initial . '" data-slider-arialabel="DP Slider" aria-label="Down Payment" />
       <p class="mcalc-percent">' . $wpmc_one_dp_initial . '%</p>
     </div>
 

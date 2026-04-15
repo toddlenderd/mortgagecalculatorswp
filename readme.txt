@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.2
+Stable tag: 2.3
 Tested up to: 6.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -53,6 +53,9 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 
 == Upgrade Notice ==
 
+= 2.3 =
+Down payment sliders now move in 0.5% increments on all calculators. VA calculator now includes a Veteran Status dropdown — Surviving Spouse and Disabled Veteran selections automatically remove the VA funding fee.
+
 = 2.2 =
 Calculator Color now supports shortcodes, text values, and CSS color functions (rgba, rgb, hsl, hsla). GitHub releases fallback for auto-updates. Email templates use .bg and .color CSS classes.
 
@@ -66,6 +69,13 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.3 20260414 =
+
+* New: Down payment sliders on Conventional, FHA, and VA calculators now increment in 0.5% steps for finer control
+* New: VA calculator now includes a Veteran Status dropdown at the top (Regular Military, Reserves/National Guard, Surviving Spouse, Disabled Veteran)
+* New: Selecting Surviving Spouse or Disabled Veteran automatically zeroes out the VA funding fee
+* Improvement: First Time VA Loan field auto-hides when funding-fee-exempt veteran status is selected
 
 = 2.2 20260320 =
 
