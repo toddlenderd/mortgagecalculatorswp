@@ -2614,7 +2614,7 @@ $mcwp(function ($) {
 				down_payment_percent = slideEvt.value.newValue;
 				$(this)
 					.next("p")
-					.text(roundOff(down_payment_percent) + "%");
+					.text(roundOff(down_payment_percent, 1) + "%");
 				down_payment = (purchase_price * down_payment_percent) / 100;
 				$("#down_payment_inp", $parent).val(addCommas(down_payment));
 			}
@@ -2663,7 +2663,7 @@ $mcwp(function ($) {
 			$(".down_payment_scrl", $parent)
 				.bootstrapSlider("setValue", down_payment_percent)
 				.next("p")
-				.text(roundOff(down_payment_percent) + "%");
+				.text(roundOff(down_payment_percent, 1) + "%");
 			$(this).val(function (index, value) {
 				return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 			});
@@ -2763,7 +2763,7 @@ $mcwp(function ($) {
 			fha_down_payment_percent = slideEvt.value.newValue;
 			$(this)
 				.next("p")
-				.text(roundOff(fha_down_payment_percent) + "%");
+				.text(roundOff(fha_down_payment_percent, 1) + "%");
 			fha_down_payment = (fha_purchase_price * fha_down_payment_percent) / 100;
 			$("#fha_down_payment_inp").val(addCommas(fha_down_payment));
 			fha_mortgage_calc(fha_purchase_price, fha_down_payment, fha_interest_rate, fha_mortgage_term, fha_monthly_tax, fha_annual_tax_percent, fha_monthly_insurance, fha_monthly_hoa);
@@ -2809,7 +2809,7 @@ $mcwp(function ($) {
 		$(".fha_down_payment_scrl")
 			.bootstrapSlider("setValue", fha_down_payment_percent)
 			.next("p")
-			.text(roundOff(fha_down_payment_percent) + "%");
+			.text(roundOff(fha_down_payment_percent, 1) + "%");
 		$(this).val(function (index, value) {
 			return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		});
@@ -3013,7 +3013,7 @@ $mcwp(function ($) {
 		$(".va_down_payment_scrl")
 			.bootstrapSlider("setValue", va_down_payment_percent)
 			.next("p")
-			.text(roundOff(va_down_payment_percent) + "%");
+			.text(roundOff(va_down_payment_percent, 1) + "%");
 		$(this).val(function (index, value) {
 			return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		});
