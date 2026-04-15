@@ -81,6 +81,93 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			add_action('after_plugin_row_' . $this->name, array($this, 'show_update_notification'), 10, 2);
 			add_action('admin_init', array($this, 'show_changelog'));
 			add_filter('http_request_args', array($this, 'http_request_args'), 10, 2);
+			add_action('admin_init', array($this, 'maybe_force_update_check'));
+			add_action('upgrader_process_complete', array($this, 'flush_version_caches_after_upgrade'), 10, 2);
+		}
+
+		/**
+		 * Build the cache key used by plugins_api_filter (kept in sync with that method).
+		 *
+		 * @return string
+		 */
+		private function api_cache_key()
+		{
+			return 'edd_api_request_' . md5(serialize($this->slug . $this->api_data['license'] . $this->beta));
+		}
+
+		/**
+		 * Delete every cache we own so the next check hits the EDD store fresh.
+		 */
+		public function flush_version_caches()
+		{
+			delete_option($this->cache_key);
+			delete_option($this->api_cache_key());
+			// Also flush WP's own transient so it rebuilds from our fresh data
+			delete_site_transient('update_plugins');
+		}
+
+		/**
+		 * Force-refresh the version cache in two situations:
+		 *   1. The user clicked "Update Now" on the plugins list (ajax or classic)
+		 *   2. The user visited ?wpmc-force-update-check=1 (manual escape hatch)
+		 *
+		 * WP core calls wp_clean_plugins_cache() right before upgrading, which rebuilds
+		 * the update_plugins transient from our cached EDD response. If our EDD cache
+		 * is stale, the rebuilt transient will say "no update" and the upgrader bails
+		 * with "The plugin is at the latest version." Clearing our cache here forces
+		 * a fresh call to the EDD store.
+		 */
+		public function maybe_force_update_check()
+		{
+			if (!is_admin()) {
+				return;
+			}
+
+			// Manual escape hatch: /wp-admin/?wpmc-force-update-check=1
+			if (!empty($_GET['wpmc-force-update-check']) && current_user_can('update_plugins')) {
+				$this->flush_version_caches();
+				return;
+			}
+
+			if (empty($_REQUEST['action'])) {
+				return;
+			}
+
+			$action = sanitize_text_field(wp_unslash($_REQUEST['action']));
+			if (!in_array($action, array('update-plugin', 'update-selected'), true)) {
+				return;
+			}
+
+			$plugin_match = false;
+			if (!empty($_REQUEST['plugin']) && sanitize_text_field(wp_unslash($_REQUEST['plugin'])) === $this->name) {
+				$plugin_match = true;
+			}
+			if (!empty($_REQUEST['checked']) && is_array($_REQUEST['checked'])) {
+				$checked = array_map('sanitize_text_field', wp_unslash($_REQUEST['checked']));
+				if (in_array($this->name, $checked, true)) {
+					$plugin_match = true;
+				}
+			}
+
+			if ($plugin_match) {
+				$this->flush_version_caches();
+			}
+		}
+
+		/**
+		 * Clear caches after an upgrade completes so the next page load reflects reality.
+		 */
+		public function flush_version_caches_after_upgrade($upgrader, $data)
+		{
+			if (empty($data['type']) || $data['type'] !== 'plugin') {
+				return;
+			}
+			if (empty($data['plugins']) || !is_array($data['plugins'])) {
+				return;
+			}
+			if (in_array($this->name, $data['plugins'], true)) {
+				$this->flush_version_caches();
+			}
 		}
 
 		/**
@@ -114,6 +201,19 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			}
 
 			$version_info = $this->get_cached_version_info();
+
+			// Self-heal stale cache: if the cached version says the latest release equals
+			// (or is older than) what's installed, the cache is almost certainly stale —
+			// re-fetch from the EDD store. This is what causes "plugin is at latest version"
+			// errors right after a store version bump.
+			if (
+				false !== $version_info
+				&& is_object($version_info)
+				&& !empty($version_info->new_version)
+				&& version_compare($version_info->new_version, $this->version, '<=')
+			) {
+				$version_info = false;
+			}
 
 			if (false === $version_info) {
 				$version_info = $this->api_request('plugin_latest_version', array('slug' => $this->slug, 'beta' => $this->beta));
@@ -322,7 +422,7 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 
 				$api_response = $this->api_request('plugin_information', $to_send);
 
-				// Expires in 3 hours
+				// Expires in 1 hour
 				$this->set_version_info_cache($api_response, $cache_key);
 
 				if (false !== $api_response) {
@@ -615,7 +715,7 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 			}
 
 			$data = array(
-				'timeout' => strtotime('+3 hours', time()),
+				'timeout' => strtotime('+1 hour', time()),
 				'value'   => json_encode($value)
 			);
 
