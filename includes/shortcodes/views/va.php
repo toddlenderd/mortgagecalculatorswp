@@ -36,6 +36,12 @@ $calTemplate3 = '
       </label>
     </div>
 
+    <div class="mcalc-half mcwp-purchase">
+      <label for="va_inp_purchase_price">' . calc_fields('va', 'wpmc_three_pp', __('Purchase Price', 'wpmc')) . '</label>
+      <i>' . $curr_symbol . '</i>
+      <input type="text" name="purchase_price" id="va_inp_purchase_price" value="' . calc_fields('va', 'wpmc_three_pp_initial', '250,000') . '" class="mcalc-dollar">
+    </div>
+
     <div class="mcalc-half mcwp-term">
       <label for="va_mortgage_term_yr">' . calc_fields('va', 'wpmc_three_mt', __('Mortgage Term', 'wpmc')) . '</label>
       <select name="mortgage_term" id="va_mortgage_term_yr">
@@ -48,13 +54,7 @@ $calTemplate3 = '
       </select>
     </div>
 
-    <div class="mcalc-half mcwp-purchase">
-      <label for="va_inp_purchase_price">' . calc_fields('va', 'wpmc_three_pp', __('Purchase Price', 'wpmc')) . '</label>
-      <i>' . $curr_symbol . '</i>
-      <input type="text" name="purchase_price" id="va_inp_purchase_price" value="' . calc_fields('va', 'wpmc_three_pp_initial', '250,000') . '" class="mcalc-dollar">
-    </div>
-
-    <div class="mcalc-half mcwp-down-payment" style="clear:none;">
+    <div class="mcalc-full mcwp-down-payment" style="clear:none;">
       <label class="mcalc-half" for="va_down_payment_inp">' . calc_fields('va', 'wpmc_three_dp', __('Down Payment', 'wpmc')) . ' (' . $curr_symbol . ')</label>
       <input type="text" name="down_payment" id="va_down_payment_inp" value="" class="mcalc-half">
       <input id="ex1 e7" class="ex1 va_down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '"/>
