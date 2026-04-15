@@ -3076,7 +3076,7 @@ $mcwp(function ($) {
 		var va_service = $("#va_service_type").val();
 		if (va_service === "surviving_spouse" || va_service === "disabled_veteran") {
 			e_rate = 0;
-		} else if ($("#va_frist_time").val() == "yes") {
+		} else if ($("#va_frist_time").is(":checked")) {
 			if (down_prcnt < 5) {
 				e_rate = 2.15;
 			}

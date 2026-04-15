@@ -19,7 +19,7 @@ $show_in = ($mcwp_hide_insurance_three === 'yes') ? '' : '
 $calTemplate3 = '
 <div>
   <div class="mcalc-main">
-    <div class="mcalc-half mcwp-veteran-status">
+    <div class="mcalc-full mcwp-veteran-status">
       <label for="va_service_type">' . calc_fields('va', 'wpmc_three_vs', __('Veteran Status', 'wpmc')) . '</label>
       <select name="service_type" id="va_service_type">
         <option value="regular_military" selected>' . __('Regular Military', 'wpmc') . '</option>
@@ -29,12 +29,11 @@ $calTemplate3 = '
       </select>
     </div>
 
-    <div class="mcalc-half mcwp-first-time">
-      <label for="va_frist_time">' . calc_fields('va', 'wpmc_three_ftvl', __('First Time VA Loan?', 'wpmc')) . '</label>
-      <select name="first_time" id="va_frist_time">
-        <option value="yes" selected>' . __('Yes', 'wpmc') . '</option>
-        <option value="no">' . __('No', 'wpmc') . '</option>
-      </select>
+    <div class="mcalc-full mcwp-first-time">
+      <label for="va_frist_time" class="mcwp-first-time-label" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:normal;">
+        <input type="checkbox" name="first_time" id="va_frist_time" value="yes" checked />
+        ' . calc_fields('va', 'wpmc_three_ftvl', __('First Time VA Loan', 'wpmc')) . '
+      </label>
     </div>
 
     <div class="mcalc-half mcwp-term">
