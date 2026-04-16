@@ -228,9 +228,22 @@ if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
 					$version_info->package = $version_info->download_link;
 				}
 
+				$used_github_fallback = false;
 				// Fall back to GitHub releases if EDD didn't provide a download URL
 				if (empty($version_info->package) && defined('WPMC_GITHUB_RELEASES_URL')) {
 					$version_info->package = WPMC_GITHUB_RELEASES_URL . '/v' . $version_info->new_version . '/mortgage-calculators-wp.zip';
+					$used_github_fallback = true;
+				}
+
+				// Log the chosen download URL so failures can be diagnosed from debug.log
+				if (defined('WP_DEBUG') && WP_DEBUG && defined('WP_DEBUG_LOG') && WP_DEBUG_LOG) {
+					error_log(sprintf(
+						'[WPMC Updater] new_version=%s installed=%s source=%s package=%s',
+						isset($version_info->new_version) ? $version_info->new_version : '(none)',
+						$this->version,
+						$used_github_fallback ? 'github-fallback' : 'edd',
+						isset($version_info->package) ? $version_info->package : '(empty)'
+					));
 				}
 
 				if (version_compare($this->version, $version_info->new_version, '<')) {
