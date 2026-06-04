@@ -27,6 +27,7 @@ $body = mcwp_email_template(array(
     'subtitle'    => __('New Rate', 'wpmc') . ': ' . $rc_new_interest_rate . '%',
     'total'       => $curr_symbol . $cal_result_home_afford,
     'total_label' => __('Monthly Savings', 'wpmc'),
+    'show_total_row' => false,
     'message'     => $wpmc_mail_message,
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,

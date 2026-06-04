@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.3
+Stable tag: 2.3.1
 Tested up to: 6.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -69,6 +69,10 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.3.1 20260604 =
+
+* Fix: Removed the mislabeled "Total Monthly Payment" line from the Refinance calculator email, which was duplicating the Monthly Savings value
 
 = 2.3 20260414 =
 
