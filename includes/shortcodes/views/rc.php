@@ -47,7 +47,7 @@ $calTemplate2 .='<div>
             <input name="new_refinance_fees" class="mha_input_data" autocomplete="off" currency="true" type="text"  id="rc_new_refinance_fees" value="'.calc_fields('rc', 'wpmc_six_nrf_initial', '1,000').'" />
         </div>
         <div class="mcalc-full mcwp-results">
-            <label for="rc_cal3_email">'.__('Want a Copy of the Results?', 'wpmc').'</label>
+            <label for="rc_cal6_email">'.__('Want a Copy of the Results?', 'wpmc').'</label>
             <input type="email" id="rc_cal6_email" placeholder="'.__('Enter your email address', 'wpmc').'" value="" name="email" />
             <input type="button" id="rc_wpmc6_send_mail" class="mcwp-submit bg rc_submit mcalc-color" value="'. __('Send Results!', 'wpmc').'">
         </div>

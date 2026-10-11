@@ -50,7 +50,7 @@ $calTemplate2 .='<div>
         </div>
 
         <div class="mcalc-full mcwp-results">
-          <label for="mha_cal3_email">'. __('Want a Copy of the Results?', 'wpmc').'</label>
+          <label for="mha_cal5_email">'. __('Want a Copy of the Results?', 'wpmc').'</label>
           <input type="email" id="mha_cal5_email" placeholder="'. __('Enter your email address', 'wpmc').'" value="" name="email" />
           <input type="button" id="mha_wpmc5_send_mail" class="mcwp-submit bg mha_submit mcalc-color" value="'. __('Send Results!', 'wpmc').'">
         </div>

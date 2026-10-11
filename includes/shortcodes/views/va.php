@@ -57,20 +57,20 @@ $calTemplate3 = '
     <div class="mcalc-full mcwp-down-payment" style="clear:none;">
       <label class="mcalc-half" for="va_down_payment_inp">' . calc_fields('va', 'wpmc_three_dp', __('Down Payment', 'wpmc')) . ' (' . $curr_symbol . ')</label>
       <input type="text" name="down_payment" id="va_down_payment_inp" value="" class="mcalc-half">
-      <input id="ex1 e7" class="ex1 va_down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '"/>
+      <input id="mcwp_va_dp_slider" class="ex1 va_down_payment_scrl" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '"/>
       <p class="mcalc-percent">' . calc_fields('va', 'wpmc_three_dp_initial', '0') . '%</p>
     </div>
 
     <div class="mcalc-half mcwp-interest-rate">
       <label for="va_interest_rate" style="margin-bottom:10px;">' . calc_fields('va', 'wpmc_three_ir', __('Interest Rate', 'wpmc')) . ' (' . $curr_symbol . ')</label>
-      <input id="ex1 e9" name="interest_rate" class="ex1 va_interest_rate_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . calc_fields('va', 'wpmc_three_ir_initial', '5') . '" name="va_interest_rate">
+      <input id="mcwp_va_ir_slider" name="interest_rate" class="ex1 va_interest_rate_scrl" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . calc_fields('va', 'wpmc_three_ir_initial', '5') . '" name="va_interest_rate">
       <p class="mcalc-percent">' . calc_fields('va', 'wpmc_three_ir_initial', '5') . '%</p>
     </div>
 
     <div class="mcalc-half mcwp-taxes">
       <label class="mcalc-half" for="va_annual_tax_inp">' . calc_fields('va', 'wpmc_three_at', __('Annual Taxes', 'wpmc')) . ' (' . $curr_symbol . ')</label>
       <input type="text" name="annual_taxes" id="va_annual_tax_inp" value="" class="mcalc-half">
-      <input id="ex1 e8" class="ex1 va_annual_tax_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . calc_fields('va', 'wpmc_three_at_initial', '1') . '"/>
+      <input id="mcwp_va_tax_slider" class="ex1 va_annual_tax_scrl" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . calc_fields('va', 'wpmc_three_at_initial', '1') . '"/>
       <p class="mcalc-percent">' . calc_fields('va', 'wpmc_three_at_initial', '1') . '%</p>
     </div>
     ';

@@ -1,15 +1,14 @@
 <?php
-$cal_result_home_afford = sanitize_text_field($_POST['cal_result_home_afford']);
-$rc_lifetime_value = sanitize_text_field($_POST['lifetime_value']);
-$rc_refinance_fees = sanitize_text_field($_POST['refinance_fees']);
-$rc_monthly_payment = sanitize_text_field($_POST['new_monthly_payment']);
-$rc_new_loan_amount = sanitize_text_field($_POST['new_loan_amount']);
-$rc_new_interest_rate = sanitize_text_field($_POST['new_interest_rate']);
-$rc_new_loan_term = sanitize_text_field($_POST['new_loan_term']);
+$cal_result_home_afford = mcwp_post_text('cal_result_home_afford');
+$rc_lifetime_value = mcwp_post_text('lifetime_value');
+$rc_refinance_fees = mcwp_post_text('refinance_fees');
+$rc_monthly_payment = mcwp_post_text('new_monthly_payment');
+$rc_new_loan_amount = mcwp_post_text('new_loan_amount');
+$rc_new_interest_rate = mcwp_post_text('new_interest_rate');
+$rc_new_loan_term = mcwp_post_text('new_loan_term');
 
 $option_func = (use_network_settings('wpmc_six_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
 $wpmc_admin = $option_func('wpmc_six_email');
-$site_admin = checksettings('admin_email');
 
 $subject = __('Your Refinance Calculation', 'wpmc');
 
@@ -22,7 +21,7 @@ $rows = array(
     array('label' => __('Lifetime Savings', 'wpmc'), 'value' => $curr_symbol . $rc_lifetime_value),
 );
 
-$body = mcwp_email_template(array(
+$email_args = array(
     'calc_type'   => __('Refinance', 'wpmc'),
     'subtitle'    => __('New Rate', 'wpmc') . ': ' . $rc_new_interest_rate . '%',
     'total'       => $curr_symbol . $cal_result_home_afford,
@@ -32,7 +31,8 @@ $body = mcwp_email_template(array(
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,
     'disclaimer'  => $option_func('wpmc_six_disclaimer'),
-));
+);
+$body = mcwp_email_template($email_args);
 
 $cc_subject = __('New Refinance Calculation by ', 'wpmc') . $to;
 $cc_body = mcwp_cc_email_template($to, __('Refinance', 'wpmc'), $body);

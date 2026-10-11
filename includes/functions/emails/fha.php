@@ -1,17 +1,16 @@
 <?php
-$calculation_result = sanitize_text_field($_POST['calculation_result']);
-$purchase_price = sanitize_text_field($_POST['purchase_price']);
-$down_payment = sanitize_text_field($_POST['down_payment']);
-$term = sanitize_text_field($_POST['mortgage_term']);
-$rate = sanitize_text_field($_POST['interest_rate']);
-$principal_and_interest = sanitize_text_field($_POST['principal_and_interest']);
-$monthly_taxes = round(sanitize_text_field($_POST['monthly_taxes']), 2);
-$monthly_insurance = round(sanitize_text_field($_POST['monthly_insurance']), 2);
-$monthly_mortgage_insurance = sanitize_text_field($_POST['monthly_mortgage_insurance']);
-$monthly_hoa = sanitize_text_field($_POST['monthly_hoa']);
+$calculation_result = mcwp_post_text('calculation_result');
+$purchase_price = mcwp_post_text('purchase_price');
+$down_payment = mcwp_post_text('down_payment');
+$term = mcwp_post_text('mortgage_term');
+$rate = mcwp_post_text('interest_rate');
+$principal_and_interest = mcwp_post_text('principal_and_interest');
+$monthly_taxes = mcwp_post_amount('monthly_taxes');
+$monthly_insurance = mcwp_post_amount('monthly_insurance');
+$monthly_mortgage_insurance = mcwp_post_text('monthly_mortgage_insurance');
+$monthly_hoa = mcwp_post_text('monthly_hoa');
 $option_func = (use_network_settings('wpmc_two_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
 $wpmc_admin = $option_func('wpmc_two_email');
-$site_admin = checksettings('admin_email');
 
 $subject = __('Your FHA Mortgage Calculation', 'wpmc');
 
@@ -26,7 +25,7 @@ $rows = array(
     array('label' => __('Monthly HOA', 'wpmc'), 'value' => $curr_symbol . $monthly_hoa),
 );
 
-$body = mcwp_email_template(array(
+$email_args = array(
     'calc_type'   => __('FHA Loan', 'wpmc'),
     'subtitle'    => $term . ' ' . __('Year Fixed', 'wpmc'),
     'total'       => $curr_symbol . $calculation_result,
@@ -34,7 +33,8 @@ $body = mcwp_email_template(array(
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,
     'disclaimer'  => $option_func('wpmc_two_disclaimer'),
-));
+);
+$body = mcwp_email_template($email_args);
 
 $cc_subject = __('New FHA Calculation by ', 'wpmc') . $to;
 $cc_body = mcwp_cc_email_template($to, __('FHA', 'wpmc'), $body);

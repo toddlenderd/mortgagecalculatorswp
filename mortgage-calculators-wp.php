@@ -4,7 +4,7 @@
  * Plugin Name:  Mortgage Calculators WP
  * Plugin URI:   https://mortgagecalculatorsplugin.com
  * Description:  A contemporary set of mortgage calculators from Lenderd.com
- * Version:      2.3.1
+ * Version:      2.3.2
  * Author:       Lenderd
  * Author URI:   https://lenderd.com
  * License:      GPL2
@@ -19,11 +19,7 @@ define('MC_PATH', plugin_dir_path(__FILE__));
 define('MC_DIR', __DIR__);
 define('MC_FILE', __FILE__);
 define('MC_URL', plugin_dir_url(__FILE__));
-define('MC_VERSION', '2.3.1');
-
-// Default reCAPTCHA v3 keys (obfuscated) — users can override via admin settings
-define('MCWP_RC_SK', base64_decode('NkxkQXBDMGhBQUFBQUZrNk5hRVhsbW9rd2ZNdGNpUEc5alllNmw4Nw=='));
-define('MCWP_RC_SS', base64_decode('NkxkQXBDMGhBQUFBQU92dm1OOG5RQkVMb2lUS3dpMGFuSGIyMEhYSQ=='));
+define('MC_VERSION', '2.3.2');
 
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
@@ -41,11 +37,11 @@ register_activation_hook(__FILE__, 'mortgage_calculator_install');
 register_deactivation_hook(__FILE__, 'mortgage_calculator_remove');
 
 
-function custom_theme_setup()
+function mcwp_load_textdomain()
 {
     load_plugin_textdomain('wpmc', false, dirname(plugin_basename(__FILE__)) . '/languages/');
-} // end custom_theme_setup
-add_action('after_setup_theme', 'custom_theme_setup');
+}
+add_action('init', 'mcwp_load_textdomain');
 
 
 function mortgage_calculator_install()
@@ -56,18 +52,42 @@ function mortgage_calculator_remove()
 {
     // do something when plugin is deactivated or removed
 }
-// Load CSS & JS Files
+// Register CSS & JS so they can be enqueued only on pages that render a calculator
+function mcwp_register_assets()
+{
+    $recaptcha = mcwp_recaptcha_config();
+    $deps = array('jquery');
+    if ($recaptcha['enabled']) {
+        $src = ($recaptcha['version'] === 'v3')
+            ? add_query_arg('render', $recaptcha['site_key'], 'https://www.google.com/recaptcha/api.js')
+            : 'https://www.google.com/recaptcha/api.js';
+        wp_register_script('mcwp-recaptcha', $src, array(), null, true);
+        $deps[] = 'mcwp-recaptcha';
+    }
+    wp_register_script('wpmc_calculator', plugin_dir_url(__FILE__) . 'assets/js/bundle.js', $deps, MC_VERSION, true);
+    wp_register_style('wpmc_slider', plugin_dir_url(__FILE__) . 'assets/css/wpmc.css', array(), MC_VERSION);
+    wp_add_inline_style('wpmc_slider', '.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . esc_attr(mcwp_get_color()) . ';}');
+    wp_localize_script('wpmc_calculator', 'mcwp_ajax', array(
+        'ajaxurl'           => admin_url('admin-ajax.php'),
+        'calc_res'          => __('Your calculations are on the way to your inbox!', 'wpmc'),
+        'invalid_email'     => __('Please enter a valid email address.', 'wpmc'),
+        'request_failed'    => __("We're having trouble sending your email. Please try again later.", 'wpmc'),
+        'recaptcha_site_key' => $recaptcha['enabled'] ? $recaptcha['site_key'] : '',
+        'recaptcha_version' => $recaptcha['version'],
+    ));
+
+    // Enqueue up front when the current post contains the shortcode so the CSS lands in <head>.
+    // Calculators rendered elsewhere (widgets, page builders) are enqueued from the shortcode itself.
+    global $post;
+    if (is_singular() && $post instanceof WP_Post && has_shortcode($post->post_content, 'mcwp')) {
+        mcwp_enqueue();
+    }
+}
+
 function mcwp_enqueue()
 {
-    wp_enqueue_script('recaptcha', 'https://www.google.com/recaptcha/api.js', array('jquery'), null, true);
-    // wp_enqueue_script('wpmc_slider', plugin_dir_url(__FILE__).'assets/bootstrap-slider/bootstrap-slider.js', array( 'jquery' ), null, true);
-    // wp_enqueue_script('wpmc_calculator', plugin_dir_url(__FILE__).'assets/js/wpmc.js', array( 'jquery' ), null, true);
-    wp_enqueue_script('wpmc_calculator', plugin_dir_url(__FILE__) . 'assets/js/bundle.js', array('jquery'), null, true);
-    wp_enqueue_style('wpmc_slider', plugin_dir_url(__FILE__) . 'assets/css/wpmc.css');
-    wp_localize_script('wpmc_calculator', 'mcwp_ajax', array(
-        'ajaxurl' => admin_url('admin-ajax.php'),
-        'calc_res' => __('Your calculations are on the way to your inbox!', 'wpmc'),
-    ));
+    wp_enqueue_script('wpmc_calculator');
+    wp_enqueue_style('wpmc_slider');
 }
 
 add_action('admin_enqueue_scripts', 'softlights_admin_scripts');
@@ -83,15 +103,23 @@ function softlights_admin_scripts($hook)
     wp_enqueue_script('wpmc-script-handle', plugin_dir_url(__FILE__) . 'admin/admin.js', array('wp-color-picker', 'jquery'), false, true);
 }
 
-add_action('wp_head', function () {
-    $mcwp_color = mcwp_get_color();
-    if ($mcwp_color) {
-        echo '<style type="text/css">.mcalc-color,.mcalc .slider-handle.round,.mcalc .slider.slider-horizontal .slider-selection{background:' . esc_attr($mcwp_color) . ';}</style>';
+add_action('wp_enqueue_scripts', 'mcwp_register_assets', 11);
+
+// Nudge admins to configure their own reCAPTCHA keys (shown on the plugin settings page only)
+function mcwp_recaptcha_admin_notice()
+{
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || strpos($screen->id, 'toplevel_page_wpmc') !== 0) {
+        return;
     }
-});
-
-
-add_action("wp_enqueue_scripts", "mcwp_enqueue", 11);
+    $recaptcha = mcwp_recaptcha_config();
+    if ($recaptcha['enabled']) {
+        return;
+    }
+    echo '<div class="notice notice-warning"><p>' . esc_html__('reCAPTCHA is not configured. Calculator emails are protected by a honeypot and rate limits only. Add your own reCAPTCHA site and secret keys under General Settings for stronger spam protection.', 'wpmc') . '</p></div>';
+}
+add_action('admin_notices', 'mcwp_recaptcha_admin_notice');
+add_action('network_admin_notices', 'mcwp_recaptcha_admin_notice');
 
 if (is_network_admin()) {
     add_filter('network_admin_menu', 'wpmc_network_admin_menu');
@@ -174,9 +202,9 @@ if (!function_exists('write_log')) {
 add_action('admin_action_academy_wpmc_update_local_options', 'academy_wpmc_update_local_options');
 function academy_wpmc_update_local_options()
 {
-    // Check if current user is a site administrator
-    if (!current_user_can('administrator')) {
-        wp_die('You don\'t have the privileges to do this operation (should be: administrator).');
+    // Check if current user can manage this site's options
+    if (!current_user_can('manage_options')) {
+        wp_die('You don\'t have the privileges to do this operation.');
     }
     // $_POST[ 'option_page' ] below comes from a hidden input that WordPress automatically generates for admin forms. The value equals to the admin page slug.
     $page_slug = sanitize_text_field($_POST['option_page']);

@@ -1,0 +1,16 @@
+# Dreamweaver site-sync metadata
+_notes/
+dwsync.xml
+
+# Local Claude Code / test tooling
+.claude/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Release artifacts
+*.zip

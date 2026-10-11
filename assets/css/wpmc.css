@@ -180,7 +180,7 @@
 	font-size: 1.1em;
 }
 .mcalc input[type="email"],
-.mcalc input[name="adc_3"] {
+.mcalc input[name="mcwp_answer"] {
 	background: #fafafa;
 	width: 69%;
 	float: left;
@@ -206,6 +206,36 @@
 
 .mha_input_data {
 	padding-left: 15px !important;
+}
+/* Honeypot field: kept off-screen so only bots fill it in */
+.mcalc .mcwp-hp {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+.mcalc .mcwp-message {
+	clear: both;
+	width: 100%;
+}
+.mcalc .mcwp-message:empty {
+	display: none;
+}
+.mcalc .mcwp-message p {
+	margin: 12px 0 0;
+	padding: 10px 12px;
+	border-radius: 2px;
+	font-size: 0.9em;
+	background: #ecfdf3;
+	color: #05603a;
+}
+.mcalc .mcwp-message p.mcwp-error {
+	background: #fef3f2;
+	color: #b42318;
+}
+.mcalc .mcwp-challenge-label {
+	font-weight: 600;
 }
 .grecaptcha-badge {
 	visibility: hidden;

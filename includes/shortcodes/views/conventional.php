@@ -43,21 +43,21 @@ $calculator_layout = '
 
       <input type="text" name="down_payment" id="down_payment_inp" value=""  class="mcalc-half">
 
-      <input id="ex1 e1" class="ex1 down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . $wpmc_one_dp_initial . '" data-slider-arialabel="DP Slider" aria-label="Down Payment" />
+      <input id="mcwp_cv_dp_slider" class="ex1 down_payment_scrl" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . $wpmc_one_dp_initial . '" data-slider-arialabel="DP Slider" aria-label="Down Payment" />
       <p class="mcalc-percent">' . $wpmc_one_dp_initial . '%</p>
     </div>
 
     <div class="mcalc-half mcwp-taxes">
       <label class="mcalc-half" for="annual_tax_inp">' . calc_fields('cv', 'wpmc_one_at', __('Annual Taxes', 'wpmc')) . ' (' . $curr_symbol . ')</label>
       <input type="text" name="annual_taxes" id="annual_tax_inp" value="" class="mcalc-half">
-      <input id="ex1 e2" class="ex1 annual_tax_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . $wpmc_one_at_initial . '" title="Tax Slider" />
+      <input id="mcwp_cv_tax_slider" class="ex1 annual_tax_scrl" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . $wpmc_one_at_initial . '" title="Tax Slider" />
       <p class="mcalc-percent">' . $wpmc_one_at_initial . '%</p>
     </div>
 
     <div class="mcalc-full mcwp-interest-rate">
-      <label for="ex1">' . calc_fields('cv', 'wpmc_one_ir', 'Interest Rate') . ' (%)</label>
+      <label for="mcwp_cv_ir_slider">' . calc_fields('cv', 'wpmc_one_ir', __('Interest Rate', 'wpmc')) . ' (%)</label>
 
-      <input id="ex1 e3" name="interest_rate" class="ex1 interest_rate_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . $wpmc_one_ir_initial . '" aria-label="Interest Rate"/>
+      <input id="mcwp_cv_ir_slider" name="interest_rate" class="ex1 interest_rate_scrl" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . $wpmc_one_ir_initial . '" aria-label="Interest Rate"/>
 
       <p class="mcalc-percent">' . $wpmc_one_ir_initial . '%</p>
     </div>';
@@ -69,15 +69,15 @@ if ($mcwp_hide_insurance_rate === 'yes') {
     ';
 } else {
   $calculator_layout .= '<div class="mcalc-full mcwp-insurance-rate">
-    <label for="ex1">' . calc_fields('cv', 'wpmc_one_inr', 'Mortgage Insurance Rate') . ' (%)</label>
+    <label for="mcwp_cv_inr_slider">' . calc_fields('cv', 'wpmc_one_inr', __('Mortgage Insurance Rate', 'wpmc')) . ' (%)</label>
     
-    <input id="ex1 e44" name="insurance_rate" class="ex1 insurance_rate_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="2.5" data-slider-step=".01" data-slider-value="' . $wpmc_one_inr_initial . '" aria-label="Mortgage Insurance Rate" />
+    <input id="mcwp_cv_inr_slider" name="insurance_rate" class="ex1 insurance_rate_scrl" type="text" data-slider-min="0" data-slider-max="2.5" data-slider-step=".01" data-slider-value="' . $wpmc_one_inr_initial . '" aria-label="Mortgage Insurance Rate" />
     <p class="mcalc-percent">' . $wpmc_one_inr_initial . '%</p>
   </div>
   <div class="mcalc-full mcwp-insurance-rate-disabled" style="display:none;">
-    <label for="ex1">' . calc_fields('cv', 'wpmc_one_inr', 'Mortgage Insurance Rate') . ' (%)</label>
+    <label>' . calc_fields('cv', 'wpmc_one_inr', __('Mortgage Insurance Rate', 'wpmc')) . ' (%)</label>
     
-    <p class="mcwp-insurance-message">Your LTV is less than 80%, so you will not need to pay PMI.</p>
+    <p class="mcwp-insurance-message">' . __('Your LTV is less than 80%, so you will not need to pay PMI.', 'wpmc') . '</p>
   </div>';
 }
 
@@ -110,7 +110,6 @@ if ($mcwp_hide_hoa_one === 'yes') {
 $calculator_layout .= '<div class="mcalc-full mcwp-results">
       <label for="cal1_email">' . __('Want a Copy of the Results?', 'wpmc') . '</label>
       <input type="email" id="cal1_email" placeholder="' . __('Enter your email address', 'wpmc') . '" value="" name="email" />
-      <input type="hidden" id="crm_tags"  value="calculator submission,conventional mortgage" name="crm_tags" />
       <input type="button" id="wpmc1_send_mail" class="mcwp-submit bg cv_submit mcalc-color" value="' . __('Send Results!', 'wpmc') . '">
     </div>
   </div>

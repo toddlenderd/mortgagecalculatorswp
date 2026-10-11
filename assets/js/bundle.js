@@ -2507,61 +2507,114 @@ var $mcwp = jQuery.noConflict();
 $mcwp(function ($) {
 	$(document).on("click", ".mcwp-submit", function (e) {
 		e.preventDefault();
+		var forma = $(this).closest("form");
 		if (typeof navigator != "undefined" && navigator.webdriver) {
-			alert(mcwp_ajax.calc_res);
+			showMessage(forma, mcwp_ajax.calc_res, false);
 			return false;
 		}
-		grecaptcha.execute().then((token) => {
-			var forma = $(this).closest("form");
-			$(forma).find("#g-recaptcha-response").val(token);
-			sendForm(forma);
+		if (!validateEmail(forma.find('input[type="email"]').val())) {
+			showMessage(forma, mcwp_ajax.invalid_email, true);
+			return false;
+		}
+		var button = $(this).prop("disabled", true);
+		getRecaptchaToken(forma).then(function (token) {
+			forma.find(".mcwp-recaptcha-token").val(token || "");
+			sendForm(forma, button);
 		});
 	});
-	function sendForm(forma) {
-		var serializaFrom = $(forma).serializeArray();
+	// Resolves with a reCAPTCHA token, or "" when reCAPTCHA isn't configured, fails, or the
+	// visitor is answering the fallback question (the server then decides what to do).
+	function getRecaptchaToken(forma) {
+		var key = mcwp_ajax.recaptcha_site_key;
+		if (!key || typeof grecaptcha === "undefined" || forma.find('input[name="mcwp_answer"]').length) {
+			return Promise.resolve("");
+		}
+		var isV3 = mcwp_ajax.recaptcha_version === "v3";
+		return new Promise(function (resolve) {
+			grecaptcha.ready(function () {
+				try {
+					var pending = isV3 ? grecaptcha.execute(key, { action: "mcwp_submit" }) : grecaptcha.execute();
+					Promise.resolve(pending).then(
+						function (token) {
+							if (!isV3) {
+								grecaptcha.reset(); // v2 tokens are single use
+							}
+							resolve(token);
+						},
+						function () {
+							resolve("");
+						}
+					);
+				} catch (err) {
+					resolve("");
+				}
+			});
+		});
+	}
+	function sendForm(forma, button) {
 		var post_data = {};
-		$.each($(forma).serializeArray(), function () {
+		$.each(forma.serializeArray(), function () {
 			post_data[this.name] = this.value;
 		});
-		console.log(post_data);
-		currentFormEmail = $('input[type="email"]', forma).val();
-		if (!validateEmail(currentFormEmail)) {
-			alert("Your Email is not valid!");
-			return false;
+		$.post(mcwp_ajax.ajaxurl, post_data)
+			.done(function (response) {
+				if (response && response.status === "captcha_required") {
+					showChallenge(forma, response);
+					showMessage(forma, response.message, true);
+				} else if (response && response.status === "emails_sent") {
+					clearChallenge(forma);
+					showMessage(forma, response.message, false);
+				} else {
+					showMessage(forma, (response && response.message) || mcwp_ajax.request_failed, true);
+				}
+			})
+			.fail(function () {
+				showMessage(forma, mcwp_ajax.request_failed, true);
+			})
+			.always(function () {
+				button.prop("disabled", false);
+			});
+	}
+	// Swap the email box for the fallback question's answer box, reusing the email label
+	function showChallenge(forma, response) {
+		var email = forma.find('input[type="email"]');
+		var answer = forma.find('input[name="mcwp_answer"]');
+		if (!answer.length) {
+			answer = $('<input type="number" name="mcwp_answer" inputmode="numeric">').attr("id", email.attr("id") + "_answer");
+			var label = forma.find('label[for="' + email.attr("id") + '"]');
+			if (!label.length) {
+				label = $("<label>").insertBefore(email);
+			}
+			label.data("mcwp-text", label.text()).attr("for", answer.attr("id")).addClass("mcwp-challenge-label");
+			email.before(answer).hide();
+			forma.append('<input type="hidden" name="mcwp_challenge">');
 		}
-		$.post(mcwp_ajax.ajaxurl, post_data, function (response) {
-			if (response.status === "captcha_required") {
-				if (forma.find('input[name="adc_1"]').length === 0) {
-					forma.append('<input type="hidden" name="adc_1" value="' + response.adc_1 + '">');
-				} else {
-					forma.find('input[name="adc_1"]').val(response.adc_1);
-				}
-
-				if (forma.find('input[name="adc_2"]').length === 0) {
-					forma.append('<input type="hidden" name="adc_2" value="' + response.adc_2 + '">');
-				} else {
-					forma.find('input[name="adc_2"]').val(response.adc_2);
-				}
-
-				var label = forma.find('label[for="cal1_email"]');
-				if (label.length !== 0) {
-					label.text(response.question).css("color", "red").css("font-weight", "bold");
-				}
-
-				if (forma.find('input[name="adc_3"]').length === 0) {
-					forma.find('input[type="email"]').before('<input type="number" name="adc_3" placeholder="Your answer here.">');
-				}
-
-				forma.find('input[type="email"]').hide();
-			} else {
-				alert(response.message);
-			}
-			if (response.status === "success") {
-				alert(response.message);
-			}
-			console.log(response);
-			// alert(mcwp_ajax.calc_res);
+		forma.find(".mcwp-challenge-label").text(response.question);
+		forma.find('input[name="mcwp_challenge"]').val(response.challenge);
+		answer.val("").trigger("focus");
+	}
+	function clearChallenge(forma) {
+		var answer = forma.find('input[name="mcwp_answer"]');
+		if (!answer.length) {
+			return;
+		}
+		var email = forma.find('input[type="email"]');
+		forma.find(".mcwp-challenge-label").each(function () {
+			$(this).text($(this).data("mcwp-text")).attr("for", email.attr("id")).removeClass("mcwp-challenge-label");
 		});
+		answer.remove();
+		forma.find('input[name="mcwp_challenge"]').remove();
+		email.show();
+	}
+	function showMessage(forma, text, isError) {
+		var box = forma.find(".mcwp-message");
+		if (!box.length) {
+			alert(text);
+			return;
+		}
+		// Keep the message next to the Send button rather than at the bottom of the form
+		box.appendTo(forma.find(".mcwp-submit").parent());
+		box.empty().append($("<p>").toggleClass("mcwp-error", !!isError).text(text));
 	}
 	function validateEmail(email) {
 		var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -2842,13 +2895,6 @@ $mcwp(function ($) {
 		});
 		fha_mortgage_calc(fha_purchase_price, fha_down_payment, fha_interest_rate, fha_mortgage_term, fha_monthly_tax, fha_annual_tax_percent, fha_monthly_insurance, fha_monthly_hoa);
 	});
-	$("#fha_mmi_div_span").keyup(function () {
-		monthly_mortgage_insurance = $(this).val() == "" ? 0 : $(this).val() / 0;
-		$(this).val(function (index, value) {
-			return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		});
-		fha_mortgage_calc(fha_purchase_price, fha_down_payment, fha_interest_rate, fha_mortgage_term, fha_monthly_tax, fha_annual_tax_percent, fha_monthly_insurance, monthly_mortgage_insurance, fha_monthly_hoa);
-	});
 	$("#fha_monthly_hoa_inp").keyup(function () {
 		fha_monthly_hoa = $(this).val() == "" ? 0 : $(this).val();
 		$(this).val(function (index, value) {
@@ -3068,7 +3114,10 @@ $mcwp(function ($) {
 		down = (price * va_down_payment_percent) / 100;
 		rate = $(".va_interest_rate_scrl").val();
 		term = $("#va_mortgage_term_yr").val();
-		a_annual_tax_percent = $(".va_annual_tax_scrl").val();
+		// The slider handlers keep va_annual_tax_percent current; read the slider if it was never set
+		if (isNaN(parseFloat(va_annual_tax_percent))) {
+			va_annual_tax_percent = $(".va_annual_tax_scrl").val();
+		}
 		va_annual_tax = (price * va_annual_tax_percent) / 100;
 		tax = va_annual_tax / 12;
 		insurance = removeco($("#va_annual_insurance_inp").val()) / 12;

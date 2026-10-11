@@ -18,17 +18,29 @@ function wpmc_admin_init()
     $allfields = array(
         array('mcwp_currency', 'type' => 'mcwp_currency', 'section_name' => 'wpmc-settings-mail', 'label' => __('Currency', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Choose Currency', 'wpmc'),),
         array('mcwp_color', 'type' => 'color_input', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Color', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Choose Color', 'wpmc'),),
-        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
-        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
+        array('mcwp_recaptcha_version', 'type' => 'mcwp_recaptcha_version_select', 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Type', 'wpmc'), 'group' => 'wpmc_mail',),
+        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
+        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
+        array('mcwp_webhook_url', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Lead Webhook URL', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Optional: POST each lead as JSON to this URL (e.g. a GoHighLevel or Zapier webhook)', 'wpmc'),),
         array('wpmc_mail_from', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_from_name', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Name', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Name that your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_reply_to', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Reply-To Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will reply to if different from above...', 'wpmc'),),
         array('wpmc_mail_message', 'type' => $textarea, 'section_name' => 'wpmc-settings-mail', 'label' => __('Message', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('This message will appear at the top of the emails sent to your leads...', 'wpmc'),),
     );
 
+    $sanitizers = array(
+        'mcwp_recaptcha_version'    => 'mcwp_sanitize_recaptcha_version',
+        'mcwp_recaptcha_site_key'   => 'sanitize_text_field',
+        'mcwp_recaptcha_secret_key' => 'sanitize_text_field',
+        'mcwp_webhook_url'          => 'esc_url_raw',
+    );
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
-        register_setting($val['group'], $val[0]);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
+        if (isset($sanitizers[$val[0]])) {
+            register_setting($val['group'], $val[0], array('sanitize_callback' => $sanitizers[$val[0]]));
+        } else {
+            register_setting($val['group'], $val[0]);
+        }
     }
 
     // Calculator One Options
@@ -78,7 +90,7 @@ function wpmc_admin_init()
     );
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -167,7 +179,7 @@ function wpmc_admin_init()
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -207,7 +219,7 @@ function wpmc_admin_init()
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -252,7 +264,7 @@ function wpmc_admin_init()
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 }
@@ -332,7 +344,28 @@ function mcwp_dropdown($args)
 function mcwp_textarea($args)
 {
     $options = get_wpmc_option($args[0]); ?>
-    <textarea name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" rows="5" cols="65" size="64"><?php echo isset($options) ? esc_attr($options) : ''; ?></textarea>
+    <textarea name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" rows="5" cols="65" size="64"><?php echo isset($options) ? esc_textarea($options) : ''; ?></textarea>
+<?php
+}
+
+function mcwp_sanitize_recaptcha_version($value)
+{
+    return ($value === 'v3') ? 'v3' : 'v2';
+}
+
+function mcwp_recaptcha_version_select($args)
+{
+    $options = get_wpmc_option($args[0]);
+    $choices = array(
+        'v2' => __('v2 Invisible', 'wpmc'),
+        'v3' => __('v3', 'wpmc'),
+    ); ?>
+    <select name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>">
+        <?php foreach ($choices as $key => $label) { ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($options === 'v3' ? 'v3' : 'v2', $key); ?>><?php echo esc_html($label); ?></option>
+        <?php } ?>
+    </select>
+    <p class="description"><?php esc_html_e('Choose the type that matches the keys you created at google.com/recaptcha/admin. Leave both keys blank to turn reCAPTCHA off (a honeypot and rate limits still apply).', 'wpmc'); ?></p>
 <?php
 }
 
@@ -364,11 +397,11 @@ function mcwp_currency($args)
 function color_input($args)
 {
     $options = get_wpmc_option($args[0]);
-    $value = isset($options) ? $options : '#bada55';
+    $value = !empty($options) ? $options : '#1a56db';
     $is_hex = preg_match('/^#[0-9a-fA-F]{3,6}$/', $value);
     ?>
     <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo esc_attr($value); ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
-    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#bada55'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
+    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#1a56db'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
     <p class="description"><?php _e('Enter a hex color, text value, or shortcode (e.g. [brand_color]). Use the color picker or type directly.', 'wpmc'); ?></p>
     <script>
     jQuery(document).ready(function($){

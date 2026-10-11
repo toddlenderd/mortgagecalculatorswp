@@ -45,7 +45,7 @@ $calTemplate2 = '
 
         <input type="text" name="down_payment" id="fha_down_payment_inp" value="" class="mcalc-half">
 
-        <input id="ex1 e4" class="ex1 fha_down_payment_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('fha', 'wpmc_two_dp_initial', '5') . '" aria-label="FHA Down Payment" />
+        <input id="mcwp_fha_dp_slider" class="ex1 fha_down_payment_scrl" type="text" data-slider-min="0" data-slider-max="80" data-slider-step=".5" data-slider-value="' . calc_fields('fha', 'wpmc_two_dp_initial', '5') . '" aria-label="FHA Down Payment" />
         <p class="mcalc-percent">' . calc_fields('fha', 'wpmc_two_dp_initial', '5') . '%</p>
       </div>
 
@@ -54,13 +54,13 @@ $calTemplate2 = '
 
         <input type="text" name="annual_taxes" id="fha_annual_tax_inp" value="" class="mcalc-half">
 
-        <input id="ex1 e5" class="ex1 fha_annual_tax_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . calc_fields('fha', 'wpmc_two_at_initial', '1') . '"/>
+        <input id="mcwp_fha_tax_slider" class="ex1 fha_annual_tax_scrl" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="0.1" data-slider-value="' . calc_fields('fha', 'wpmc_two_at_initial', '1') . '"/>
         <p class="mcalc-percent">' . calc_fields('fha', 'wpmc_two_at_initial', '1') . '%</p>
       </div>
 
       <div class="mcalc-full mcwp-interest-rate">
-        <label for="ex1">' . calc_fields('fha', 'wpmc_two_ir', __('Interest Rate', 'wpmc')) . ' (%)</label>
-        <input name="interest_rate" id="ex1 e6" class="ex1 fha_interest_rate_scrl" data-slider-id="ex1Slider" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . calc_fields('fha', 'wpmc_two_ir_min', '5') . '">
+        <label for="mcwp_fha_ir_slider">' . calc_fields('fha', 'wpmc_two_ir', __('Interest Rate', 'wpmc')) . ' (%)</label>
+        <input name="interest_rate" id="mcwp_fha_ir_slider" class="ex1 fha_interest_rate_scrl" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . calc_fields('fha', 'wpmc_two_ir_min', '5') . '">
         <p class="mcalc-percent">' . calc_fields('fha', 'wpmc_two_ir_min', '5') . '%</p>
       </div>';
 

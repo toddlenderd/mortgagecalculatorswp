@@ -292,7 +292,7 @@ function wpmc_main_template()
 						jQuery('.value_three_heading').prepend('<h2 class="wpmc_three_label" style="padding-top: 30px;">Customize Values</h2>');
 						jQuery('input[name="wpmc_three_pp_initial"]').parents('tr').unwrap();
 						<?php
-						$options = get_wpmc_option('wpmc_two_use_network_settings');
+						$options = get_wpmc_option('wpmc_three_use_network_settings');
 						$val = ($options == '0') ? '0' : '1';
 						?>
 						var wpmc_three_use_network_settings = '<?php echo $val; ?>';

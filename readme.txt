@@ -3,8 +3,8 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.3.1
-Tested up to: 6.4.1
+Stable tag: 2.3.2
+Tested up to: 7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,14 @@ Yes you will get the conventional calculator absolutely free forever and receive
 
 Yes. As of version 1.50 we have fully translated the plugin into Spanish for all calculators.
 
+= Do I need reCAPTCHA keys? =
+
+They're recommended. Create keys at google.com/recaptcha/admin (v2 Invisible or v3), then enter both keys and choose the matching reCAPTCHA Type under General Settings. Without keys, calculator emails are still protected by a hidden honeypot field and per-email and per-visitor rate limits.
+
+= Can I send leads to my CRM? =
+
+Yes. Paste a webhook URL (for example a GoHighLevel inbound webhook or a Zapier catch hook) into Lead Webhook URL under General Settings. Each lead is sent as JSON with the visitor's email, the calculator type, the results and tags.
+
 = Can I edit the look of the calculator? =
 
 Yes you can. We have provided a color picker that will change the look/feel of your calculator simply by choosing a color or placing your HEX code in and saving the settings.
@@ -52,6 +60,9 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 2. Sample Frontend View of the Calculator
 
 == Upgrade Notice ==
+
+= 2.3.2 =
+Security and reliability release. The built-in reCAPTCHA keys have been removed: if you weren't using your own keys, enter them under General Settings (a honeypot and rate limits protect the form in the meantime). Lead emails now go to each calculator's own Email Address setting.
 
 = 2.3 =
 Down payment sliders now move in 0.5% increments on all calculators. VA calculator now includes a Veteran Status dropdown — Surviving Spouse and Disabled Veteran selections automatically remove the VA funding fee.
@@ -69,6 +80,27 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.3.2 20261011 =
+
+* Security: Removed the built-in reCAPTCHA keys (the secret key was readable in the public plugin source). reCAPTCHA now runs only with your own keys
+* Security: Added a hidden honeypot field and rate limits (5 emails per recipient address and 20 per visitor IP per hour; site admins are exempt)
+* Security: The fallback math question is now signed by the server, so it can no longer be bypassed by submitting made-up numbers
+* Security: Fixed a cross-site scripting issue in the license activation error notice
+* Security: License activation and checks now verify the license server's SSL certificate
+* New: reCAPTCHA Type setting (v2 Invisible or v3); v2 responses no longer trigger the fallback question
+* New: Lead Webhook URL setting posts each lead as JSON (e.g. to GoHighLevel or Zapier), plus an mcwp_lead_submitted action for developers
+* New: Success and error messages appear inline under the Send button instead of browser pop-ups
+* Fix: Leads from the FHA, VA, Affordability and Refinance calculators now go to that calculator's Email Address setting (all leads previously went to the Conventional address), falling back to the site admin email
+* Fix: FHA and VA emails showed monthly taxes or insurance of $1,000 or more as "$1"
+* Fix: The fallback question only appeared on the Conventional calculator
+* Fix: The visitor is told their email was sent even when the site owner's copy fails (the failure is logged instead)
+* Fix: VA settings screen read the FHA "Use Network Settings" flag
+* Fix: Invalid duplicate slider ids, and email labels that didn't point at their inputs (accessibility)
+* Improvement: Calculator CSS, JavaScript and the reCAPTCHA script load only on pages that show a calculator, with versioned URLs so browsers pick up updates
+* Improvement: Lead data is no longer written to the browser console
+* Improvement: Untranslatable strings are now translatable; the text domain loads on init
+* Removed: Unused files (old wpmc.js, separate slider/autoNumeric copies, an unused network template) and Dreamweaver sync files
 
 = 2.3.1 20260604 =
 

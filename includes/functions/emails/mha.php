@@ -1,16 +1,15 @@
 <?php
-$cal_result_home_afford = sanitize_text_field($_POST['cal_result_home_afford']);
-$mha_monthly_payment = sanitize_text_field($_POST['monthly_payment']);
-$mha_principal_interest = sanitize_text_field($_POST['principal_interest']);
-$mha_tax_value = sanitize_text_field($_POST['tax_value']);
-$mha_insurance_value = sanitize_text_field($_POST['insurance_value']);
-$mha_term = sanitize_text_field($_POST['mortgage_term']);
-$mha_rate = sanitize_text_field($_POST['interest_rate']);
-$mha_income = sanitize_text_field($_POST['annual_income']);
-$mha_debts = sanitize_text_field($_POST['monthly_debts']);
+$cal_result_home_afford = mcwp_post_text('cal_result_home_afford');
+$mha_monthly_payment = mcwp_post_text('monthly_payment');
+$mha_principal_interest = mcwp_post_text('principal_interest');
+$mha_tax_value = mcwp_post_text('tax_value');
+$mha_insurance_value = mcwp_post_text('insurance_value');
+$mha_term = mcwp_post_text('mortgage_term');
+$mha_rate = mcwp_post_text('interest_rate');
+$mha_income = mcwp_post_text('annual_income');
+$mha_debts = mcwp_post_text('monthly_debts');
 $option_func = (use_network_settings('wpmc_five_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
 $wpmc_admin = $option_func('wpmc_five_email');
-$site_admin = checksettings('admin_email');
 
 $subject = __('Your Affordability Calculation', 'wpmc');
 
@@ -24,7 +23,7 @@ $rows = array(
     array('label' => __('Monthly Insurance', 'wpmc'), 'value' => $curr_symbol . $mha_insurance_value),
 );
 
-$body = mcwp_email_template(array(
+$email_args = array(
     'calc_type'   => __('Affordability', 'wpmc'),
     'subtitle'    => $mha_term . ' ' . __('Year Fixed', 'wpmc'),
     'total'       => $curr_symbol . $cal_result_home_afford,
@@ -33,7 +32,8 @@ $body = mcwp_email_template(array(
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,
     'disclaimer'  => $option_func('wpmc_five_disclaimer'),
-));
+);
+$body = mcwp_email_template($email_args);
 
 $cc_subject = __('New Affordability Calculation by ', 'wpmc') . $to;
 $cc_body = mcwp_cc_email_template($to, __('Affordability', 'wpmc'), $body);

@@ -1,6 +1,7 @@
 <?php
 function mcwp_shortcode($atts = array(), $content = null, $tag = '') {
-    //wpmc_enqueue(); //Load CSS & Js files
+    // Load CSS & JS only on pages that actually render a calculator
+    mcwp_enqueue();
     // normalize attribute keys, lowercase
     $atts = array_change_key_case((array)$atts, CASE_LOWER);
     // override default attributes with user attributes
@@ -51,15 +52,13 @@ function wporg_shortcodes_init() {
 }
 add_action('init', 'wporg_shortcodes_init');
 
-// reCAPTCHA site key: use admin setting if set, otherwise fall back to built-in default
+// reCAPTCHA v2 Invisible renders from this widget; v3 needs no markup. Only printed where a calculator is on the page.
 add_action('wp_footer', function(){
-    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
-    $site_key = $option_func('mcwp_recaptcha_site_key');
-    if (empty($site_key)) {
-        $site_key = MCWP_RC_SK;
+    if (!wp_script_is('wpmc_calculator', 'enqueued')) {
+        return;
     }
-    $site_key = esc_attr($site_key);
-    if ($site_key) {
-        echo '<div class="g-recaptcha" data-sitekey="' . $site_key . '" data-size="invisible"></div>';
+    $recaptcha = mcwp_recaptcha_config();
+    if ($recaptcha['enabled'] && $recaptcha['version'] === 'v2') {
+        echo '<div class="g-recaptcha" data-sitekey="' . esc_attr($recaptcha['site_key']) . '" data-size="invisible"></div>';
     }
 });
