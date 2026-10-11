@@ -37,10 +37,21 @@ function mcwp_shortcode($atts = array(), $content = null, $tag = '') {
     } elseif ($atts['type'] == 'rc') {
         include(__DIR__ . '/views/rc.php');
         $wrap_class = 'mcalc-refi';
+    } elseif ($atts['type'] == 'bd') {
+        include(__DIR__ . '/views/bd.php');
+        $wrap_class = 'mcalc-buydown';
     }
     
+    // Unlicensed premium calculators render nothing for visitors
+    if (!isset($calculator_layout) || $calculator_layout === '') {
+        return '';
+    }
+    $display = mcwp_display_options();
+    $style_class = ($display['style'] === 'classic') ? 'mcalc-color' : 'mcalc-modern mcalc-panel-' . $display['panel'];
+
     $template = file_get_contents(MC_DIR.'/templates/main.html');
     $template = str_replace('{{wrap-class}}', esc_attr($wrap_class), $template);
+    $template = str_replace('{{style-class}}', esc_attr($style_class), $template);
     $template = str_replace('{{type}}', esc_attr($atts['type']), $template);
     $template = str_replace('{{layout}}', $calculator_layout, $template);
     // Inject a nonce field for CSRF protection on the AJAX email submission

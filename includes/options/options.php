@@ -18,6 +18,16 @@ function wpmc_admin_init()
     $allfields = array(
         array('mcwp_currency', 'type' => 'mcwp_currency', 'section_name' => 'wpmc-settings-mail', 'label' => __('Currency', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Choose Currency', 'wpmc'),),
         array('mcwp_color', 'type' => 'color_input', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Color', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Choose Color', 'wpmc'),),
+        array(
+            'mcwp_style', 'type' => 'mcwp_select_field', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Style', 'wpmc'), 'group' => 'wpmc_mail',
+            'choices' => array('modern' => __('Modern', 'wpmc'), 'classic' => __('Classic', 'wpmc')),
+            'description' => __('Modern is the clean, flat design. Classic keeps the original look, for sites with custom CSS written against it.', 'wpmc'),
+        ),
+        array(
+            'mcwp_panel', 'type' => 'mcwp_select_field', 'section_name' => 'wpmc-settings-mail', 'label' => __('Results Panel', 'wpmc'), 'group' => 'wpmc_mail',
+            'choices' => array('light' => __('Light', 'wpmc'), 'bold' => __('Bold (filled with the Calculator Color)', 'wpmc')),
+            'description' => __('Modern style only.', 'wpmc'),
+        ),
         array('mcwp_recaptcha_version', 'type' => 'mcwp_recaptcha_version_select', 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Type', 'wpmc'), 'group' => 'wpmc_mail',),
         array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
         array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
@@ -29,6 +39,8 @@ function wpmc_admin_init()
     );
 
     $sanitizers = array(
+        'mcwp_style'                => 'mcwp_sanitize_style',
+        'mcwp_panel'                => 'mcwp_sanitize_panel',
         'mcwp_recaptcha_version'    => 'mcwp_sanitize_recaptcha_version',
         'mcwp_recaptcha_site_key'   => 'sanitize_text_field',
         'mcwp_recaptcha_secret_key' => 'sanitize_text_field',
@@ -183,6 +195,40 @@ function wpmc_admin_init()
         register_setting($val['group'], $val[0]);
     }
 
+    // Calculator Four (Buydown) Options
+    // Set Section or Option-Group
+    add_settings_section('wpmc_four', '', 'wpmc_four_display_shortcode', 'wpmc-settings-four');
+
+    if (is_multisite() && !is_network_admin()) {
+        add_settings_field('wpmc_four_use_network_settings', __('Use Network Settings', 'wpmc'), 'mcwp_checkbox', 'wpmc-settings-four', 'wpmc_four', array('wpmc_four_use_network_settings', 'wpmc_four'));
+        register_setting('wpmc_four', 'wpmc_four_use_network_settings');
+    }
+
+    $allfields = array(
+        array(
+            'wpmc_four_email', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_four',
+            'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
+        ),
+        array('wpmc_four_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-four', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
+
+        array('wpmc_four_la', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Amount', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_ir', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_lt', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Term', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_bt', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Buydown Type', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_dp', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Discount Points', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_rpp', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point', 'wpmc'), 'group' => 'wpmc_four',),
+
+        array('wpmc_four_la_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Amount', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 400,000', 'wpmc'),),
+        array('wpmc_four_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 7', 'wpmc'),),
+        array('wpmc_four_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Discount Points', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 1', 'wpmc'),),
+        array('wpmc_four_rpp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 0.25', 'wpmc'),),
+    );
+
+    foreach ($allfields as $key => $val) {
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
+        register_setting($val['group'], $val[0]);
+    }
+
     // Calculator Five Options
     // Set Section or Option-Group
     add_settings_section('wpmc_five', '', 'wpmc_five_display_shortcode', 'wpmc-settings-five');
@@ -296,6 +342,11 @@ function wpmc_three_display_shortcode()
 {
     copyShortText('va');
 }
+// Calculator Four (Buydown) Options
+function wpmc_four_display_shortcode()
+{
+    copyShortText('bd');
+}
 // Calculator Five Options
 function wpmc_five_display_shortcode()
 {
@@ -351,6 +402,33 @@ function mcwp_textarea($args)
 function mcwp_sanitize_recaptcha_version($value)
 {
     return ($value === 'v3') ? 'v3' : 'v2';
+}
+
+function mcwp_sanitize_style($value)
+{
+    return ($value === 'classic') ? 'classic' : 'modern';
+}
+
+function mcwp_sanitize_panel($value)
+{
+    return ($value === 'bold') ? 'bold' : 'light';
+}
+
+// Dropdown for settings that pass 'choices' (value => label); the first choice is the default
+function mcwp_select_field($args)
+{
+    $current = get_wpmc_option($args[0]);
+    if (!array_key_exists($current, $args['choices'])) {
+        $current = key($args['choices']);
+    } ?>
+    <select name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>">
+        <?php foreach ($args['choices'] as $key => $label) { ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($current, $key); ?>><?php echo esc_html($label); ?></option>
+        <?php } ?>
+    </select>
+    <?php if (!empty($args['description'])) { ?>
+        <p class="description"><?php echo esc_html($args['description']); ?></p>
+    <?php }
 }
 
 function mcwp_recaptcha_version_select($args)

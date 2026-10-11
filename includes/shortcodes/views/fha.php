@@ -12,14 +12,14 @@ $admin_email = $option_func('admin_email');
 $wpmc_two_email = (!empty($wpmc_email) && $wpmc_email === '[email]') ? $admin_email : ((!empty($wpmc_email) && $wpmc_email !== '[email]') ? $wpmc_email : $admin_email);
 
 
-$show_hoa = ($mcwp_hide_hoa_two === 'yes') ? '' : '<p>' . calc_fields('fha', 'wpmc_two_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_hoa_div_span">1421</span></strong></p>';
+$show_hoa = ($mcwp_hide_hoa_two === 'yes') ? '' : '<p class="mcalc-part">' . calc_fields('fha', 'wpmc_two_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_hoa_div_span">1421</span></strong></p>';
 $show_in = ($mcwp_hide_insurance_two === 'yes') ? '' : '
-      <p>' . calc_fields('fha', 'wpmc_two_ai', __('Monthly Insurance', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_minsure_div_span">1421</span></strong></p>
-      <p>Up-Front MIP (1.75%)<strong>$<span id="fha_upmip_div_span">0</span></strong></p>
-      <p>' . __('Monthly Mortgage Insurance', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="fha_mmi_div_span">0</span></strong></p>';
+      <p class="mcalc-part">' . calc_fields('fha', 'wpmc_two_ai', __('Monthly Insurance', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_minsure_div_span">1421</span></strong></p>
+      <p>' . __('Up-Front MIP (1.75%)', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="fha_upmip_div_span">0</span></strong></p>
+      <p class="mcalc-part">' . __('Monthly Mortgage Insurance', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="fha_mmi_div_span">0</span></strong></p>';
 
 $calTemplate2 = '
-<div>
+<div class="mcalc-layout">
   <div class="mcalc-main">
       <div class="mcalc-half mcwp-purchase">
         <label for="fha_inp_purchase_price">' . calc_fields('fha', 'wpmc_two_pp', __('Purchase Price', 'wpmc')) . '</label>
@@ -96,8 +96,9 @@ $calTemplate2 .= '<div class="mcalc-full mcwp-results">
     <div class="mcalc-results">
       <h2 class="mcalc-value">' . $curr_symbol . '<span id="fha_emmp_div_span">1421</span></h2>
       <h3>' . __('Monthly FHA Payment', 'wpmc') . '</h3>
-      <p class="mcwp-pi">' . __('Principal & Interest', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="fha_pi_div_span">1421</span></strong></p>
-      <p class="mcwp-mt">' . calc_fields('fha', 'wpmc_two_at', __('Monthly Taxes', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_mtax_div_span" class="mtchange">1421</span></strong></p>
+      <div class="mcalc-breakdown" aria-hidden="true"></div>
+      <p class="mcwp-pi mcalc-part">' . __('Principal & Interest', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="fha_pi_div_span">1421</span></strong></p>
+      <p class="mcwp-mt mcalc-part">' . calc_fields('fha', 'wpmc_two_at', __('Monthly Taxes', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="fha_mtax_div_span" class="mtchange">1421</span></strong></p>
       ' . $show_hoa . '
       ' . $show_in . '
       <small>' . calc_fields('fha', 'wpmc_two_disclaimer', '') . '</small>
@@ -119,5 +120,5 @@ $calTemplate2 .= '
 if ($status !== false && $status == 'valid' && $license !== false) {
   $calculator_layout = $calTemplate2;
 } else {
-  $calculator_layout = '<p>&nbsp;</p><p style="color: red; border: 2px solid red; padding: 40px; margin: 100px auto; text-align: center; width: 50%;"><strong style="color: red;">' . __('Warning: You are NOT subscribed to view this calculator', 'wpmc') . '</strong></p>';
+  $calculator_layout = mcwp_unlicensed_notice();
 }

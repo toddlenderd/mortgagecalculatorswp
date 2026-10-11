@@ -3,7 +3,7 @@ $option_func = (use_network_settings('wpmc_five_use_network_settings') === 'yes'
 $wpmc_email = $option_func('wpmc_five_email');
 $admin_email = $option_func('admin_email');
 $wpmc_five_email = (!empty($wpmc_email) && $wpmc_email==='[email]') ? $admin_email : ((!empty($wpmc_email) && $wpmc_email !=='[email]') ? $wpmc_email : $admin_email);
-$calTemplate2 .='<div>
+$calTemplate2 .='<div class="mcalc-layout">
       <div class="mcalc-main">
         <div class="mcalc-half">
           <label for="mha_annual_income">'.calc_fields('mha', 'wpmc_five_ai', __('Annual Income', 'wpmc')).'</label>
@@ -60,10 +60,11 @@ $calTemplate2 .='<div>
         <div class="mcalc-results">
           <h4>'. __('You can afford up to', 'wpmc').'</h4>
           <h2 class="mcalc-value">'.$curr_symbol.'<span id="mha_afford_house_div_span"></span></h2>
+          <div class="mcalc-breakdown" aria-hidden="true"></div>
           <p class="mcwp-pi">'. __('Monthly Payment', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_emmp_div_span"></span></strong></p>
-          <p class="mcwp-pi">'. __('Principal & Interest', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_pi_div_span"></span></strong></p>
-          <p class="mcwp-pi">'. __('Tax', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_taxes_div_span"></span></strong></p>
-          <p class="mcwp-pi">'. __('Insurance', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_insurance_div_span"></span></strong></p>
+          <p class="mcwp-pi mcalc-part">'. __('Principal & Interest', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_pi_div_span"></span></strong></p>
+          <p class="mcwp-pi mcalc-part">'. __('Tax', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_taxes_div_span"></span></strong></p>
+          <p class="mcwp-pi mcalc-part">'. __('Insurance', 'wpmc').' <strong>'.$curr_symbol.'<span id="mha_insurance_div_span"></span></strong></p>
            <small>'.calc_fields('mha', 'wpmc_five_disclaimer', '').'</small>
         </div>
       </div>
@@ -81,5 +82,5 @@ $calTemplate2 .='<div>
 if ($status !== false && $status == 'valid' && $license !== false) {
     $calculator_layout = $calTemplate2;
 } else {
-    $calculator_layout = '<p>&nbsp;</p><p style="color: red; border: 2px solid red; padding: 40px; margin: 100px auto; text-align: center; width: 50%;"><strong style="color: red;">'. __('Warning: You are NOT subscribed to view this calculator', 'wpmc').'</strong></p>';
+    $calculator_layout = mcwp_unlicensed_notice();
 }

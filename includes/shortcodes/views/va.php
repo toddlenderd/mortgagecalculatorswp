@@ -11,13 +11,13 @@ $wpmc_email = $option_func('wpmc_three_email');
 $admin_email = $option_func('admin_email');
 $wpmc_three_email = (!empty($wpmc_email) && $wpmc_email === '[email]') ? $admin_email : ((!empty($wpmc_email) && $wpmc_email !== '[email]') ? $wpmc_email : $admin_email);
 
-$show_hoa = ($mcwp_hide_hoa_three === 'yes') ? '' : '<p>' . calc_fields('va', 'wpmc_three_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_hoa_div_span">1421</span></strong></p>';
+$show_hoa = ($mcwp_hide_hoa_three === 'yes') ? '' : '<p class="mcalc-part">' . calc_fields('va', 'wpmc_three_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_hoa_div_span">1421</span></strong></p>';
 $show_in = ($mcwp_hide_insurance_three === 'yes') ? '' : '
-      <p>' . calc_fields('va', 'wpmc_three_ai', __('Monthly Insurance', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_minsure_div_span">1421</span></strong></p>';
+      <p class="mcalc-part">' . calc_fields('va', 'wpmc_three_ai', __('Monthly Insurance', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_minsure_div_span">1421</span></strong></p>';
 
 
 $calTemplate3 = '
-<div>
+<div class="mcalc-layout">
   <div class="mcalc-main">
     <div class="mcalc-full mcwp-veteran-status">
       <label for="va_service_type">' . calc_fields('va', 'wpmc_three_vs', __('Veteran Status', 'wpmc')) . '</label>
@@ -62,7 +62,7 @@ $calTemplate3 = '
     </div>
 
     <div class="mcalc-half mcwp-interest-rate">
-      <label for="va_interest_rate" style="margin-bottom:10px;">' . calc_fields('va', 'wpmc_three_ir', __('Interest Rate', 'wpmc')) . ' (' . $curr_symbol . ')</label>
+      <label for="mcwp_va_ir_slider" style="margin-bottom:10px;">' . calc_fields('va', 'wpmc_three_ir', __('Interest Rate', 'wpmc')) . ' (%)</label>
       <input id="mcwp_va_ir_slider" name="interest_rate" class="ex1 va_interest_rate_scrl" type="text" data-slider-min="1" data-slider-max="30" data-slider-step=".125" data-slider-value="' . calc_fields('va', 'wpmc_three_ir_initial', '5') . '" name="va_interest_rate">
       <p class="mcalc-percent">' . calc_fields('va', 'wpmc_three_ir_initial', '5') . '%</p>
     </div>
@@ -112,8 +112,9 @@ $calTemplate3 .= '<div class="mcalc-full mcwp-results">
     <div class="mcalc-results">
       <h2 class="mcalc-value">' . $curr_symbol . '<span id="va_emmp_div_span">1421</span></h2>
       <h3>' . __('Monthly VA Payment', 'wpmc') . '</h3>
-      <p class="mcwp-pi">' . __('Principal & Interest', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="va_pi_div_span">1421</span></strong></p>
-      <p class="mcwp-mt">' . calc_fields('va', 'wpmc_three_at', __('Monthly Taxes', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_mtax_div_span">1421</span></strong></p>
+      <div class="mcalc-breakdown" aria-hidden="true"></div>
+      <p class="mcwp-pi mcalc-part">' . __('Principal & Interest', 'wpmc') . ' <strong>' . $curr_symbol . '<span id="va_pi_div_span">1421</span></strong></p>
+      <p class="mcwp-mt mcalc-part">' . calc_fields('va', 'wpmc_three_at', __('Monthly Taxes', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_mtax_div_span">1421</span></strong></p>
       ' . $show_hoa . '
       ' . $show_in . '
       <p class="mcwp-pp">' . calc_fields('va', 'wpmc_three_pp', __('Purchase Price', 'wpmc')) . ' <strong>' . $curr_symbol . '<span id="va_purchase_p_span">1421</span></strong></p>
@@ -140,5 +141,5 @@ $calTemplate3 .= '
 if ($status !== false && $status == 'valid' && $license !== false) {
   $calculator_layout = $calTemplate3;
 } else {
-  $calculator_layout = '<p style="color: red; border: 2px solid red; padding: 40px; margin: 100px auto; text-align: center; width: 50%;"><strong>' . __('Warning: You are NOT subscribed to view this calculator', 'wpmc') . '</strong></p>';
+  $calculator_layout = mcwp_unlicensed_notice();
 }

@@ -29,7 +29,7 @@ function mcwp_sendmail()
 
     // Sanitize calculator type and validate against allowed values
     $calc_type = mcwp_post_text('type');
-    $allowed_types = array('cv', 'fha', 'va', 'mha', 'rc');
+    $allowed_types = array('cv', 'fha', 'va', 'mha', 'rc', 'bd');
     if (!in_array($calc_type, $allowed_types, true)) {
         wp_send_json(array(
             'message' => __('Invalid calculator type.', 'wpmc'),
@@ -132,6 +132,31 @@ function mcwp_recaptcha_config()
         'secret_key' => $secret_key,
         'version'    => ($option_func('mcwp_recaptcha_version') === 'v3') ? 'v3' : 'v2',
     );
+}
+
+/**
+ * Calculator Style (modern | classic) and Results Panel (light | bold) from General Settings.
+ * Unset options mean Modern with a light panel, so upgraded sites get the new design.
+ */
+function mcwp_display_options()
+{
+    $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
+    return array(
+        'style' => ($option_func('mcwp_style') === 'classic') ? 'classic' : 'modern',
+        'panel' => ($option_func('mcwp_panel') === 'bold') ? 'bold' : 'light',
+    );
+}
+
+/**
+ * What a premium calculator shows without a valid license: nothing for visitors, a short
+ * notice for administrators so they know why it's missing.
+ */
+function mcwp_unlicensed_notice()
+{
+    if (!current_user_can('manage_options')) {
+        return '';
+    }
+    return '<p class="mcalc-unlicensed">' . esc_html__('This calculator needs an active Mortgage Calculators WP premium license. Only administrators see this notice.', 'wpmc') . '</p>';
 }
 
 /**
@@ -264,6 +289,82 @@ function mcwp_owner_emails($calculator_email)
 }
 
 /**
+ * Monthly principal & interest, rounded to cents.
+ */
+function mcwp_payment($principal, $annual_rate, $months)
+{
+    if ($principal <= 0 || $months <= 0) {
+        return 0.0;
+    }
+    $rate = $annual_rate / 1200;
+    if ($rate <= 0) {
+        return round($principal / $months, 2);
+    }
+    return round($principal * $rate / (1 - pow(1 + $rate, -$months)), 2);
+}
+
+/**
+ * Buydown types: temporary buydowns map to the rate reduction for each bought-down year.
+ */
+function mcwp_buydown_types()
+{
+    return array(
+        '3-2-1'     => array(3, 2, 1),
+        '2-1'       => array(2, 1),
+        '1-0'       => array(1),
+        'permanent' => array(),
+    );
+}
+
+/**
+ * Buydown math shared by the email and webhook. Mirrors bd_calculate() in bundle.js;
+ * payments are rounded to cents before differencing so the schedule adds up exactly.
+ */
+function mcwp_buydown_calculate($loan, $rate, $years, $type, $points, $per_point)
+{
+    $loan = max(0, (float) $loan);
+    $rate = max(0, (float) $rate);
+    $months = max(0, (int) $years) * 12;
+    $full_payment = mcwp_payment($loan, $rate, $months);
+    $types = mcwp_buydown_types();
+    $steps = isset($types[$type]) ? $types[$type] : $types['2-1'];
+
+    if ($type !== 'permanent') {
+        $schedule = array();
+        $cost = 0;
+        foreach ($steps as $index => $reduction) {
+            $year_rate = max(0, $rate - $reduction);
+            $payment = mcwp_payment($loan, $year_rate, $months);
+            $cost += 12 * ($full_payment - $payment);
+            $schedule[] = array('year' => $index + 1, 'rate' => $year_rate, 'payment' => $payment);
+        }
+        return array(
+            'type'         => 'temporary',
+            'rate'         => $rate,
+            'full_payment' => $full_payment,
+            'schedule'     => $schedule,
+            'full_from'    => count($steps) + 1,
+            'cost'         => round($cost, 2),
+        );
+    }
+
+    $new_rate = max(0, $rate - max(0, (float) $points) * max(0, (float) $per_point));
+    $new_payment = mcwp_payment($loan, $new_rate, $months);
+    $savings = round($full_payment - $new_payment, 2);
+    $cost = round($loan * max(0, (float) $points) / 100, 2);
+    return array(
+        'type'             => 'permanent',
+        'rate'             => $rate,
+        'full_payment'     => $full_payment,
+        'new_rate'         => $new_rate,
+        'new_payment'      => $new_payment,
+        'monthly_savings'  => $savings,
+        'cost'             => $cost,
+        'breakeven_months' => ($savings > 0) ? (int) ceil($cost / $savings) : 0,
+    );
+}
+
+/**
  * Lead data passed to the webhook and the mcwp_lead_submitted action.
  */
 function mcwp_build_lead($to, $calc_type, $email_args)
@@ -274,6 +375,7 @@ function mcwp_build_lead($to, $calc_type, $email_args)
         'va'  => 'va mortgage',
         'mha' => 'affordability',
         'rc'  => 'refinance',
+        'bd'  => 'buydown',
     );
     $fields = array();
     foreach ($email_args['rows'] as $row) {
@@ -368,6 +470,8 @@ function calc_fields($network, $field, $re)
         $set = get_option('wpmc_five_use_network_settings');
     } elseif ($network == 'rc') {
         $set = get_option('wpmc_six_use_network_settings');
+    } elseif ($network == 'bd') {
+        $set = get_option('wpmc_four_use_network_settings');
     }
     if ($set == '0') {
         $option = get_site_option($field);

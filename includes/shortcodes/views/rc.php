@@ -5,10 +5,10 @@ $wpmc_email = $option_func('wpmc_six_email');
 $admin_email = $option_func('admin_email');
 $wpmc_six_email = (!empty($wpmc_email) && $wpmc_email==='[email]') ? $admin_email : ((!empty($wpmc_email) && $wpmc_email !=='[email]') ? $wpmc_email : $admin_email);
 
-$calTemplate2 .='<div>
+$calTemplate2 .='<div class="mcalc-layout">
     <div class="mcalc-main">
         <div class="mcalc-half">
-            <label for="rc_annual_income">'.calc_fields('rc', 'wpmc_six_la', __('Current Loan Amount', 'wpmc')).'</label>
+            <label for="rc_original_loan_amount">'.calc_fields('rc', 'wpmc_six_la', __('Current Loan Amount', 'wpmc')).'</label>
             <i>' . $curr_symbol . '</i>
             <input name="original_loan_amount" class="mha_input_data" autocomplete="off" currency="true" type="text"  id="rc_original_loan_amount" value="'.calc_fields('rc', 'wpmc_six_la_initial', '300,000').'" />
         </div>
@@ -27,7 +27,7 @@ $calTemplate2 .='<div>
             <input name="origination_year" autocomplete="off" currency="true" type="text"  id="rc_origination_year" value="'.calc_fields('rc', 'wpmc_six_oy_initial', '2015').'" />
         </div>
         <div class="mcalc-half">
-            <label for="rc_annual_income">'.calc_fields('rc', 'wpmc_six_nla', __('New Loan Amount', 'wpmc')).'</label>
+            <label for="rc_new_loan_amount">'.calc_fields('rc', 'wpmc_six_nla', __('New Loan Amount', 'wpmc')).'</label>
             <i>' . $curr_symbol . '</i>
             <input name="new_loan_amount" class="mha_input_data" autocomplete="off" currency="true" type="text"  id="rc_new_loan_amount" value="'.calc_fields('rc', 'wpmc_six_nla_initial', '250,000').'" />
         </div>
@@ -73,5 +73,5 @@ $calTemplate2 .= '
 if ($status !== false && $status == 'valid' && $license !== false) {
     $calculator_layout = $calTemplate2;
 } else {
-    $calculator_layout = '<p>&nbsp;</p><p style="color: red; border: 2px solid red; padding: 40px; margin: 100px auto; text-align: center; width: 50%;"><strong style="color: red;">Warning: You are NOT subscribed to view this calculator</strong></p>';
+    $calculator_layout = mcwp_unlicensed_notice();
 }

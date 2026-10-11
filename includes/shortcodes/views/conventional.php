@@ -9,10 +9,10 @@ $wpmc_one_ir_initial = calc_fields('cv', 'wpmc_one_ir_min', '5');
 $wpmc_one_inr_initial = calc_fields('cv', 'wpmc_one_inr_init', '0');
 $wpmc_one_at_initial = calc_fields('cv', 'wpmc_one_at_initial', '1'); //1
 
-$show_hoa = ($mcwp_hide_hoa_one === 'yes') ? '' : '<p>' . calc_fields('cv', 'wpmc_one_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="hoa_div_span">1421</span></strong></p>';
+$show_hoa = ($mcwp_hide_hoa_one === 'yes') ? '' : '<p class="mcalc-part">' . calc_fields('cv', 'wpmc_one_mhoa', __('Monthly HOA', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="hoa_div_span">1421</span></strong></p>';
 
-$show_in = ($mcwp_hide_insurance_one === 'yes') ? '' : '<p>' . calc_fields('cv', 'wpmc_one_ai', __('Monthly Insurance', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="minsure_div_span">1421</span></strong></p>';
-$show_mpmi = ($mcwp_hide_insurance_rate === 'yes') ? '' : '<p>' . calc_fields('cv', 'wpmc_one_mpmi', __('Monthly PMI', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="mpmi">0</span></strong></p>';
+$show_in = ($mcwp_hide_insurance_one === 'yes') ? '' : '<p class="mcalc-part">' . calc_fields('cv', 'wpmc_one_ai', __('Monthly Insurance', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="minsure_div_span">1421</span></strong></p>';
+$show_mpmi = ($mcwp_hide_insurance_rate === 'yes') ? '' : '<p class="mcalc-part">' . calc_fields('cv', 'wpmc_one_mpmi', __('Monthly PMI', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="mpmi">0</span></strong></p>';
 
 
 $wpmc_email = $option_func('wpmc_one_email');
@@ -20,7 +20,7 @@ $admin_email = $option_func('admin_email');
 $wpmc_one_email = (!empty($wpmc_email) && $wpmc_email === '[email]') ? $admin_email : ((!empty($wpmc_email) && $wpmc_email !== '[email]') ? $wpmc_email : $admin_email);
 
 $calculator_layout = '
-<div>
+<div class="mcalc-layout">
   <div class="mcalc-main">
     <div class="mcalc-half mcwp-purchase">
       <label for="inp_purchase_price">' . calc_fields('cv', 'wpmc_one_pp', __('Purchase Price', 'wpmc')) . '</label>
@@ -118,8 +118,9 @@ $calculator_layout .= '<div class="mcalc-full mcwp-results">
       <h2 class="mcalc-value mcalc-payment">' . $curr_symbol . '<span id="emmp_div_span">1421</span>
       </h2>
       <h3>' . __('Monthly Payment', 'wpmc') . '</h3>
-      <p class="mcwp-pi">' . __('Principal & Interest', 'wpmc') . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="pi_div_span">1421</span></strong></p>
-      <p class="mcwp-mt">' . calc_fields('cv', 'wpmc_one_at', __('Monthly Taxes', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="mtax_div_span">1421</span></strong></p>
+      <div class="mcalc-breakdown" aria-hidden="true"></div>
+      <p class="mcwp-pi mcalc-part">' . __('Principal & Interest', 'wpmc') . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="pi_div_span">1421</span></strong></p>
+      <p class="mcwp-mt mcalc-part">' . calc_fields('cv', 'wpmc_one_at', __('Monthly Taxes', 'wpmc')) . ' <strong class="mcalc-value">' . $curr_symbol . '<span id="mtax_div_span">1421</span></strong></p>
       ' . $show_hoa . '
       ' . $show_in . '
       ' . $show_mpmi . '

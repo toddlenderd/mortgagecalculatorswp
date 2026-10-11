@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.3.2
+Stable tag: 2.4.0
 Tested up to: 7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ Mortgage Calculators WP provides users with a simple, elegant and responsive sol
 
 == Description ==
 
-<strong>Introducing Affordability and Refinance Calculators for Premium Users</strong>
+<strong>New: Buydown Calculator for Premium Users</strong> — compare 3-2-1, 2-1 and 1-0 temporary buydowns or permanent discount points, with the buydown cost and break-even.
 
 Mortgage Calculators WP is a very easy-to-use wordpress plugin built with the purpose of providing mortgage and other finance professionals with a mortgage calculator that not only delivers accurate home loan estimates, but also the ability for the users to instantly receive a free copy of those estimates via email while also providing the website owner with an email lead everytime a user requests a copy of their estimated values.
 
@@ -61,8 +61,8 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 
 == Upgrade Notice ==
 
-= 2.3.2 =
-Security and reliability release. The built-in reCAPTCHA keys have been removed: if you weren't using your own keys, enter them under General Settings (a honeypot and rate limits protect the form in the meantime). Lead emails now go to each calculator's own Email Address setting.
+= 2.4.0 =
+New Buydown calculator for premium users and a new Modern design (switch back under General Settings > Calculator Style if your site has custom CSS for the original look). Security and reliability release. The built-in reCAPTCHA keys have been removed: if you weren't using your own keys, enter them under General Settings (a honeypot and rate limits protect the form in the meantime). Lead emails now go to each calculator's own Email Address setting.
 
 = 2.3 =
 Down payment sliders now move in 0.5% increments on all calculators. VA calculator now includes a Veteran Status dropdown — Surviving Spouse and Disabled Veteran selections automatically remove the VA funding fee.
@@ -81,7 +81,16 @@ First Version! Enjoy!
 
 == Changelog ==
 
-= 2.3.2 20261011 =
+= 2.4.0 20261011 =
+
+* New: Modern design for every calculator — one flat card, boxed inputs with the currency inside the field, native sliders, a large payment figure in your Calculator Color, a payment breakdown bar, and a year-by-year chart on the Buydown calculator. The layout adapts to the width of the column the calculator sits in
+* New: Calculator Style setting (Modern or Classic). Classic keeps the original look for sites with custom CSS written against it
+* New: Results Panel setting (Light or Bold) for the Modern style; Bold fills the results panel with your Calculator Color
+* Improvement: Sliders are native range inputs (keyboard and touch friendly); the bundled slider and autoNumeric libraries were removed, cutting the calculator JavaScript by about two thirds
+* Improvement: Premium calculators without a license now show nothing to visitors instead of a red warning; administrators see a short notice
+* Fix: VA interest rate label read "($)" instead of "(%)", and it and the Refinance loan amount labels weren't connected to their fields
+
+* New: Buydown calculator (premium) — [mcwp type="bd"]. Temporary 3-2-1, 2-1 and 1-0 buydowns show the year-by-year payment schedule and the total buydown cost; permanent buydowns show the new rate, monthly savings, cost of points and break-even month. Email and webhook figures are recalculated on the server from the visitor's inputs
 
 * Security: Removed the built-in reCAPTCHA keys (the secret key was readable in the public plugin source). reCAPTCHA now runs only with your own keys
 * Security: Added a hidden honeypot field and rate limits (5 emails per recipient address and 20 per visitor IP per hour; site admins are exempt)
