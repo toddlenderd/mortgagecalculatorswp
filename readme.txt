@@ -3,8 +3,8 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.3.1
-Tested up to: 6.4.1
+Stable tag: 2.4.0
+Tested up to: 7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Mortgage Calculators WP provides users with a simple, elegant and responsive sol
 
 == Description ==
 
-<strong>Introducing Affordability and Refinance Calculators for Premium Users</strong>
+<strong>New: Buydown Calculator for Premium Users</strong> — compare 3-2-1, 2-1 and 1-0 temporary buydowns or permanent discount points, with the buydown cost and break-even.
 
 Mortgage Calculators WP is a very easy-to-use wordpress plugin built with the purpose of providing mortgage and other finance professionals with a mortgage calculator that not only delivers accurate home loan estimates, but also the ability for the users to instantly receive a free copy of those estimates via email while also providing the website owner with an email lead everytime a user requests a copy of their estimated values.
 
@@ -37,6 +37,18 @@ Yes you will get the conventional calculator absolutely free forever and receive
 
 Yes. As of version 1.50 we have fully translated the plugin into Spanish for all calculators.
 
+= Do I need reCAPTCHA keys? =
+
+They're recommended. Create keys at google.com/recaptcha/admin (v2 Invisible or v3), then enter both keys and choose the matching reCAPTCHA Type under General Settings. Without keys, calculator emails are still protected by a hidden honeypot field and per-email and per-visitor rate limits.
+
+= Can I send leads to my CRM? =
+
+Yes. Paste a webhook URL (for example a GoHighLevel inbound webhook or a Zapier catch hook) into Lead Webhook URL under General Settings. Each lead is sent as JSON with the visitor's email, the calculator type, the results and tags.
+
+= Where does the default interest rate come from? =
+
+Unless you set one, each calculator starts at this week's Freddie Mac Primary Mortgage Market Survey® 30-year fixed average, with a small source line under the rate. Enter a value in a calculator's "Interest Rate %" default (on the site, or network-wide on multisite) to use your own rate instead. Developers can turn the Freddie Mac default off with `add_filter('mcwp_use_pmms', '__return_false');`.
+
 = Can I edit the look of the calculator? =
 
 Yes you can. We have provided a color picker that will change the look/feel of your calculator simply by choosing a color or placing your HEX code in and saving the settings.
@@ -45,6 +57,15 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 
 1. Please visit the <a href="https://mortgagecalculatorsplugin.com/" target="_blank">Mortgage Calculators WP</a> offical site and choose your desired license and upon completion of payment you will receive a key that you can input under the premium tab. Once activated you will receive access to the additional calculators to implement in your website.
 
+== External services ==
+
+This plugin connects to the following services:
+
+* **Freddie Mac Primary Mortgage Market Survey®** (https://www.freddiemac.com/pmms), with FRED (https://fred.stlouisfed.org) as a fallback: about twice a day the site downloads the public weekly average rates to use as the default interest rate. No site or visitor data is sent. Freddie Mac terms: https://www.freddiemac.com/terms
+* **Google reCAPTCHA** (only if you enter reCAPTCHA keys): visitors' browsers load Google's script, and the site sends the reCAPTCHA token and visitor IP to Google to verify a submission. Google privacy policy: https://policies.google.com/privacy
+* **mortgagecalculatorsplugin.com** (premium licenses): the license key and site URL are sent to activate, check and update the license.
+* **Your Lead Webhook URL** (only if you set one): each lead's email, calculator results and tags are sent to the URL you enter.
+
 == Screenshots ==
 
 1. Admin Settings View
@@ -52,6 +73,9 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 2. Sample Frontend View of the Calculator
 
 == Upgrade Notice ==
+
+= 2.4.0 =
+New Buydown calculator for premium users and a new Modern design (switch back under General Settings > Calculator Style if your site has custom CSS for the original look). Security and reliability release. The built-in reCAPTCHA keys have been removed: if you weren't using your own keys, enter them under General Settings (a honeypot and rate limits protect the form in the meantime). Lead emails now go to each calculator's own Email Address setting.
 
 = 2.3 =
 Down payment sliders now move in 0.5% increments on all calculators. VA calculator now includes a Veteran Status dropdown — Surviving Spouse and Disabled Veteran selections automatically remove the VA funding fee.
@@ -69,6 +93,44 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.4.0 20261011 =
+
+* New: Modern design for every calculator — one flat card with filled fields and the currency inside the field, a large payment figure in your Calculator Color with a one-line summary beneath it ("$237,500 loan · 30-year fixed at 5%"), a payment breakdown bar, and a year-by-year chart on the Buydown calculator. The layout adapts to the width of the column the calculator sits in
+* New: The default interest rate is this week's Freddie Mac 30-year fixed average (with a source line under the rate) unless the site or network admin sets one. It's fetched in the background twice a day, with FRED as a fallback, and the last good week is kept if both are unavailable
+* New: Fewer visible controls — taxes, insurance and HOA fold into one line that shows their monthly total and expands on tap
+* New: Loan term and buydown type are a row of buttons; interest rate and mortgage insurance rate can be typed or slid
+* New: The email form sits in the results panel, next to the payment ("Get this breakdown by email")
+* New: The results stay in view while visitors adjust inputs on wide layouts; on phones a payment bar is pinned to the bottom of the screen while the inputs are in view
+* Improvement: Consistent slider styling in every browser (thin track filled with your Calculator Color)
+* Improvement: Sentence-case labels; in the Modern style units appear inside fields instead of in the label. Spanish translations updated for the new and renamed text
+* New: Calculator Style setting (Modern or Classic). Classic keeps the original look for sites with custom CSS written against it
+* New: Results Panel setting (Light or Bold) for the Modern style; Bold fills the results panel with your Calculator Color
+* Improvement: Sliders are native range inputs (keyboard and touch friendly); the bundled slider and autoNumeric libraries were removed, cutting the calculator JavaScript by about two thirds
+* Improvement: Premium calculators without a license now show nothing to visitors instead of a red warning; administrators see a short notice
+* Fix: VA interest rate label read "($)" instead of "(%)", and it and the Refinance loan amount labels weren't connected to their fields
+* Fix: The Buydown calculator could show a payment one cent different from the emailed figure when a bought-down rate reached 0%
+
+* New: Buydown calculator (premium) — [mcwp type="bd"]. Temporary 3-2-1, 2-1 and 1-0 buydowns show the year-by-year payment schedule and the total buydown cost; permanent buydowns show the new rate, monthly savings, cost of points and break-even month. Email and webhook figures are recalculated on the server from the visitor's inputs
+
+* Security: Removed the built-in reCAPTCHA keys (the secret key was readable in the public plugin source). reCAPTCHA now runs only with your own keys
+* Security: Added a hidden honeypot field and rate limits (5 emails per recipient address and 20 per visitor IP per hour; site admins are exempt)
+* Security: The fallback math question is now signed by the server, so it can no longer be bypassed by submitting made-up numbers
+* Security: Fixed a cross-site scripting issue in the license activation error notice
+* Security: License activation and checks now verify the license server's SSL certificate
+* New: reCAPTCHA Type setting (v2 Invisible or v3); v2 responses no longer trigger the fallback question
+* New: Lead Webhook URL setting posts each lead as JSON (e.g. to GoHighLevel or Zapier), plus an mcwp_lead_submitted action for developers
+* New: Success and error messages appear inline under the Send button instead of browser pop-ups
+* Fix: Leads from the FHA, VA, Affordability and Refinance calculators now go to that calculator's Email Address setting (all leads previously went to the Conventional address), falling back to the site admin email
+* Fix: FHA and VA emails showed monthly taxes or insurance of $1,000 or more as "$1"
+* Fix: The fallback question only appeared on the Conventional calculator
+* Fix: The visitor is told their email was sent even when the site owner's copy fails (the failure is logged instead)
+* Fix: VA settings screen read the FHA "Use Network Settings" flag
+* Fix: Invalid duplicate slider ids, and email labels that didn't point at their inputs (accessibility)
+* Improvement: Calculator CSS, JavaScript and the reCAPTCHA script load only on pages that show a calculator, with versioned URLs so browsers pick up updates
+* Improvement: Lead data is no longer written to the browser console
+* Improvement: Untranslatable strings are now translatable; the text domain loads on init
+* Removed: Unused files (old wpmc.js, separate slider/autoNumeric copies, an unused network template) and Dreamweaver sync files
 
 = 2.3.1 20260604 =
 

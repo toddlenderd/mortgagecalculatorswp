@@ -11,6 +11,12 @@ define('WPMC_EDD_LICENSE_PAGE', 'wpmc');
 // GitHub releases base URL — used as fallback download source when EDD doesn't provide one
 define('WPMC_GITHUB_RELEASES_URL', 'https://github.com/toddlenderd/mortgagecalculatorswp/releases/download');
 
+// Verify the store's SSL certificate on license calls (same filter the EDD updater uses)
+function wpmc_license_sslverify()
+{
+    return (bool) apply_filters('edd_sl_api_request_verify_ssl', true, null);
+}
+
 if (!class_exists('WPMC_EDD_SL_Plugin_Updater')) {
     // load our custom updater
     include(dirname(__FILE__) . '/WPMC_EDD_SL_Plugin_Updater.php');
@@ -101,10 +107,27 @@ function WPMC_EDD_LICENSE_PAGE()
                 'url'        => home_url()
             );
             // Call the custom API.
-            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => false, 'body' => $api_params));
-            //$responseBody = wpmc_remote('POST', $api_params);
-            $responseBody = json_decode($response['body']);
-            #echo '<pre>'; print_r(json_decode($response['body'])); exit;
+            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => wpmc_license_sslverify(), 'body' => $api_params));
+            $responseBody = is_wp_error($response) ? null : json_decode(wp_remote_retrieve_body($response));
+            if (!is_object($responseBody)) {
+                $responseBody = new stdClass();
+            }
+            foreach (array('customer_name', 'customer_email', 'license_limit', 'site_count', 'activations_left', 'expires') as $field) {
+                if (!isset($responseBody->$field)) {
+                    $responseBody->$field = '';
+                }
+            }
+            $expires_time = strtotime($responseBody->expires);
+            if ($responseBody->expires === 'lifetime') {
+                $purchased_display = '';
+                $expires_display = __('Lifetime', 'wpmc');
+            } elseif ($expires_time) {
+                $purchased_display = date('m-d-Y', strtotime('-1 year', $expires_time));
+                $expires_display = date('m-d-Y', $expires_time);
+            } else {
+                $purchased_display = '';
+                $expires_display = '';
+            }
             if (!empty($license)) {
             ?>
                 <h3>License Details</h3>
@@ -121,14 +144,14 @@ function WPMC_EDD_LICENSE_PAGE()
                         <th style="padding: 10px 20px 20px 0px;">Status</th>
                     </tr>
                     <tr>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->customer_name ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->customer_email ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $license ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->license_limit ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->site_count ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->activations_left ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo date('Y-m-d H:i:s', strtotime($responseBody->expires . ' -1 year')) ?></td>
-                        <td style="padding: 10px 20px 20px 0px;"><?php echo $responseBody->expires ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($responseBody->customer_name) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($responseBody->customer_email) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($license) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($responseBody->license_limit) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($responseBody->site_count) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($responseBody->activations_left) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($purchased_display) ?></td>
+                        <td style="padding: 10px 20px 20px 0px;"><?php echo esc_html($expires_display) ?></td>
                         <td style="padding: 10px 20px 20px 0px;"><?php echo (($status !== false && $status == 'valid') ? 'Active' : 'Inactive') ?></td>
                     </tr>
                 </table>
@@ -180,7 +203,7 @@ function WPMC_EDD_LICENSE_PAGE()
             );
 
             // Call the custom API.
-            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => false, 'body' => $api_params));
+            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => wpmc_license_sslverify(), 'body' => $api_params));
 
 
             // make sure the response came back okay
@@ -275,7 +298,7 @@ function WPMC_EDD_LICENSE_PAGE()
             );
 
             // Call the custom API.
-            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => false, 'body' => $api_params));
+            $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => wpmc_license_sslverify(), 'body' => $api_params));
 
             // make sure the response came back okay
             if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
@@ -314,44 +337,16 @@ function WPMC_EDD_LICENSE_PAGE()
     }
     add_action('admin_init', 'edd_wpmc_deactivate_license');
 
-    // Check License Status
-    function edd_wpmc_check_license()
-    {
-        global $wp_version;
-        $license = trim(get_wpmc_option('edd_wpmc_license_key'));
-        $api_params = array(
-            'edd_action' => 'check_license',
-            'license' => $license,
-            'item_id' => urlencode(WPMC_EDD_SL_ITEM_ID),
-            'url'       => home_url()
-        );
-        // Call the custom API.
-        $response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array('timeout' => 15, 'sslverify' => false, 'body' => $api_params));
-        if (is_wp_error($response)) {
-            return false;
-        }
-        $license_data = json_decode(wp_remote_retrieve_body($response));
-        if ($license_data->license == 'valid') {
-            echo 'valid';
-            exit;
-            // this license is still valid
-        } else {
-            echo 'invalid';
-            exit;
-            // this license is no longer valid
-        }
-    }
-
     // Error Checking
     function edd_wpmc_admin_notices()
     {
         if (isset($_GET['sl_activation']) && !empty($_GET['message'])) {
             switch ($_GET['sl_activation']) {
                 case 'false':
-                    $message = urldecode($_GET['message']);
+                    $message = urldecode(wp_unslash($_GET['message']));
         ?>
                     <div class="error">
-                        <p><?php echo $message; ?></p>
+                        <p><?php echo esc_html($message); ?></p>
                     </div>
     <?php
                     break;
@@ -363,19 +358,3 @@ function WPMC_EDD_LICENSE_PAGE()
         }
     }
     add_action('admin_notices', 'edd_wpmc_admin_notices');
-
-    //$response = wp_remote_post(WPMC_EDD_SL_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ));
-    function wpmc_remote($type, array $jsonArray = null)
-    {
-        $url = WPMC_EDD_SL_STORE_URL;
-        $payload = json_encode($jsonArray);
-        $cURLConnection = curl_init(WPMC_EDD_SL_STORE_URL);
-        curl_setopt($cURLConnection, CURLOPT_POSTFIELDS, $jsonArray);
-        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-        $apiResponse = curl_exec($cURLConnection);
-        curl_close($cURLConnection);
-        // $apiResponse - available data from the API request
-        //$jsonArrayResponse - json_decode($apiResponse);
-        $result = json_decode($apiResponse);
-        return $result;
-    }

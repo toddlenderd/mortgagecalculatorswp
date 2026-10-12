@@ -1,18 +1,16 @@
 <?php
-$calculation_result = sanitize_text_field($_POST['calculation_result']);
-$principal_and_interest = sanitize_text_field($_POST['principal_and_interest']);
-$price = sanitize_text_field($_POST['purchase_price']);
-$term = sanitize_text_field($_POST['mortgage_term']);
-$interest_rate = sanitize_text_field($_POST['interest_rate']);
-$monthly_pmi = sanitize_text_field($_POST['monthly_pmi']);
-$down_payment = sanitize_text_field($_POST['down_payment']);
-$monthly_taxes = sanitize_text_field($_POST['monthly_taxes']);
-$monthly_insurance = round(sanitize_text_field($_POST['monthly_insurance']), 2);
-$monthly_mortgage_insurance = sanitize_text_field($_POST['monthly_mortgage_insurance']);
-$monthly_hoa = sanitize_text_field($_POST['monthly_hoa']);
+$calculation_result = mcwp_post_text('calculation_result');
+$principal_and_interest = mcwp_post_text('principal_and_interest');
+$price = mcwp_post_text('purchase_price');
+$term = mcwp_post_text('mortgage_term');
+$interest_rate = mcwp_post_text('interest_rate');
+$monthly_pmi = mcwp_post_text('monthly_pmi');
+$down_payment = mcwp_post_text('down_payment');
+$monthly_taxes = mcwp_post_text('monthly_taxes');
+$monthly_insurance = mcwp_post_amount('monthly_insurance');
+$monthly_hoa = mcwp_post_text('monthly_hoa');
 $option_func = (use_network_settings('wpmc_one_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
 $wpmc_admin = $option_func('wpmc_one_email');
-$site_admin = checksettings('admin_email');
 
 $subject = __('Your Conventional Mortgage Calculation', 'wpmc');
 
@@ -28,7 +26,7 @@ $rows = array(
     array('label' => __('Monthly HOA', 'wpmc'), 'value' => $curr_symbol . $monthly_hoa),
 );
 
-$body = mcwp_email_template(array(
+$email_args = array(
     'calc_type'   => __('Conventional Loan', 'wpmc'),
     'subtitle'    => $term . ' ' . __('Year Fixed', 'wpmc'),
     'total'       => $curr_symbol . $calculation_result,
@@ -36,7 +34,8 @@ $body = mcwp_email_template(array(
     'rows'        => $rows,
     'curr_symbol' => $curr_symbol,
     'disclaimer'  => $option_func('wpmc_one_disclaimer'),
-));
+);
+$body = mcwp_email_template($email_args);
 
 $cc_subject = __('New Conventional Calculation by ', 'wpmc') . $to;
 $cc_body = mcwp_cc_email_template($to, __('Conventional', 'wpmc'), $body);

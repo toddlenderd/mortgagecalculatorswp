@@ -2,6 +2,9 @@
 // Define Options When Admin Initializes
 function wpmc_admin_init()
 {
+    // Blank interest rate defaults use this week's Freddie Mac average
+    $rate_placeholder = mcwp_pmms_placeholder();
+
 
     // Calculator Mail Options
     // Set Section or Option-Group
@@ -18,17 +21,41 @@ function wpmc_admin_init()
     $allfields = array(
         array('mcwp_currency', 'type' => 'mcwp_currency', 'section_name' => 'wpmc-settings-mail', 'label' => __('Currency', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Choose Currency', 'wpmc'),),
         array('mcwp_color', 'type' => 'color_input', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Color', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Choose Color', 'wpmc'),),
-        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
-        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Leave blank to use built-in key', 'wpmc'),),
+        array(
+            'mcwp_style', 'type' => 'mcwp_select_field', 'section_name' => 'wpmc-settings-mail', 'label' => __('Calculator Style', 'wpmc'), 'group' => 'wpmc_mail',
+            'choices' => array('modern' => __('Modern', 'wpmc'), 'classic' => __('Classic', 'wpmc')),
+            'description' => __('Modern is the clean, flat design. Classic keeps the original look, for sites with custom CSS written against it.', 'wpmc'),
+        ),
+        array(
+            'mcwp_panel', 'type' => 'mcwp_select_field', 'section_name' => 'wpmc-settings-mail', 'label' => __('Results Panel', 'wpmc'), 'group' => 'wpmc_mail',
+            'choices' => array('light' => __('Light', 'wpmc'), 'bold' => __('Bold (filled with the Calculator Color)', 'wpmc')),
+            'description' => __('Modern style only.', 'wpmc'),
+        ),
+        array('mcwp_recaptcha_version', 'type' => 'mcwp_recaptcha_version_select', 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Type', 'wpmc'), 'group' => 'wpmc_mail',),
+        array('mcwp_recaptcha_site_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Site Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
+        array('mcwp_recaptcha_secret_key', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('reCAPTCHA Secret Key', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Required to enable reCAPTCHA', 'wpmc'),),
+        array('mcwp_webhook_url', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Lead Webhook URL', 'wpmc'), 'group' => 'wpmc_mail', 'placeholder' => __('Optional: POST each lead as JSON to this URL (e.g. a GoHighLevel or Zapier webhook)', 'wpmc'),),
         array('wpmc_mail_from', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_from_name', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('From Name', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Name that your leads will receive email from...', 'wpmc'),),
         array('wpmc_mail_reply_to', 'type' => $text, 'section_name' => 'wpmc-settings-mail', 'label' => __('Reply-To Email', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('Email address your leads will reply to if different from above...', 'wpmc'),),
         array('wpmc_mail_message', 'type' => $textarea, 'section_name' => 'wpmc-settings-mail', 'label' => __('Message', 'wpmc'), 'group' => 'wpmc_mail',  'placeholder' => __('This message will appear at the top of the emails sent to your leads...', 'wpmc'),),
     );
 
+    $sanitizers = array(
+        'mcwp_style'                => 'mcwp_sanitize_style',
+        'mcwp_panel'                => 'mcwp_sanitize_panel',
+        'mcwp_recaptcha_version'    => 'mcwp_sanitize_recaptcha_version',
+        'mcwp_recaptcha_site_key'   => 'sanitize_text_field',
+        'mcwp_recaptcha_secret_key' => 'sanitize_text_field',
+        'mcwp_webhook_url'          => 'esc_url_raw',
+    );
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
-        register_setting($val['group'], $val[0]);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
+        if (isset($sanitizers[$val[0]])) {
+            register_setting($val['group'], $val[0], array('sanitize_callback' => $sanitizers[$val[0]]));
+        } else {
+            register_setting($val['group'], $val[0]);
+        }
     }
 
     // Calculator One Options
@@ -67,7 +94,7 @@ function wpmc_admin_init()
 
         array('wpmc_one_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_one_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 5', 'wpmc'),),
-        array('wpmc_one_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_one_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => $rate_placeholder,),
         array('wpmc_one_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 1', 'wpmc'),),
 
         array('wpmc_one_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 600', 'wpmc'),),
@@ -78,7 +105,7 @@ function wpmc_admin_init()
     );
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -116,7 +143,7 @@ function wpmc_admin_init()
 
         array('wpmc_two_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_two_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 5', 'wpmc'),),
-        array('wpmc_two_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_two_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => $rate_placeholder,),
         array('wpmc_two_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 1', 'wpmc'),),
         array('wpmc_two_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 600', 'wpmc'),),
         array('wpmc_two_mhoa_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Monthly HOA', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 50', 'wpmc'),),
@@ -159,7 +186,7 @@ function wpmc_admin_init()
 
         array('wpmc_three_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_three',         'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_three_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 0', 'wpmc'),),
-        array('wpmc_three_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_three_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => $rate_placeholder,),
         array('wpmc_three_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 1', 'wpmc'),),
         array('wpmc_three_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 600', 'wpmc'),),
         array('wpmc_three_mhoa_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Monthly HOA', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 50', 'wpmc'),),
@@ -167,7 +194,41 @@ function wpmc_admin_init()
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
+        register_setting($val['group'], $val[0]);
+    }
+
+    // Calculator Four (Buydown) Options
+    // Set Section or Option-Group
+    add_settings_section('wpmc_four', '', 'wpmc_four_display_shortcode', 'wpmc-settings-four');
+
+    if (is_multisite() && !is_network_admin()) {
+        add_settings_field('wpmc_four_use_network_settings', __('Use Network Settings', 'wpmc'), 'mcwp_checkbox', 'wpmc-settings-four', 'wpmc_four', array('wpmc_four_use_network_settings', 'wpmc_four'));
+        register_setting('wpmc_four', 'wpmc_four_use_network_settings');
+    }
+
+    $allfields = array(
+        array(
+            'wpmc_four_email', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_four',
+            'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
+        ),
+        array('wpmc_four_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-four', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
+
+        array('wpmc_four_la', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Amount', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_ir', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_lt', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Term', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_bt', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Buydown Type', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_dp', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Discount Points', 'wpmc'), 'group' => 'wpmc_four',),
+        array('wpmc_four_rpp', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point', 'wpmc'), 'group' => 'wpmc_four',),
+
+        array('wpmc_four_la_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Amount', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 400,000', 'wpmc'),),
+        array('wpmc_four_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => $rate_placeholder,),
+        array('wpmc_four_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Discount Points', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 1', 'wpmc'),),
+        array('wpmc_four_rpp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 0.25', 'wpmc'),),
+    );
+
+    foreach ($allfields as $key => $val) {
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -202,12 +263,12 @@ function wpmc_admin_init()
         array('wpmc_five_mhaeapt_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Estimated annual property taxes', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 1,500', 'wpmc'),),
         array('wpmc_five_mhaeahi_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Estimated annual home insurance', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 1,000', 'wpmc'),),
         array('wpmc_five_mhadp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Down payment', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 10,000', 'wpmc'),),
-        array('wpmc_five_mhair_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Interest rate', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 4', 'wpmc'),),
+        array('wpmc_five_mhair_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Interest rate', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => $rate_placeholder,),
     );
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 
@@ -245,14 +306,14 @@ function wpmc_admin_init()
         array('wpmc_six_ct_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Current term', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 360', 'wpmc'),),
         array('wpmc_six_oy_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Origination year', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 2020', 'wpmc'),),
         array('wpmc_six_nla_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New loan amount', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 250,000', 'wpmc'),),
-        array('wpmc_six_nir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New interest rate', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 4', 'wpmc'),),
+        array('wpmc_six_nir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New interest rate', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => $rate_placeholder,),
         array('wpmc_six_nlt_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New loan term', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 360', 'wpmc'),),
         array('wpmc_six_nrf_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New refinance fees', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 1,000', 'wpmc'),),
     );
 
 
     foreach ($allfields as $key => $val) {
-        add_settings_field($val[0], __($val['label'], 'wpmc'), $val['type'], $val['section_name'], $val['group'], $val);
+        add_settings_field($val[0], $val['label'], $val['type'], $val['section_name'], $val['group'], $val);
         register_setting($val['group'], $val[0]);
     }
 }
@@ -283,6 +344,11 @@ function wpmc_two_display_shortcode()
 function wpmc_three_display_shortcode()
 {
     copyShortText('va');
+}
+// Calculator Four (Buydown) Options
+function wpmc_four_display_shortcode()
+{
+    copyShortText('bd');
 }
 // Calculator Five Options
 function wpmc_five_display_shortcode()
@@ -332,7 +398,55 @@ function mcwp_dropdown($args)
 function mcwp_textarea($args)
 {
     $options = get_wpmc_option($args[0]); ?>
-    <textarea name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" rows="5" cols="65" size="64"><?php echo isset($options) ? esc_attr($options) : ''; ?></textarea>
+    <textarea name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" rows="5" cols="65" size="64"><?php echo isset($options) ? esc_textarea($options) : ''; ?></textarea>
+<?php
+}
+
+function mcwp_sanitize_recaptcha_version($value)
+{
+    return ($value === 'v3') ? 'v3' : 'v2';
+}
+
+function mcwp_sanitize_style($value)
+{
+    return ($value === 'classic') ? 'classic' : 'modern';
+}
+
+function mcwp_sanitize_panel($value)
+{
+    return ($value === 'bold') ? 'bold' : 'light';
+}
+
+// Dropdown for settings that pass 'choices' (value => label); the first choice is the default
+function mcwp_select_field($args)
+{
+    $current = get_wpmc_option($args[0]);
+    if (!array_key_exists($current, $args['choices'])) {
+        $current = key($args['choices']);
+    } ?>
+    <select name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>">
+        <?php foreach ($args['choices'] as $key => $label) { ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($current, $key); ?>><?php echo esc_html($label); ?></option>
+        <?php } ?>
+    </select>
+    <?php if (!empty($args['description'])) { ?>
+        <p class="description"><?php echo esc_html($args['description']); ?></p>
+    <?php }
+}
+
+function mcwp_recaptcha_version_select($args)
+{
+    $options = get_wpmc_option($args[0]);
+    $choices = array(
+        'v2' => __('v2 Invisible', 'wpmc'),
+        'v3' => __('v3', 'wpmc'),
+    ); ?>
+    <select name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>">
+        <?php foreach ($choices as $key => $label) { ?>
+            <option value="<?php echo esc_attr($key); ?>" <?php selected($options === 'v3' ? 'v3' : 'v2', $key); ?>><?php echo esc_html($label); ?></option>
+        <?php } ?>
+    </select>
+    <p class="description"><?php esc_html_e('Choose the type that matches the keys you created at google.com/recaptcha/admin. Leave both keys blank to turn reCAPTCHA off (a honeypot and rate limits still apply).', 'wpmc'); ?></p>
 <?php
 }
 
@@ -364,11 +478,11 @@ function mcwp_currency($args)
 function color_input($args)
 {
     $options = get_wpmc_option($args[0]);
-    $value = isset($options) ? $options : '#bada55';
+    $value = !empty($options) ? $options : '#1a56db';
     $is_hex = preg_match('/^#[0-9a-fA-F]{3,6}$/', $value);
     ?>
     <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo esc_attr($value); ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
-    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#bada55'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
+    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#1a56db'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
     <p class="description"><?php _e('Enter a hex color, text value, or shortcode (e.g. [brand_color]). Use the color picker or type directly.', 'wpmc'); ?></p>
     <script>
     jQuery(document).ready(function($){

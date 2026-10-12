@@ -159,7 +159,7 @@ msgstr "Término Actual"
 
 #: includes/options/options.php:323 includes/options/options.php:332
 msgid "Current term"
-msgstr "Término Actual"
+msgstr "Término actual"
 
 #: includes/options/options.php:208
 msgid "Default: 0"
@@ -384,7 +384,7 @@ msgstr "Tasa de Interés"
 #: includes/options/options.php:264 includes/options/options.php:273
 #: includes/options/options.php:322 includes/options/options.php:331
 msgid "Interest rate"
-msgstr "Tasa de Interés"
+msgstr "Tasa de interés"
 
 #: includes/options/options.php:79 includes/options/options.php:143
 #: includes/options/options.php:209
@@ -535,7 +535,7 @@ msgstr "Nueva Tasa de Interés"
 
 #: includes/options/options.php:326 includes/options/options.php:335
 msgid "New interest rate"
-msgstr "Nueva Tasa de Interés"
+msgstr "Nueva tasa de interés"
 
 #: includes/shortcodes/views/rc.php:30
 msgid "New Loan Amount"
@@ -543,7 +543,7 @@ msgstr "Nuevo Monto del Préstamo"
 
 #: includes/options/options.php:325 includes/options/options.php:334
 msgid "New loan amount"
-msgstr "Nuevo Monto del Préstamo"
+msgstr "Nuevo monto del préstamo"
 
 #: includes/shortcodes/views/rc.php:40
 msgid "New Loan Term"
@@ -584,7 +584,7 @@ msgstr "Año de Origen"
 
 #: includes/options/options.php:324 includes/options/options.php:333
 msgid "Origination year"
-msgstr "Año de Origen"
+msgstr "Año de origen"
 
 #: includes/options/options.php:477 includes/functions/emails/rc.php:22
 msgid "over the life of the loan. This is based on a new loan amount of"
@@ -630,7 +630,7 @@ msgstr "Tarifas de Refinanciamiento"
 
 #: includes/shortcodes/views/rc.php:60
 msgid "Refinance fees"
-msgstr "Tarifas de Refinanciamiento"
+msgstr "Tarifas de refinanciamiento"
 
 #: includes/options/options.php:477 includes/functions/emails/rc.php:22
 #: includes/shortcodes/views/rc.php:57
@@ -831,3 +831,215 @@ msgstr "Su Cálculo de Refinanciación"
 #: includes/functions/emails/va.php:17
 msgid "Your VA Mortgage Calculation"
 msgstr "Su Cálculo de la Hipoteca de VA"
+
+#: includes/shortcodes
+msgid "Purchase price"
+msgstr "Precio de compra"
+
+#: includes/shortcodes
+msgid "Annual taxes"
+msgstr "Impuestos anuales"
+
+#: includes/shortcodes
+msgid "Annual insurance"
+msgstr "Seguro anual"
+
+#: includes/shortcodes
+msgid "Monthly insurance"
+msgstr "Seguro mensual"
+
+#: includes/shortcodes
+msgid "Monthly taxes"
+msgstr "Impuestos mensuales"
+
+#: includes/shortcodes
+msgid "Principal and interest"
+msgstr "Principal y interés"
+
+#: includes/shortcodes
+msgid "Monthly payment"
+msgstr "Pago mensual"
+
+#: includes/shortcodes
+msgid "Monthly FHA payment"
+msgstr "Pago mensual de FHA"
+
+#: includes/shortcodes
+msgid "Monthly VA payment"
+msgstr "Pago mensual de VA"
+
+#: includes/shortcodes
+msgid "Monthly mortgage insurance"
+msgstr "Seguro hipotecario mensual"
+
+#: includes/shortcodes
+msgid "VA funding fee"
+msgstr "VA comisión de financiación"
+
+#: includes/shortcodes
+msgid "Amount financed"
+msgstr "Monto financiado"
+
+#: includes/shortcodes
+msgid "Annual income"
+msgstr "Ingresos anuales"
+
+#: includes/shortcodes
+msgid "Current loan amount"
+msgstr "Monto actual del préstamo"
+
+#: includes/shortcodes
+msgid "Lifetime savings"
+msgstr "Ahorros de por vida"
+
+#: includes/shortcodes
+msgid "Mortgage insurance rate"
+msgstr "Tasa de seguro hipotecario"
+
+#: includes/shortcodes
+msgid "Get this breakdown by email"
+msgstr "Recibe este desglose por correo"
+
+#: includes/shortcodes
+msgid "Send"
+msgstr "Enviar"
+
+#: includes/shortcodes
+msgid "Taxes, insurance and HOA"
+msgstr "Impuestos, seguro y HOA"
+
+#: includes/shortcodes
+msgid "Taxes and insurance"
+msgstr "Impuestos y seguro"
+
+#: includes/shortcodes
+msgid "Taxes and HOA"
+msgstr "Impuestos y HOA"
+
+#: includes/shortcodes
+msgid "Property taxes"
+msgstr "Impuestos sobre la propiedad"
+
+#: includes/shortcodes
+msgid "%s/mo"
+msgstr "%s/mes"
+
+#: includes/shortcodes
+msgid "yr"
+msgstr "años"
+
+#: includes/shortcodes
+msgid "%1$s loan · %2$s-year fixed at %3$s"
+msgstr "Préstamo de %1$s · tasa fija a %2$s años al %3$s"
+
+#: includes/shortcodes
+msgid "Based on %1$s yearly income · %2$s-year fixed at %3$s"
+msgstr "Con ingresos anuales de %1$s · tasa fija a %2$s años al %3$s"
+
+#: includes/shortcodes
+msgid "New %1$s loan · %2$s months at %3$s"
+msgstr "Nuevo préstamo de %1$s · %2$s meses al %3$s"
+
+#: includes/shortcodes
+msgid "Loan amount"
+msgstr "Monto del préstamo"
+
+#: includes/shortcodes
+msgid "Buydown type"
+msgstr "Tipo de buydown"
+
+#: includes/shortcodes
+msgid "Discount points"
+msgstr "Puntos de descuento"
+
+#: includes/shortcodes
+msgid "Rate reduction per point"
+msgstr "Reducción de tasa por punto"
+
+#: includes/shortcodes
+msgid "Year 1 payment"
+msgstr "Pago del año 1"
+
+#: includes/shortcodes
+msgid "Points"
+msgstr "Puntos"
+
+#: includes/shortcodes
+msgid "3-2-1 Buydown (temporary)"
+msgstr "Buydown 3-2-1 (temporal)"
+
+#: includes/shortcodes
+msgid "2-1 Buydown (temporary)"
+msgstr "Buydown 2-1 (temporal)"
+
+#: includes/shortcodes
+msgid "1-0 Buydown (temporary)"
+msgstr "Buydown 1-0 (temporal)"
+
+#: includes/shortcodes
+msgid "Permanent (discount points)"
+msgstr "Permanente (puntos de descuento)"
+
+#: includes/shortcodes
+msgid "Yr %s"
+msgstr "Año %s"
+
+#: includes/shortcodes
+msgid "Yr %s+"
+msgstr "Año %s+"
+
+#: includes/shortcodes
+msgid "Year %1$s at %2$s"
+msgstr "Año %1$s al %2$s"
+
+#: includes/shortcodes
+msgid "Years %1$s-%2$s at %3$s"
+msgstr "Años %1$s-%2$s al %3$s"
+
+#: includes/shortcodes
+msgid "Total buydown cost"
+msgstr "Costo total del buydown"
+
+#: includes/shortcodes
+msgid "Payment at %s"
+msgstr "Pago al %s"
+
+#: includes/shortcodes
+msgid "Monthly savings"
+msgstr "Ahorro mensual"
+
+#: includes/shortcodes
+msgid "Cost of points"
+msgstr "Costo de los puntos"
+
+#: includes/shortcodes
+msgid "Break-even"
+msgstr "Punto de equilibrio"
+
+#: includes/shortcodes
+msgid "%s months"
+msgstr "%s meses"
+
+#: includes/shortcodes
+msgid "Never"
+msgstr "Nunca"
+
+#: includes/shortcodes
+msgid "Please enter a valid email address."
+msgstr "Ingresa un correo electrónico válido."
+
+#: includes/shortcodes
+msgid "Please answer the question below to send your results."
+msgstr "Responde la pregunta de abajo para enviar tus resultados."
+
+#: includes/shortcodes
+msgid "What is %1$d plus %2$d?"
+msgstr "¿Cuánto es %1$d más %2$d?"
+
+#: includes/shortcodes
+msgid "Too many requests. Please try again later."
+msgstr "Demasiadas solicitudes. Inténtalo más tarde."
+
+#: includes/shortcodes
+msgid "Freddie Mac 30-year fixed average, week of %s"
+msgstr "Promedio de tasa fija a 30 años de Freddie Mac, semana del %s"

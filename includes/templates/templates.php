@@ -35,6 +35,8 @@ function wpmc_main_template()
 				echo __('Affordability Calculator', 'wpmc');
 			} elseif ($cal_six_Screen) {
 				echo __('Refinance Calculator', 'wpmc');
+			} elseif ($cal_four_Screen) {
+				echo __('Buydown Calculator', 'wpmc');
 			} elseif ($license_Screen) {
 				echo __('License Options', 'wpmc');
 			} else {
@@ -72,6 +74,8 @@ function wpmc_main_template()
 			<a href="<?php echo esc_url(add_query_arg(array('action' => 'cal-six'), admin_url($admin_url))); ?>" class="nav-tab<?php if ($cal_six_Screen) {
 																																																														echo ' nav-tab-active';
 																																																													} ?>"><?php esc_html_e('Refinance', 'wpmc'); ?></a>
+
+			<a href="<?php echo esc_url(add_query_arg(array('action' => 'cal-four'), admin_url($admin_url))); ?>" class="nav-tab<?php echo $cal_four_Screen ? ' nav-tab-active' : ''; ?>"><?php esc_html_e('Buydown', 'wpmc'); ?></a>
 
 
 			<?php if (!is_multisite()) { ?>
@@ -130,7 +134,11 @@ function wpmc_main_template()
 					}
 				} elseif ($cal_four_Screen) {
 					if ($status !== false && $status == 'valid' && $license !== false) {
-						echo '<p><strong>Coming Soon</strong></p>';
+						settings_fields('wpmc_four');
+
+						do_settings_sections('wpmc-settings-four');
+
+						submit_button();
 					} else {
 						echo '<p style="background: #3e50b4; padding:10px 15px; border-radius: 3px; font-size: 16px; color:#fff">' . $upgradeText . ' <a href="https://mortgagecalculatorsplugin.com" target="_blank" style="color:#fff;">MortgageCalculatorsPlugin.com</a></p>';
 					}
@@ -292,7 +300,7 @@ function wpmc_main_template()
 						jQuery('.value_three_heading').prepend('<h2 class="wpmc_three_label" style="padding-top: 30px;">Customize Values</h2>');
 						jQuery('input[name="wpmc_three_pp_initial"]').parents('tr').unwrap();
 						<?php
-						$options = get_wpmc_option('wpmc_two_use_network_settings');
+						$options = get_wpmc_option('wpmc_three_use_network_settings');
 						$val = ($options == '0') ? '0' : '1';
 						?>
 						var wpmc_three_use_network_settings = '<?php echo $val; ?>';
@@ -321,6 +329,44 @@ function wpmc_main_template()
 							jQuery('.wpmc_three_label').toggle();
 						});
 					<?php } ?>
+					<?php if ($cal_four_Screen) { ?>
+						jQuery('input[name="wpmc_four_la"]').parents('tr').wrap("<div class='label_four_heading'></div>");
+						jQuery('.label_four_heading').prepend('<h2 class="wpmc_four_label">Customize Field Labels</h2>');
+						jQuery('input[name="wpmc_four_la"]').parents('tr').unwrap();
+						jQuery('input[name="wpmc_four_la_initial"]').parents('tr').wrap("<div class='value_four_heading'></div>");
+						jQuery('.value_four_heading').prepend('<h2 class="wpmc_four_label" style="padding-top: 30px;">Customize Values</h2>');
+						jQuery('input[name="wpmc_four_la_initial"]').parents('tr').unwrap();
+						<?php
+						$options = get_wpmc_option('wpmc_four_use_network_settings');
+						$val = ($options == '0') ? '0' : '1';
+						?>
+						var wpmc_four_use_network_settings = '<?php echo $val; ?>';
+						<?php
+						$wpmc_four_use_network_settings = get_wpmc_option('wpmc_four_use_network_settings');
+						if ($wpmc_four_use_network_settings !== false) {
+						?>
+							if (is_multisite && !is_network_admin && wpmc_four_use_network_settings == '0') {
+								jQuery('.wpmc_four').not(':first').parents('tr').hide();
+								jQuery('.wpmc_four_label').hide();
+							}
+						<?php
+						} else { ?>
+							if (is_multisite && !is_network_admin) {
+								jQuery('.wpmc_four').not(':first').parents('tr').hide();
+								jQuery('.wpmc_four_label').hide();
+							}
+						<?php } ?>
+						jQuery('input[name="wpmc_four_use_network_settings"]').click(function() {
+							if (jQuery(this).is(':checked')) {
+								jQuery(this).val('0');
+							} else {
+								jQuery(this).val('1');
+							}
+							jQuery('.wpmc_four').not(':first').parents('tr').toggle();
+							jQuery('.wpmc_four_label').toggle();
+						});
+					<?php } ?>
+
 					<?php if ($cal_five_Screen) { ?>
 						jQuery('input[name="wpmc_five_ai"]').parents('tr').wrap("<div class='label_five_heading'></div>");
 						jQuery('.label_five_heading').prepend('<h2 class="wpmc_five_label">Customize Field Labels</h2>');

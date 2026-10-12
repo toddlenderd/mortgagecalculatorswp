@@ -1,6 +1,8 @@
-<form class="mcalc {{wrap-class}} mcalc-color" name="{{type}}" id="id_{{type}}">
+<form class="mcalc {{wrap-class}} {{style-class}}" name="{{type}}" id="id_{{type}}">
   {{layout}}
   <input type="hidden" name="action" value="mcwp_sendmail" />
   <input type="hidden" name="mcwp_nonce" value="{{nonce}}" />
-  <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response" value="" />
+  <input type="hidden" name="g-recaptcha-response" class="mcwp-recaptcha-token" value="" />
+  <div class="mcwp-hp" aria-hidden="true"><input type="text" name="mcwp_website" value="" tabindex="-1" autocomplete="off" /></div>
+  <div class="mcwp-message" role="status" aria-live="polite"></div>
 </form>
