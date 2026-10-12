@@ -79,7 +79,10 @@
 	};
 })(jQuery);
 var $mcwp = jQuery.noConflict();
-$mcwp(function ($) {
+// Started from the browser's own DOM readiness (bottom of this file) rather than jQuery's ready():
+// performance plugins such as Perfmatters can hold jQuery's ready() until the visitor first
+// clicks or scrolls, which left the calculators unstyled and unresponsive until then.
+function mcwp_start($) {
 	$(document).on("click", ".mcwp-submit", function (e) {
 		e.preventDefault();
 		var forma = $(this).closest("form");
@@ -187,8 +190,14 @@ $mcwp(function ($) {
 			alert(text);
 			return;
 		}
-		// Keep the message next to the Send button rather than at the bottom of the form
-		box.appendTo(forma.find(".mcwp-submit").parent());
+		// Keep the message next to the Send button (above the reCAPTCHA notice) rather than at the bottom of the form
+		var parent = forma.find(".mcwp-submit").parent();
+		var note = parent.children(".mcwp-recaptcha-note");
+		if (note.length) {
+			box.insertBefore(note);
+		} else {
+			box.appendTo(parent);
+		}
 		box.empty().append($("<p>").toggleClass("mcwp-error", !!isError).text(text));
 	}
 	function validateEmail(email) {
@@ -1311,4 +1320,47 @@ $mcwp(function ($) {
 			mcwp_refresh($form);
 		}, 0);
 	});
-});
+	mcwp_badge();
+}
+// The reCAPTCHA badge shows for a couple of seconds, then hides. Google allows hiding it because
+// each calculator's email form carries the reCAPTCHA notice instead (mcwp_email_block). The class
+// goes on <html> because reCAPTCHA v2 replaces the badge element after every send.
+function mcwp_badge() {
+	if (!mcwp_ajax.recaptcha_site_key) {
+		return;
+	}
+	var tries = 0;
+	var find = window.setInterval(function () {
+		var badge = document.querySelector(".grecaptcha-badge");
+		if (badge || ++tries > 60) {
+			window.clearInterval(find);
+		}
+		if (badge) {
+			window.setTimeout(function () {
+				document.documentElement.classList.add("mcwp-badge-hidden");
+			}, 2000);
+		}
+	}, 250);
+}
+(function () {
+	var started = false;
+	var poll;
+	function start() {
+		if (!started) {
+			started = true;
+			window.clearInterval(poll);
+			mcwp_start(jQuery);
+		}
+	}
+	if (document.readyState !== "loading") {
+		start();
+		return;
+	}
+	document.addEventListener("DOMContentLoaded", start);
+	// Some of those plugins also rename DOMContentLoaded listeners, so watch the parse state too
+	poll = window.setInterval(function () {
+		if (document.readyState !== "loading") {
+			start();
+		}
+	}, 50);
+})();
