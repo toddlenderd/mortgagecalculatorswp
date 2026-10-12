@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 Tested up to: 7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -74,6 +74,9 @@ This plugin connects to the following services:
 
 == Upgrade Notice ==
 
+= 2.4.1 =
+Fixes the Modern style ignoring your saved Calculator Color, and lead notification emails going to the wrong address when the Email Address setting uses a shortcode, "Name <address>" or a semicolon list.
+
 = 2.4.0 =
 New Buydown calculator for premium users and a new Modern design (switch back under General Settings > Calculator Style if your site has custom CSS for the original look). Security and reliability release. The built-in reCAPTCHA keys have been removed: if you weren't using your own keys, enter them under General Settings (a honeypot and rate limits protect the form in the meantime). Lead emails now go to each calculator's own Email Address setting.
 
@@ -93,6 +96,13 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.4.1 20261011 =
+
+* Fix: The Modern style ignored the saved Calculator Color and always used the default blue. Saved colors (hex, color names, rgb() and hsl(), including shortcodes such as rgb([color])) now apply to the payment figure, sliders, buttons, breakdown bar, Bold results panel and the phone payment bar
+* Fix: Lead notification emails could go to the wrong address since 2.3.2. A site's own [email] shortcode in a calculator's Email Address was replaced by the WordPress admin email, and "Name <address>" or semicolon-separated entries were turned into invalid addresses. Shortcodes now run first again, and those formats are read correctly
+* New: Each calculator's Email Address setting shows where its leads currently go, after shortcodes and fallbacks
+* Fix: The Calculator Color picker lines up with its text field, and its swatch shows the color the calculators actually use (shortcodes resolved)
 
 = 2.4.0 20261011 =
 

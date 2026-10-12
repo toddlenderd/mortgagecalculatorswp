@@ -1,3 +1,10 @@
-/* CSS Document */
-.show_comp{display:table-row !important;}
-.hide_comp{display:none !important;}
+/* CSS Document */
+.show_comp{display:table-row !important;}
+.hide_comp{display:none !important;}
+
+/* Calculator Color: text field and color picker on one row, vertically centered */
+.mcwp-color-field{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.mcwp-color-field > input[type="text"]{margin:0;}
+.mcwp-color-field .wp-picker-container{display:flex;align-items:center;}
+.mcwp-color-field .wp-picker-container .wp-color-result.button{margin:0;vertical-align:middle;}
+.mcwp-color-field .wp-color-result-text{display:flex;align-items:center;height:100%;}

@@ -3,8 +3,12 @@
  * One flat card, filled fields, a light (or bold) results panel. All color comes from
  * --mcalc-accent, which the plugin sets from the Calculator Color setting.
  */
-.mcalc.mcalc-modern {
+/* Fallback accent only. :where() has zero specificity, so the Calculator Color the plugin
+   prints inline (.mcalc { --mcalc-accent: ... }) always wins over it. */
+:where(.mcalc) {
 	--mcalc-accent: #1a56db;
+}
+.mcalc.mcalc-modern {
 	--mcalc-text: #111827;
 	--mcalc-muted: #6b7280;
 	--mcalc-line: #e6e8eb;
