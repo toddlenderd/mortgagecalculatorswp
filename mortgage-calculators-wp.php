@@ -23,6 +23,8 @@ define('MC_VERSION', '2.4.0');
 
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
+// Freddie Mac weekly rate used as the default interest rate
+require_once(dirname(__FILE__) . '/includes/functions/pmms.php');
 require_once(dirname(__FILE__) . '/includes/licenses/licenses.php');
 // Load template functions
 require_once(dirname(__FILE__) . '/includes/templates/templates.php');
@@ -50,7 +52,7 @@ function mortgage_calculator_install()
 }
 function mortgage_calculator_remove()
 {
-    // do something when plugin is deactivated or removed
+    wp_clear_scheduled_hook('mcwp_pmms_refresh');
 }
 // Register CSS & JS so they can be enqueued only on pages that render a calculator
 function mcwp_register_assets()

@@ -53,6 +53,9 @@
 			input.setAttribute("value", value);
 			input.value = value;
 			state.range.val(value);
+			// How far along the track the value sits, for the Modern slider's filled portion
+			var span = state.max - state.min;
+			state.range[0].style.setProperty("--mcalc-fill", (span > 0 ? ((value - state.min) / span) * 100 : 0) + "%");
 		};
 		state.set(normalize(state, attr("value", 5)));
 		state.range.on("input", function () {
@@ -1000,8 +1003,10 @@ $mcwp(function ($) {
 	}
 	/* Buydown Calculator: math mirrors mcwp_buydown_calculate() in includes/functions/functions.php */
 	var BD_TYPES = { "3-2-1": [3, 2, 1], "2-1": [2, 1], "1-0": [1], permanent: [] };
+	// Round to cents the way PHP's round() does (it pre-rounds to 15 significant digits), so an
+	// exact half cent like 5091.275 becomes 5091.28 in both the browser and the email
 	function bd_round(n) {
-		return Math.round((n + Number.EPSILON) * 100) / 100;
+		return Math.round(Number((n * 100).toPrecision(15))) / 100;
 	}
 	function bd_payment(principal, annualRate, months) {
 		if (principal <= 0 || months <= 0) {
@@ -1136,33 +1141,174 @@ $mcwp(function ($) {
 			bd_render($form);
 		});
 	});
-	/* Payment breakdown bar (Modern style): one segment per .mcalc-part row, in shades of the accent color */
+	/*
+	 * Modern style. The calculator code above keeps working on the original fields; everything
+	 * below only adds controls that drive those fields and readouts that mirror them.
+	 */
 	var BREAKDOWN_SHADES = [100, 72, 52, 36, 24, 14];
+	function mcwp_amount(text) {
+		return parseFloat(String(text).replace(/[^0-9.]/g, "")) || 0;
+	}
+	function mcwp_money(symbol, amount) {
+		return (symbol || "") + Math.round(amount).toLocaleString("en-US");
+	}
+	// Payment breakdown bar: one segment per .mcalc-part row, in shades of the accent color
 	function mcwp_breakdown($form) {
-		var bar = $form.find(".mcalc-breakdown");
-		if (!bar.length) {
-			return;
-		}
-		bar.empty();
+		var amounts = [];
+		var bar = $form.find(".mcalc-breakdown").empty();
 		$form.find(".mcalc-part").each(function (index) {
 			var shade = BREAKDOWN_SHADES[Math.min(index, BREAKDOWN_SHADES.length - 1)] + "%";
-			var amount = parseFloat($(this).find("strong").text().replace(/[^0-9.]/g, "")) || 0;
+			var amount = mcwp_amount($(this).find("strong").text());
+			amounts.push(amount);
 			this.style.setProperty("--mcalc-shade", shade);
-			if (amount > 0) {
+			if (bar.length && amount > 0) {
 				var segment = $("<span>").appendTo(bar)[0];
 				segment.style.flexGrow = amount;
 				segment.style.setProperty("--mcalc-shade", shade);
 			}
 		});
+		return amounts;
+	}
+	// The folded "Taxes, insurance and HOA" line shows what those costs add each month
+	// (every payment part except principal and interest, which is always the first)
+	function mcwp_more_total($form, amounts) {
+		var more = $form.find(".mcalc-more");
+		if (!more.length) {
+			return;
+		}
+		var extra = amounts.slice(1).reduce(function (sum, amount) {
+			return sum + amount;
+		}, 0);
+		more.find(".mcalc-more-total").text(bd_format(more.attr("data-per-month"), mcwp_money(more.attr("data-currency"), extra)));
+	}
+	// One line under the payment, built from the fields named in the line's data attributes
+	function mcwp_summary($form) {
+		var line = $form.find(".mcalc-summary");
+		if (!line.length) {
+			return;
+		}
+		var value = function (selector) {
+			return selector ? String($form.find(selector).val() || "") : "";
+		};
+		var amount = mcwp_amount(value(line.attr("data-amount"))) - mcwp_amount(value(line.attr("data-minus")));
+		var rate = mcwp_amount(value(line.attr("data-rate")));
+		line.text(bd_format(line.attr("data-template"), mcwp_money(line.attr("data-currency"), Math.max(0, amount)), value(line.attr("data-term")), rate + "%"));
+	}
+	// Loan term and buydown type as a row of buttons; the hidden select still drives the calculator
+	function mcwp_segments($form) {
+		$form.find("select[data-mcalc-seg]").each(function () {
+			var select = $(this);
+			var unit = select.attr("data-unit");
+			var group = $('<div class="mcalc-seg" role="group">').attr("aria-label", select.closest("div").children("label").first().text());
+			select.find("option").each(function () {
+				var option = $(this);
+				var text = option.attr("data-short") || (unit ? option.val() + " " + unit : option.text());
+				$('<button type="button">').text(text).attr({ "data-value": option.val(), "aria-label": option.text() }).appendTo(group);
+			});
+			var sync = function () {
+				group.children().each(function () {
+					$(this).attr("aria-pressed", String($(this).attr("data-value") === select.val()));
+				});
+			};
+			group.on("click", "button", function () {
+				var chosen = $(this).attr("data-value");
+				if (select.val() !== chosen) {
+					select.val(chosen).trigger("change");
+				}
+				sync();
+			});
+			select.on("change", sync).addClass("mcalc-seg-ready").after(group);
+			sync();
+		});
+	}
+	// Type-or-slide for percentage sliders that have no amount field (interest rate, PMI rate)
+	function mcwp_rate_inputs($form) {
+		$form.find(".mcalc-has-range").each(function () {
+			var field = $(this);
+			var slider = field.children("input.ex1");
+			if (!slider.length || field.children('input[type="text"]').not(".ex1").length) {
+				return;
+			}
+			var label = field.children("label").first();
+			var input = $('<input type="text" class="mcalc-rate-input" inputmode="decimal" autocomplete="off">').attr("aria-label", label.text()).val(slider.val());
+			$('<span class="mcalc-rate-box">').append(input, $('<span aria-hidden="true">%</span>')).insertAfter(label);
+			field.addClass("mcalc-has-rate-input");
+			slider.on("change", function () {
+				if (document.activeElement !== input[0]) {
+					input.val(slider.val());
+				}
+			});
+			input.on("input", function () {
+				var typed = parseFloat(this.value.replace(/[^0-9.]/g, ""));
+				if (isNaN(typed)) {
+					return;
+				}
+				var oldValue = parseFloat(slider.val());
+				slider.bootstrapSlider("setValue", typed);
+				var newValue = parseFloat(slider.val());
+				if (oldValue !== newValue) {
+					slider.trigger({ type: "change", value: { oldValue: oldValue, newValue: newValue } });
+				}
+			});
+			input.on("blur", function () {
+				input.val(slider.val());
+			});
+		});
+	}
+	// Phones: when the results sit below the inputs, pin the payment to the bottom of the screen
+	// while the inputs are in view. Fixed elements can't live inside the form (it is a size
+	// container), so the bar is appended to the body.
+	function mcwp_dock($form) {
+		var layout = $form.find(".mcalc-layout")[0];
+		var main = $form.find(".mcalc-main")[0];
+		var values = $form.find(".mcalc-values")[0];
+		if (!layout || !main || !values || !("IntersectionObserver" in window)) {
+			return null;
+		}
+		var dock = $('<button type="button" class="mcalc-dock"><span class="mcalc-dock-label"></span><b class="mcalc-dock-value"></b></button>').appendTo(document.body);
+		dock[0].style.setProperty("--mcalc-accent", window.getComputedStyle($form[0]).getPropertyValue("--mcalc-accent"));
+		var seen = { main: false, values: false };
+		var update = function () {
+			var stacked = window.getComputedStyle(layout).gridTemplateColumns.split(" ").length === 1;
+			dock.toggleClass("mcalc-dock-visible", stacked && seen.main && !seen.values);
+		};
+		var observer = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				seen[entry.target === main ? "main" : "values"] = entry.isIntersecting;
+			});
+			update();
+		});
+		observer.observe(main);
+		observer.observe(values);
+		$(window).on("resize", update);
+		dock.on("click", function () {
+			var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+			values.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+		});
+		return dock;
+	}
+	function mcwp_refresh($form) {
+		mcwp_more_total($form, mcwp_breakdown($form));
+		mcwp_summary($form);
+		var dock = $form.data("mcwpDock");
+		if (dock) {
+			var results = $form.find(".mcalc-results");
+			dock.find(".mcalc-dock-label").text(results.children("h3, h4").first().text());
+			dock.find(".mcalc-dock-value").text(results.children("h2").first().text().replace(/\s+/g, ""));
+		}
 	}
 	$("form.mcalc-modern").each(function () {
-		mcwp_breakdown($(this));
+		var $form = $(this);
+		mcwp_segments($form);
+		mcwp_rate_inputs($form);
+		$form.data("mcwpDock", mcwp_dock($form));
+		mcwp_refresh($form);
 	});
-	// Recalculate after the calculators' own handlers have updated the numbers
+	// Refresh after the calculators' own handlers have updated the numbers
 	$(document).on("input change keyup", "form.mcalc-modern", function () {
 		var $form = $(this);
 		window.setTimeout(function () {
-			mcwp_breakdown($form);
+			mcwp_refresh($form);
 		}, 0);
 	});
 });

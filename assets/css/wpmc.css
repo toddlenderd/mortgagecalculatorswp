@@ -103,6 +103,13 @@
 .mcalc .bd-chart {
 	display: none;
 }
+.mcalc .mcalc-rate-source {
+	display: block;
+	clear: both;
+	margin: -14px 0 20px;
+	font-size: 0.75em;
+	color: #777;
+}
 .mcalc .mcalc-unlicensed {
 	padding: 16px;
 	border: 1px solid #e5e7eb;

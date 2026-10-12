@@ -45,6 +45,10 @@ They're recommended. Create keys at google.com/recaptcha/admin (v2 Invisible or 
 
 Yes. Paste a webhook URL (for example a GoHighLevel inbound webhook or a Zapier catch hook) into Lead Webhook URL under General Settings. Each lead is sent as JSON with the visitor's email, the calculator type, the results and tags.
 
+= Where does the default interest rate come from? =
+
+Unless you set one, each calculator starts at this week's Freddie Mac Primary Mortgage Market Survey® 30-year fixed average, with a small source line under the rate. Enter a value in a calculator's "Interest Rate %" default (on the site, or network-wide on multisite) to use your own rate instead. Developers can turn the Freddie Mac default off with `add_filter('mcwp_use_pmms', '__return_false');`.
+
 = Can I edit the look of the calculator? =
 
 Yes you can. We have provided a color picker that will change the look/feel of your calculator simply by choosing a color or placing your HEX code in and saving the settings.
@@ -52,6 +56,15 @@ Yes you can. We have provided a color picker that will change the look/feel of y
 = How do I get the additional calculators? =
 
 1. Please visit the <a href="https://mortgagecalculatorsplugin.com/" target="_blank">Mortgage Calculators WP</a> offical site and choose your desired license and upon completion of payment you will receive a key that you can input under the premium tab. Once activated you will receive access to the additional calculators to implement in your website.
+
+== External services ==
+
+This plugin connects to the following services:
+
+* **Freddie Mac Primary Mortgage Market Survey®** (https://www.freddiemac.com/pmms), with FRED (https://fred.stlouisfed.org) as a fallback: about twice a day the site downloads the public weekly average rates to use as the default interest rate. No site or visitor data is sent. Freddie Mac terms: https://www.freddiemac.com/terms
+* **Google reCAPTCHA** (only if you enter reCAPTCHA keys): visitors' browsers load Google's script, and the site sends the reCAPTCHA token and visitor IP to Google to verify a submission. Google privacy policy: https://policies.google.com/privacy
+* **mortgagecalculatorsplugin.com** (premium licenses): the license key and site URL are sent to activate, check and update the license.
+* **Your Lead Webhook URL** (only if you set one): each lead's email, calculator results and tags are sent to the URL you enter.
 
 == Screenshots ==
 
@@ -83,12 +96,20 @@ First Version! Enjoy!
 
 = 2.4.0 20261011 =
 
-* New: Modern design for every calculator — one flat card, boxed inputs with the currency inside the field, native sliders, a large payment figure in your Calculator Color, a payment breakdown bar, and a year-by-year chart on the Buydown calculator. The layout adapts to the width of the column the calculator sits in
+* New: Modern design for every calculator — one flat card with filled fields and the currency inside the field, a large payment figure in your Calculator Color with a one-line summary beneath it ("$237,500 loan · 30-year fixed at 5%"), a payment breakdown bar, and a year-by-year chart on the Buydown calculator. The layout adapts to the width of the column the calculator sits in
+* New: The default interest rate is this week's Freddie Mac 30-year fixed average (with a source line under the rate) unless the site or network admin sets one. It's fetched in the background twice a day, with FRED as a fallback, and the last good week is kept if both are unavailable
+* New: Fewer visible controls — taxes, insurance and HOA fold into one line that shows their monthly total and expands on tap
+* New: Loan term and buydown type are a row of buttons; interest rate and mortgage insurance rate can be typed or slid
+* New: The email form sits in the results panel, next to the payment ("Get this breakdown by email")
+* New: The results stay in view while visitors adjust inputs on wide layouts; on phones a payment bar is pinned to the bottom of the screen while the inputs are in view
+* Improvement: Consistent slider styling in every browser (thin track filled with your Calculator Color)
+* Improvement: Sentence-case labels; in the Modern style units appear inside fields instead of in the label. Spanish translations updated for the new and renamed text
 * New: Calculator Style setting (Modern or Classic). Classic keeps the original look for sites with custom CSS written against it
 * New: Results Panel setting (Light or Bold) for the Modern style; Bold fills the results panel with your Calculator Color
 * Improvement: Sliders are native range inputs (keyboard and touch friendly); the bundled slider and autoNumeric libraries were removed, cutting the calculator JavaScript by about two thirds
 * Improvement: Premium calculators without a license now show nothing to visitors instead of a red warning; administrators see a short notice
 * Fix: VA interest rate label read "($)" instead of "(%)", and it and the Refinance loan amount labels weren't connected to their fields
+* Fix: The Buydown calculator could show a payment one cent different from the emailed figure when a bought-down rate reached 0%
 
 * New: Buydown calculator (premium) — [mcwp type="bd"]. Temporary 3-2-1, 2-1 and 1-0 buydowns show the year-by-year payment schedule and the total buydown cost; permanent buydowns show the new rate, monthly savings, cost of points and break-even month. Email and webhook figures are recalculated on the server from the visitor's inputs
 

@@ -19,6 +19,9 @@ function mcwp_shortcode($atts = array(), $content = null, $tag = '') {
     $option_func = (use_network_settings('wpmc_mail_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
     $mcwp_currency = $option_func('mcwp_currency');
     $curr_symbol = $mcwp_currency;
+    // Views arrange their fields differently for the Modern and Classic styles
+    $display = mcwp_display_options();
+    $mcwp_modern = ($display['style'] === 'modern');
 
     $wrap_class = '';
     // Use include (not require_once) so the same shortcode type can appear multiple times on a page
@@ -46,7 +49,6 @@ function mcwp_shortcode($atts = array(), $content = null, $tag = '') {
     if (!isset($calculator_layout) || $calculator_layout === '') {
         return '';
     }
-    $display = mcwp_display_options();
     $style_class = ($display['style'] === 'classic') ? 'mcalc-color' : 'mcalc-modern mcalc-panel-' . $display['panel'];
 
     $template = file_get_contents(MC_DIR.'/templates/main.html');

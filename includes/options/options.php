@@ -2,6 +2,9 @@
 // Define Options When Admin Initializes
 function wpmc_admin_init()
 {
+    // Blank interest rate defaults use this week's Freddie Mac average
+    $rate_placeholder = mcwp_pmms_placeholder();
+
 
     // Calculator Mail Options
     // Set Section or Option-Group
@@ -91,7 +94,7 @@ function wpmc_admin_init()
 
         array('wpmc_one_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_one_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 5', 'wpmc'),),
-        array('wpmc_one_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_one_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => $rate_placeholder,),
         array('wpmc_one_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 1', 'wpmc'),),
 
         array('wpmc_one_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_one', 'placeholder' => __('Default: 600', 'wpmc'),),
@@ -140,7 +143,7 @@ function wpmc_admin_init()
 
         array('wpmc_two_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_two_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 5', 'wpmc'),),
-        array('wpmc_two_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_two_ir_min', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => $rate_placeholder,),
         array('wpmc_two_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 1', 'wpmc'),),
         array('wpmc_two_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 600', 'wpmc'),),
         array('wpmc_two_mhoa_initial', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Monthly HOA', 'wpmc'), 'group' => 'wpmc_two',  'placeholder' => __('Default: 50', 'wpmc'),),
@@ -183,7 +186,7 @@ function wpmc_admin_init()
 
         array('wpmc_three_pp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Purchase Price', 'wpmc'), 'group' => 'wpmc_three',         'placeholder' => __('Default: 250,000', 'wpmc'),),
         array('wpmc_three_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Down Payment %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 0', 'wpmc'),),
-        array('wpmc_three_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 5', 'wpmc'),),
+        array('wpmc_three_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => $rate_placeholder,),
         array('wpmc_three_at_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Annual Taxes %', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 1', 'wpmc'),),
         array('wpmc_three_ai_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Annual Insurance', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 600', 'wpmc'),),
         array('wpmc_three_mhoa_initial', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Monthly HOA', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('Default: 50', 'wpmc'),),
@@ -219,7 +222,7 @@ function wpmc_admin_init()
         array('wpmc_four_rpp', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point', 'wpmc'), 'group' => 'wpmc_four',),
 
         array('wpmc_four_la_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Loan Amount', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 400,000', 'wpmc'),),
-        array('wpmc_four_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 7', 'wpmc'),),
+        array('wpmc_four_ir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Interest Rate %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => $rate_placeholder,),
         array('wpmc_four_dp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Discount Points', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 1', 'wpmc'),),
         array('wpmc_four_rpp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Rate Reduction per Point %', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('Default: 0.25', 'wpmc'),),
     );
@@ -260,7 +263,7 @@ function wpmc_admin_init()
         array('wpmc_five_mhaeapt_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Estimated annual property taxes', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 1,500', 'wpmc'),),
         array('wpmc_five_mhaeahi_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Estimated annual home insurance', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 1,000', 'wpmc'),),
         array('wpmc_five_mhadp_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Down payment', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 10,000', 'wpmc'),),
-        array('wpmc_five_mhair_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Interest rate', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => __('Default: 4', 'wpmc'),),
+        array('wpmc_five_mhair_initial', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Interest rate', 'wpmc'), 'group' => 'wpmc_five', 'placeholder' => $rate_placeholder,),
     );
 
 
@@ -303,7 +306,7 @@ function wpmc_admin_init()
         array('wpmc_six_ct_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Current term', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 360', 'wpmc'),),
         array('wpmc_six_oy_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Origination year', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 2020', 'wpmc'),),
         array('wpmc_six_nla_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New loan amount', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 250,000', 'wpmc'),),
-        array('wpmc_six_nir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New interest rate', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 4', 'wpmc'),),
+        array('wpmc_six_nir_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New interest rate', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => $rate_placeholder,),
         array('wpmc_six_nlt_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New loan term', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 360', 'wpmc'),),
         array('wpmc_six_nrf_initial', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('New refinance fees', 'wpmc'), 'group' => 'wpmc_six', 'placeholder' => __('Default: 1,000', 'wpmc'),),
     );

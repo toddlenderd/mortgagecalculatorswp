@@ -148,6 +148,61 @@ function mcwp_display_options()
 }
 
 /**
+ * View helpers. Views build each field once and assemble them in the original order for
+ * Classic, or the Modern arrangement (secondary inputs folded away, email in the results).
+ */
+
+// Classic labels carry the unit, e.g. "Down payment ($)"; Modern shows the unit inside the field
+function mcwp_label_unit($label, $unit, $modern)
+{
+    return $modern ? $label : $label . ' (' . $unit . ')';
+}
+
+function mcwp_email_block($email_id, $button_id, $button_class, $modern)
+{
+    $label = $modern ? __('Get this breakdown by email', 'wpmc') : __('Want a Copy of the Results?', 'wpmc');
+    $button = $modern ? __('Send', 'wpmc') : __('Send Results!', 'wpmc');
+    return '<div class="mcalc-full mcwp-results">
+      <label for="' . esc_attr($email_id) . '">' . esc_html($label) . '</label>
+      <input type="email" id="' . esc_attr($email_id) . '" placeholder="' . esc_attr__('Enter your email address', 'wpmc') . '" value="" name="email" />
+      <input type="button" id="' . esc_attr($button_id) . '" class="mcwp-submit bg ' . esc_attr($button_class) . ' mcalc-color" value="' . esc_attr($button) . '">
+    </div>';
+}
+
+// Name for the folded secondary inputs, based on which ones the site shows
+function mcwp_more_label($has_insurance, $has_hoa)
+{
+    if ($has_insurance && $has_hoa) {
+        return __('Taxes, insurance and HOA', 'wpmc');
+    }
+    if ($has_insurance) {
+        return __('Taxes and insurance', 'wpmc');
+    }
+    if ($has_hoa) {
+        return __('Taxes and HOA', 'wpmc');
+    }
+    return __('Property taxes', 'wpmc');
+}
+
+// Modern: secondary inputs under one expandable line that shows their monthly total
+function mcwp_more_fields($fields_html, $label, $curr_symbol)
+{
+    return '<details class="mcalc-full mcalc-more" data-currency="' . esc_attr($curr_symbol) . '" data-per-month="' . esc_attr__('%s/mo', 'wpmc') . '">
+      <summary><span>' . esc_html($label) . '</span><b class="mcalc-more-total"></b></summary>
+      <div class="mcalc-more-body">' . $fields_html . '</div>
+    </details>';
+}
+
+// Modern: one line under the payment, e.g. "$237,500 loan · 30-year fixed at 5%".
+// The selectors point at the form fields the line is built from (amount minus an optional field).
+function mcwp_summary_line($template, $curr_symbol, $amount, $minus, $term, $rate)
+{
+    return '<p class="mcalc-summary" data-template="' . esc_attr($template) . '" data-currency="' . esc_attr($curr_symbol) . '"'
+        . ' data-amount="' . esc_attr($amount) . '" data-minus="' . esc_attr($minus) . '"'
+        . ' data-term="' . esc_attr($term) . '" data-rate="' . esc_attr($rate) . '"></p>';
+}
+
+/**
  * What a premium calculator shows without a valid license: nothing for visitors, a short
  * notice for administrators so they know why it's missing.
  */
