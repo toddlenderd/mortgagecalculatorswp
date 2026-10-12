@@ -4,7 +4,7 @@
  * Plugin Name:  Mortgage Calculators WP
  * Plugin URI:   https://mortgagecalculatorsplugin.com
  * Description:  A contemporary set of mortgage calculators from Lenderd.com
- * Version:      2.4.0
+ * Version:      2.4.1
  * Author:       Lenderd
  * Author URI:   https://lenderd.com
  * License:      GPL2
@@ -19,7 +19,7 @@ define('MC_PATH', plugin_dir_path(__FILE__));
 define('MC_DIR', __DIR__);
 define('MC_FILE', __FILE__);
 define('MC_URL', plugin_dir_url(__FILE__));
-define('MC_VERSION', '2.4.0');
+define('MC_VERSION', '2.4.1');
 
 // Load common  functions
 require(dirname(__FILE__) . '/includes/functions/functions.php');
@@ -102,10 +102,10 @@ function softlights_admin_scripts($hook)
     if ('toplevel_page_wpmc' !== $hook) {
         return;
     }
-    wp_enqueue_style('mcwp-css', plugin_dir_url(__FILE__) . 'admin/admin.css');
+    wp_enqueue_style('mcwp-css', plugin_dir_url(__FILE__) . 'admin/admin.css', array(), MC_VERSION);
     wp_enqueue_script('jquery');
     wp_enqueue_style('wp-color-picker');
-    wp_enqueue_script('wpmc-script-handle', plugin_dir_url(__FILE__) . 'admin/admin.js', array('wp-color-picker', 'jquery'), false, true);
+    wp_enqueue_script('wpmc-script-handle', plugin_dir_url(__FILE__) . 'admin/admin.js', array('wp-color-picker', 'jquery'), MC_VERSION, true);
 }
 
 add_action('wp_enqueue_scripts', 'mcwp_register_assets', 11);

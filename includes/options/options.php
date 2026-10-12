@@ -68,7 +68,7 @@ function wpmc_admin_init()
     }
     $allfields = array(
         array(
-            'wpmc_one_email', 'type' => $text, 'section_name' => 'wpmc-settings-one', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_one',
+            'wpmc_one_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-one', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_one',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
         array(
@@ -120,7 +120,7 @@ function wpmc_admin_init()
 
     $allfields = array(
         array(
-            'wpmc_two_email', 'type' => $text, 'section_name' => 'wpmc-settings-two', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_two',
+            'wpmc_two_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-two', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_two',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
 
@@ -165,7 +165,7 @@ function wpmc_admin_init()
 
     $allfields = array(
         array(
-            'wpmc_three_email', 'type' => $text, 'section_name' => 'wpmc-settings-three', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_three',
+            'wpmc_three_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-three', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_three',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
         array('wpmc_three_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-three', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_three', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
@@ -209,7 +209,7 @@ function wpmc_admin_init()
 
     $allfields = array(
         array(
-            'wpmc_four_email', 'type' => $text, 'section_name' => 'wpmc-settings-four', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_four',
+            'wpmc_four_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-four', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_four',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
         array('wpmc_four_disclaimer', 'type' => $textarea, 'section_name' => 'wpmc-settings-four', 'label' => __('Disclaimer', 'wpmc'), 'group' => 'wpmc_four', 'placeholder' => __('If you would like to display a disclaimer under the calculator\'s values, place that here...', 'wpmc'),),
@@ -243,7 +243,7 @@ function wpmc_admin_init()
 
     $allfields = array(
         array(
-            'wpmc_five_email', 'type' => $text, 'section_name' => 'wpmc-settings-five', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_five',
+            'wpmc_five_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-five', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_five',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
 
@@ -283,7 +283,7 @@ function wpmc_admin_init()
 
     $allfields = array(
         array(
-            'wpmc_six_email', 'type' => $text, 'section_name' => 'wpmc-settings-six', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_six',
+            'wpmc_six_email', 'type' => $text, 'lead_preview' => true, 'section_name' => 'wpmc-settings-six', 'label' => __('Email Address', 'wpmc'), 'group' => 'wpmc_six',
             'placeholder' => __('Email address your leads will be sent to...', 'wpmc'),
         ),
 
@@ -382,6 +382,18 @@ function display_text_element($args)
 
     <input type="text" name="<?php echo esc_attr($args[0]); ?>" id="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($placeholder); ?>" value="<?php echo isset($options) ? esc_attr($options) : ''; ?>" size="64" />
 <?php
+    // Show where this calculator's leads actually go, after shortcodes and fallbacks. Shortcodes
+    // resolve per site, so this is only shown on a site's own settings, not network-wide.
+    if (!empty($args['lead_preview']) && !is_network_admin()) {
+        $prefix = substr($args[0], 0, -strlen('_email'));
+        $option_func = (use_network_settings($prefix . '_use_network_settings') === 'yes') ? 'get_site_option' : 'get_option';
+        $recipients = mcwp_owner_emails($option_func($args[0]));
+        echo '<p class="description">' . sprintf(
+            /* translators: %s: email address(es) */
+            esc_html__('Leads from this calculator currently go to: %s', 'wpmc'),
+            '<strong>' . esc_html(implode(', ', $recipients)) . '</strong>'
+        ) . '</p>';
+    }
 }
 
 
@@ -479,19 +491,41 @@ function color_input($args)
 {
     $options = get_wpmc_option($args[0]);
     $value = !empty($options) ? $options : '#1a56db';
-    $is_hex = preg_match('/^#[0-9a-fA-F]{3,6}$/', $value);
+    // The swatch shows the color the calculators actually use (shortcodes resolved), e.g. rgb([color])
+    $swatch = mcwp_color_to_hex(is_network_admin() ? $value : mcwp_get_color());
     ?>
-    <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo esc_attr($value); ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
-    <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo $is_hex ? esc_attr($value) : '#1a56db'; ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
+    <div class="mcwp-color-field">
+        <input type="text" name="<?php echo esc_attr($args[0]); ?>" class="<?php echo esc_attr($args['group']); ?>" placeholder="<?php echo esc_attr($args['placeholder']); ?>" value="<?php echo esc_attr($value); ?>" id="<?php echo esc_attr($args[0]); ?>" size="64" />
+        <input type="text" class="color-picker" id="<?php echo esc_attr($args[0]); ?>_picker" value="<?php echo esc_attr($swatch); ?>" data-target="<?php echo esc_attr($args[0]); ?>" size="10" />
+    </div>
     <p class="description"><?php _e('Enter a hex color, text value, or shortcode (e.g. [brand_color]). Use the color picker or type directly.', 'wpmc'); ?></p>
     <script>
     jQuery(document).ready(function($){
+        var field = $('#<?php echo esc_attr($args[0]); ?>');
         $('#<?php echo esc_attr($args[0]); ?>_picker').wpColorPicker({
             change: function(event, ui) {
-                $('#<?php echo esc_attr($args[0]); ?>').val(ui.color.toString());
+                field.val(ui.color.toString());
             }
         });
+        // Match the picker button to the text field's height, which varies between WordPress versions
+        field.closest('.mcwp-color-field').find('.wp-color-result').css({ height: field.outerHeight() + 'px', minHeight: field.outerHeight() + 'px' });
     });
     </script>
 <?php
+}
+
+/**
+ * Hex for the color picker swatch: hex values as-is, rgb()/rgba() converted, anything else
+ * (named colors, hsl) falls back to the default blue.
+ */
+function mcwp_color_to_hex($color)
+{
+    $color = trim((string) $color);
+    if (preg_match('/^#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?$/', $color)) {
+        return $color;
+    }
+    if (preg_match('/^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i', $color, $m)) {
+        return sprintf('#%02x%02x%02x', min(255, $m[1]), min(255, $m[2]), min(255, $m[3]));
+    }
+    return '#1a56db';
 }

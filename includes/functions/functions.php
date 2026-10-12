@@ -320,8 +320,10 @@ function mcwp_within_rate_limits($to)
 
 /**
  * Resolve where lead notifications go: the calculator's own Email Address setting, then
- * the Conventional calculator's, then the site admin email. Supports comma-separated lists
- * and shortcodes; [email] means the site admin email.
+ * the Conventional calculator's, then the site admin email.
+ *
+ * Shortcodes run first, so a site's own [email] (or any other) shortcode resolves as it did
+ * before 2.3.2; a literal [email] left over afterwards means the site admin email.
  */
 function mcwp_owner_emails($calculator_email)
 {
@@ -331,16 +333,47 @@ function mcwp_owner_emails($calculator_email)
         if ($setting === '') {
             continue;
         }
-        $setting = str_replace('[email]', $site_admin, $setting);
         if (strpos($setting, '[') !== false) {
             $setting = do_shortcode($setting);
         }
-        $emails = array_filter(array_map('sanitize_email', explode(',', $setting)), 'is_email');
+        $setting = str_replace('[email]', $site_admin, $setting);
+        $emails = mcwp_parse_emails($setting);
         if (!empty($emails)) {
-            return array_values($emails);
+            return $emails;
         }
     }
     return array($site_admin);
+}
+
+/**
+ * Valid addresses from a list separated by commas, semicolons or new lines. Accepts
+ * "Name <address>" entries (and mailto: links) by taking the address part; anything that
+ * isn't a valid address is skipped rather than reshaped into a different one.
+ */
+function mcwp_parse_emails($text)
+{
+    $emails = array();
+    foreach (preg_split('/[,;\r\n]+/', (string) $text) as $entry) {
+        // Try the readings of an entry in order and keep the first that is a valid address:
+        // a mailto: link, "Name <address>", the text with any HTML removed, the entry as is
+        $candidates = array();
+        if (preg_match('/mailto:([^"\'?<>\s]+)/i', $entry, $match)) {
+            $candidates[] = $match[1];
+        }
+        if (preg_match('/<([^<>\s]+@[^<>\s]+)>/', $entry, $match)) {
+            $candidates[] = $match[1];
+        }
+        $candidates[] = wp_strip_all_tags($entry);
+        $candidates[] = $entry;
+        foreach ($candidates as $candidate) {
+            $candidate = trim($candidate);
+            if ($candidate !== '' && is_email($candidate)) {
+                $emails[] = $candidate;
+                break;
+            }
+        }
+    }
+    return array_values(array_unique($emails));
 }
 
 /**
