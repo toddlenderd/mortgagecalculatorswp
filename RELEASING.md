@@ -44,7 +44,9 @@ set its version, so licensed sites get it through EDD.
 `assets/js/bundle.js` is the source of truth and is edited directly; there is no build
 step. It starts with a small adapter that gives native `<input type="range">` sliders the
 part of the bootstrap-slider API the calculator code uses, followed by the calculator code
-(from `$mcwp(function ($) {` onward).
+(`function mcwp_start($) {` onward). The bottom of the file calls `mcwp_start` on the
+browser's own DOM readiness, not jQuery's `ready()`, because performance plugins such as
+Perfmatters hold `ready()` until the visitor's first interaction. Keep it that way.
 
 ## Stylesheets
 

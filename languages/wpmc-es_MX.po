@@ -1043,3 +1043,15 @@ msgstr "Demasiadas solicitudes. Inténtalo más tarde."
 #: includes/shortcodes
 msgid "Freddie Mac 30-year fixed average, week of %s"
 msgstr "Promedio de tasa fija a 30 años de Freddie Mac, semana del %s"
+
+#: includes/shortcodes
+msgid "This site is protected by reCAPTCHA and the Google %1$s and %2$s apply."
+msgstr "Este sitio está protegido por reCAPTCHA y se aplican la %1$s y las %2$s de Google."
+
+#: includes/shortcodes
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
+
+#: includes/shortcodes
+msgid "Terms of Service"
+msgstr "Condiciones del Servicio"

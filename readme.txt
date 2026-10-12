@@ -3,7 +3,7 @@ Contributors: (8blocks)
 Donate link: http://wordpress.org
 Tags: mortgage, mortgage calculator, loan calculator, real estate, mortgage calc, responsive mortgage calculator, mortgage calculators
 Requires at least: 4.6
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 Tested up to: 7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -74,6 +74,9 @@ This plugin connects to the following services:
 
 == Upgrade Notice ==
 
+= 2.4.2 =
+Calculators now start as soon as the page loads on sites using performance plugins such as Perfmatters, instead of waiting for the first click or scroll. The reCAPTCHA badge hides after a couple of seconds, with Google's reCAPTCHA notice shown under each Send button.
+
 = 2.4.1 =
 Fixes the Modern style ignoring your saved Calculator Color, and lead notification emails going to the wrong address when the Email Address setting uses a shortcode, "Name <address>" or a semicolon list.
 
@@ -96,6 +99,11 @@ Major security and code quality update. reCAPTCHA keys are no longer hardcoded a
 First Version! Enjoy!
 
 == Changelog ==
+
+= 2.4.2 20261011 =
+
+* Fix: On sites using performance plugins that delay jQuery's ready event until the visitor interacts (Perfmatters' Delay JavaScript, and similar), calculators stayed unstyled and didn't respond until the first click or scroll. They now start as soon as the page has loaded
+* Change: When reCAPTCHA is configured, its badge hides a couple of seconds after it appears, and Google's required "protected by reCAPTCHA" notice shows under each calculator's Send button. The Classic style previously hid the badge without the notice
 
 = 2.4.1 20261011 =
 

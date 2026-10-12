@@ -245,8 +245,23 @@
 .mcalc .mcwp-challenge-label {
 	font-weight: 600;
 }
-.grecaptcha-badge {
+.mcalc .mcwp-recaptcha-note {
+	clear: both;
+	margin: 0;
+	padding-top: 10px;
+	font-size: 12px;
+	line-height: 1.5;
+	opacity: 0.75;
+}
+.mcalc .mcwp-recaptcha-note a {
+	color: inherit;
+	text-decoration: underline;
+}
+/* bundle.js hides the reCAPTCHA badge a couple of seconds after it appears */
+.mcwp-badge-hidden .grecaptcha-badge {
+	opacity: 0;
 	visibility: hidden;
+	transition: opacity 0.3s, visibility 0s 0.3s;
 }
 .mcwp-insurance-message {
 	font-size: 1em;

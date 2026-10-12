@@ -165,8 +165,23 @@ function mcwp_email_block($email_id, $button_id, $button_class, $modern)
     return '<div class="mcalc-full mcwp-results">
       <label for="' . esc_attr($email_id) . '">' . esc_html($label) . '</label>
       <input type="email" id="' . esc_attr($email_id) . '" placeholder="' . esc_attr__('Enter your email address', 'wpmc') . '" value="" name="email" />
-      <input type="button" id="' . esc_attr($button_id) . '" class="mcwp-submit bg ' . esc_attr($button_class) . ' mcalc-color" value="' . esc_attr($button) . '">
+      <input type="button" id="' . esc_attr($button_id) . '" class="mcwp-submit bg ' . esc_attr($button_class) . ' mcalc-color" value="' . esc_attr($button) . '">' . mcwp_recaptcha_note() . '
     </div>';
+}
+
+// Google's required notice when the reCAPTCHA badge is hidden (bundle.js hides it after a couple of seconds)
+function mcwp_recaptcha_note()
+{
+    $recaptcha = mcwp_recaptcha_config();
+    if (!$recaptcha['enabled']) {
+        return '';
+    }
+    return '<p class="mcwp-recaptcha-note">' . sprintf(
+        /* translators: 1: Google Privacy Policy link, 2: Google Terms of Service link */
+        esc_html__('This site is protected by reCAPTCHA and the Google %1$s and %2$s apply.', 'wpmc'),
+        '<a href="https://policies.google.com/privacy" target="_blank" rel="noopener">' . esc_html__('Privacy Policy', 'wpmc') . '</a>',
+        '<a href="https://policies.google.com/terms" target="_blank" rel="noopener">' . esc_html__('Terms of Service', 'wpmc') . '</a>'
+    ) . '</p>';
 }
 
 // Name for the folded secondary inputs, based on which ones the site shows
